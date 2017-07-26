@@ -1,0 +1,45 @@
+<ion-header class="page-header-custom bg_blue_alice">
+  <ion-navbar>
+    <button right ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="txt_center">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">  
+          <div class="color_blue_midnight">
+            <div class="ver-sup ib page-header-custom-title txt_bold">
+                VEHICLE CHECK
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-title>
+  </ion-navbar>
+
+  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+      <div class="ib ver-mid w25px">
+        <img src="assets/img/signin_spot.png" alt="">
+      </div>
+
+      <div class="txt_white ib ver-mid mg-left-10">
+        Signed in : {{ signedin_vehicle_name }}
+      </div>
+  </div>
+
+</ion-header>
+
+<ion-content padding>
+
+    <ion-item class="pd-left-no"> 
+        <ion-select class="w100 txt_center" interface="popover" (ionChange)="setChoosenVehicle($event)">
+            <ion-option *ngFor="let v of vehicleList; let indx = index" [selected]="indx == 0" [value]="v.index">
+                {{ v.vehicle_reg }}
+            </ion-option>
+        </ion-select>
+    </ion-item>
+
+    <button class="w100 btn_blue mg-top5percent" (click)="openCheckQuestionPage()">
+        CHECK
+    </button>
+
+</ion-content>

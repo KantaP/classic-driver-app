@@ -1,0 +1,14 @@
+page-question{
+    .completion_box_w_50{
+        width: calc(100% / 2 - 3px);
+    }
+    .btn_sign_w_20{
+        width: 20%;
+    }
+    .btn_sign_w_80{
+        width: calc(100% - 20% - 1px);
+    }
+    .pd-right-20-percent{
+        padding-right: 20%;
+    }
+}

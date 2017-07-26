@@ -1,0 +1,19 @@
+page-jobsview{
+    .custom-segment-btn{
+        line-height: 1.7rem !important;
+        border-bottom: 0px !important;
+        border-top-style: solid;
+        border-top-color: rgba(0, 0, 0, 0.1);
+        height: 5.2rem !important;
+        color: #000 !important;
+        font-size: 1.4rem !important;
+    }
+    .custom-segment-btn i{
+        font-size: 1.7rem !important;
+    }
+    .segment-md .segment-button.activated, 
+    .segment-md .segment-button.segment-activated{
+        border-color: #1a50cc !important;
+        color: #1a50cc !important;
+    }
+}

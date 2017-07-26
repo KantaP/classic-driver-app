@@ -1,0 +1,96 @@
+
+<div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+    <div class="w100 h100 dis-t">
+        <div class="w100 dis-tc ver-mid f-size-15px">
+            Loading . . .
+        </div>
+    </div>
+</div>
+<div *ngIf="loading == false">
+    <div class="w100" *ngFor="let job of jobs" >
+
+        <div class="w100 h40px  bg_blue_royal_light txt_white">
+            <div class="w100 h100 dis-t pos-relate">
+                <div class="f-size-xx-small label_job_number">
+                    JOB ID: {{ job.quote_id }}
+                </div>
+                <div class="dis-tc ver-mid pd-left-10-px pd-right-5-px">
+                    <div class="w50-cal txt_left ib">
+                        <i class="icon icon-Agenda"></i> 
+                        &nbsp; 
+                        <span>{{ job.outward }}</span>
+                    </div>
+                    <div class="w50-cal txt_right ib">
+                        <i class="icon icon-User"></i> 
+                        <span>{{ job.passengers_num }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ion-row>
+            <div col-9 class="txt_center pd-no">
+
+                <div ion-row class="txt_left">
+                    <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
+                        <div class="w100 h5vh dis-t">
+                            <div class="w100 dis-tc ver-mid">
+                                <i class="icon icon-Pointer"></i>
+                                PICK UP  
+                            </div>
+                        </div>
+                    </div>
+                    <div col-8 class="pd-left-10-px">
+                        {{ job.pickup }}
+                    </div>
+                </div>
+                
+                <div ion-row class="txt_left">
+                    <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
+                        <div class="w100 h5vh dis-t">
+                            <div class="w100 dis-tc ver-mid">
+                                <i class="icon icon-Pointer"></i>
+                                DEST
+                            </div>
+                        </div>
+                    </div>
+                    <div col-8 class="pd-left-10-px">
+                        {{ job.destination }}
+                    </div>
+                </div>
+                
+                <div ion-row class="">
+                    <div col-4 class="txt_left txt_bold pd-left-10-px">
+                        <img src="assets/img/icon_note_user.png" class="icon-note-user ver-top"/> 
+                        <div class="ib txt_bold f-size-xx-small ver-top">
+                            Passenger Name
+                        </div>
+                    </div>
+                    <div col-8 class="txt_red f-size-x-small">
+                        <span *ngIf="job.driver_accept == false" >
+                            Awaiting Acceptance
+                        </span>
+                    </div>
+                </div>
+                
+
+            </div>
+            <div col-3 class="txt_center">
+                <div class="w100 h13vh dis-t">
+                    <div class="w100 h100 dis-tc ver-mid pos-relate">
+                        <div class="txt_right label_dollars color_green_forest">
+                            <i class="icon icon-Dollars"></i>
+                        </div>
+                        <div class="color_green_forest txt-size-2rem">
+                            $ {{ job.driver_pay }}
+                        </div>
+                        <strong class="f-size-x-small">
+                            Vehicle Assign
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,11 @@
+page-signinvehiclepage{
+    .search_box .item-inner{
+        border: 1px solid #dedede;
+    }
+    .vehicle_item{
+        .item-inner{
+            border-bottom: 0px solid #dedede !important;
+        }
+        padding-left: 2.5em;
+    }
+}

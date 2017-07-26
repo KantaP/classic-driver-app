@@ -1,0 +1,46 @@
+
+
+/*
+    LOGIN PAGE
+*/
+page-login {
+    .item{
+        padding-left:0;
+        margin: 1em 0;
+    }
+
+    .item-inner {
+        border: 1px solid #dedede;
+    }
+
+    .item-input ion-label{
+        margin-left: 0.5em;
+    }
+
+    
+    .btn_add_company{
+        padding:0;
+    }
+    .edit_box{
+        float: left;
+        height: inherit;
+        width: 50px;
+        padding: 14px;
+        background-color: #0034aa;
+    }
+    
+    #txt_explain{
+        font-size: 1rem;
+    }
+
+    .select_custom{
+        border-width: 0px;
+        padding-top: inherit;
+
+        .item-cover{
+            height: 0;
+        }
+    }
+}
+
+

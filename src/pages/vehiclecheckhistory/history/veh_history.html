@@ -1,0 +1,99 @@
+<ion-header class="page-header-custom bg_blue_alice">
+  <ion-navbar>
+    <button right ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="txt_center">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">  
+          <div class="color_blue_midnight">
+            <div class="ver-sup ib page-header-custom-title txt_bold">
+                VEHICLE CHECK HISTORY
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-title>
+  </ion-navbar>
+
+  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+      <div class="ib ver-mid w25px">
+        <img src="assets/img/signin_spot.png" alt="">
+      </div>
+
+      <div class="txt_white ib ver-mid mg-left-10">
+        Signed in : {{ signedin_vehicle_name }}
+      </div>
+  </div>
+
+</ion-header>
+
+<ion-content>
+
+    <div class="w100 h40px txt_white txt_center bg_blue_royal gravity-center-vertical">
+      <div>
+        {{ veh_name }}
+      </div>
+    </div>
+
+    <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                Loading . . .
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loading == false">
+
+        <div class="border-custom txt_bold mg-top10 gravity-center-vertical" *ngFor="let s of storyList; let indx = index" (click)="openChoosenStory(indx)">
+            <div ion-row>
+                <div col-3 class="pd-left-10-px">
+                    <div ion-row>
+                        <div col-10>
+                            Date
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-10>
+                            Driver
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-12 class="{{ (s.chk_pass ? 'color_green_forest':'color_red') }}">
+                            {{ (s.chk_pass ? 'Pass':'Fail') }}
+                        </div>
+                    </div>
+                </div>
+                <div col-7>
+                    <div ion-row>
+                        <div col-12>
+                            {{ s.chk_time }}
+                        </div>
+                    </div>
+                        
+                    <div ion-row>
+                        <div col-12>
+                            {{ s.first_name }} {{ s.surname }}
+                        </div>
+                    </div>
+                </div>
+                <div col-2 class="gravity-center-vertical">
+                    <div>
+                        <ion-icon class="color_black" name='ios-arrow-forward'></ion-icon>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isEmpty" class="w100 txt_bold txt_center">
+        Not found.
+    </div>
+
+</ion-content>

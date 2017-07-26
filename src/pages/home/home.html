@@ -1,18 +1,107 @@
-<ion-header>
+<ion-header class="page-header-custom bg_blue_alice">
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title class="txt_center">
+      <div class="w100 h100 dis-t mg-left-10">
+        <div class="dis-tc ver-mid">  
+          <div class="color_blue_midnight">
+            <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub"> 
+            <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
+              DRIVER APP
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+  <div class="w100 h50percent-cal txt_center">
+    <div class="w100 h100 dis-t">
+      <div class="dis-tc ver-mid">
+        <div><img src="{{logo}}"/></div>
+      </div>
+    </div>
+  </div>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+  <div class="w100 h7percent bg_blue_royal txt_white pd4percent f-size-15px">
+    <div class="w70 ib mg-left-5-percent">
+      <i class="icon icon-Agenda"></i> 
+      &nbsp; 
+      <span><strong>Last Login : </strong></span>
+      <span>{{ lastLoginDate }}</span>
+    </div>
+    <div class="w20 ib">
+      <span>{{ lastLoginTime }}</span>
+    </div>
+  </div>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <div class="w100 h45percent txt_center menu_box">
+
+    <div *ngIf="!isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStartWorkDialog()" >
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">
+          <div>
+            <i class="icon icon-Pointer color_green_forest"></i>
+            <br>
+            <div class="menu_title">START WORK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStopWorkDialog()">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">
+          <div>
+            <i class="icon icon-Pointer color_red"></i>
+            <br>
+            <div class="menu_title">STOP WORK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" (click)="openPage('sign_in_vehicle')">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">
+          <div>
+            <i class="icon icon-Edit color_red"></i>
+            <br>
+            <div class="menu_title">SELECT THE VEHICLE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block"></div>
+
+    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" (click)="openPage('vehicle_check')">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">
+          <div>
+            <i class="icon icon-Tools color_blue_darkslate"></i>
+            <br>
+            <div class="menu_title">VEHICLE CHECK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w50-cal h50percent-cal ib bg_grey_lavender" [ngClass]="{ 'grayscale' : isCheckNTrack}"  (click)="openPage('view_jobs')">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">
+          <div>
+            <i class="icon icon-Search color_gold"></i>
+            <br>
+            <div class="menu_title">VIEW JOBS ({{jobsAmount}})</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </ion-content>

@@ -14,3 +14,414 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+$var_color_blue_royal: #1a50cc;
+$var_color_white: #FFF;
+
+// GLOBAL
+.page-header-custom-title{
+    font-size: 1.5rem;
+}
+.page-footer-custom-title{
+    font-size: 1.3rem;
+}
+.page-header-custom::after{
+    background-image: none !important;
+}
+.page-footer-custom::before{
+    background-image: none !important;
+}
+.toolbar-background{
+    border: 0 !important;
+}
+.logo-header{
+    width: 36px;
+    height: 36px;
+    //image-rendering: pixelated;
+}
+.logo-menu{
+    width: 25%;
+    height: 25%;
+    //image-rendering: pixelated;
+}
+.logo-footer{
+    width: 72px;
+    height: 32px;
+    //image-rendering: pixelated;
+}
+ion-icon{
+    font-family: 'Ionicons' !important;
+}
+.pos-relate{
+    position: relative;
+}
+.pos-in{
+    position: inherit;
+}
+.txt_head{
+    font-size: 1em;
+}
+.pd-no{
+    padding: 0;
+}
+.h40px{
+    height: 40px;
+}
+.pd-no-bottom{
+    padding-bottom: 0px !important;
+}
+.pd-bottom-1px{
+    padding-bottom: 1px !important;
+}
+.f-size-x-small{
+    font-size: x-small;
+}
+.ver-top{
+    vertical-align: top;
+}
+.win{
+    width: inherit;
+}
+.f-size-xx-small{
+    font-size: xx-small;
+}
+.pd-left-10-px{
+    padding-left: 10px; 
+}
+.pd-right-5-px{
+    padding-right: 5px; 
+}
+.pd-no-top{
+    padding-top: 0px !important;
+}
+.pd05em{
+    padding: 0.5em;
+}
+.pd-right-no{
+    padding-right: 0 !important;
+}
+.pd-left-no{
+    padding-left: 0 !important;
+}
+
+.pd-bottom-05em{
+    padding-bottom: 0.5em;
+}
+.pd-top-1em{
+    padding-top: 1em;
+}
+.border-around{
+    border: 1px solid #dedede;
+}
+.border-no-bottom{
+    border-bottom: 0px !important;
+}
+.ion-menu-custom{
+    .header::after{
+        background-image: none !important;
+    }
+    .toolbar-title{
+        color: $var_color_white;
+    }
+    .toolbar-background{
+        background: $var_color_blue_royal;
+    }
+    .content,
+    .item{
+        color: $var_color_white;
+        background: $var_color_blue_royal;
+    }
+    .item-inner{
+        border: 0 !important;
+        margin-left: 5%;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.txt_left{
+    text-align: left;
+}
+.txt_right{
+    text-align: right;
+}
+.btn_blue{
+    margin: 1em 0;
+    border-radius: 0px;
+    height: 2.8em;
+    font-size: 1.6rem;
+    color: #fff;
+    background-color: #1a50cc;
+    padding: 0.5em 1em;
+}
+.dis-flex{
+    display: flex;
+}
+.gravity-center-vertical{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.flex-1{
+    flex: 1;
+}
+.border-bottom-grey{
+    border-bottom: 1px solid #e1e1e1;
+}
+.border-bottom-white{
+    border-bottom: 1px solid #FFF;
+}
+.border-right-white{
+    border-right: 1px solid #FFF;
+}
+.pd1{  
+    padding: 1em 1em;
+}
+.pd-left-05-em{  
+    padding-left: 0.5em;
+}
+.h05vh{
+    height: 0.5vh;
+}
+.h1vh{
+    height: 1vh;
+}
+.h5vh{
+    height: 5vh;
+}
+.h7vh{
+    height: 7vh;
+}
+.h8vh{
+    height: 8vh;
+}
+.h9vh{
+    height: 9vh;
+}
+.h10vh{
+    height: 10vh;
+}
+.h13vh{
+    height: 13vh;
+}
+.h20vh{
+    height: 20vh;
+}
+.h50px{
+    height: 50px;
+}
+.h10px{
+    height: 10px;
+}
+.h45px{
+    height: 45px;
+}
+.hinherit{
+    height: inherit;
+}
+.txt_white{
+    color: #FFF;
+}
+.txt_red{
+    color:red;
+}
+.pd_hang_center{
+    padding: 0.5em 1em;
+}
+.w10{
+    width: 10%;
+}
+.w20{
+    width: 20%;
+}
+.w20px{
+    width: 20%;
+}
+.w25{
+    width: 25%;
+}
+.w25px{
+    width: 25px;
+}
+.w45{
+    width: 45%;
+}
+.w49{
+    width: 49%;
+}
+.w50{
+    width: 50%;
+}
+.w50-cal{
+    width: calc(100% / 2 - 2px);
+}
+.w70{
+    width: 70%;
+}
+.w75{
+    width: 75%;
+}
+.w80{
+    width: 80%;
+}
+.w90{
+    width: 90%;
+}
+.w100{
+    width: 100%;
+}
+
+.mw100{
+    max-width:100%;
+}
+.txt_center{
+    text-align: center;
+}
+.pd10{
+    padding: 0.7em;
+}
+
+.ib{
+    display: inline-block;
+}
+.mg-auto{
+    margin: auto;
+}
+.mg-top10{
+    margin-top: 10px;
+}
+.mg-top5percent{
+    margin-top: 5%;
+}
+.mg-top10percent{
+    margin-top: 10%;
+}
+.mg-bottom5percent{
+    margin-bottom: 5%;
+}
+.mg-left-5-percent{
+    margin-left: 5%;
+}
+.block{
+    display: block;
+}
+
+.txt-size-2rem{
+  font-size: 2rem;
+}
+.txt_bold{
+    font-weight: bold;
+}
+.txt_large{
+    font-size: 2.7em;
+}
+
+.scroll-content{
+    overflow-y: auto !important;
+}
+
+
+.grayscale{
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    color: #808080;
+}
+// COLOR
+.bg_grey{
+    background: #808080;
+}
+.color_grey{
+    color: #808080;
+}
+.bg_white{
+    background: #FFF
+}
+.bg_grey_lavender{
+    background: #ebebeb;
+}
+.color_grey_lavender{
+    color: #ebebeb;
+}
+.bg_grey_gainsboro{
+    background: #e1e1e1;
+}
+.color_grey_gainsboro{
+    color: #e1e1e1;
+}
+.color_green_forest{
+    color: #129c09;
+}
+.bg_green_forest{
+    background: #129c09;
+}
+
+.color_green_lime{
+    color: #0db500;
+}
+.bg_green_lime{
+    background: #0db500;
+}
+.color_red{
+    color: #f60604;
+}
+.bg_red{
+    background: #f60604;
+}
+.color_red_dark{
+    color: #e40001;
+}
+.bg_red_dark{
+    background: #e40001;
+}
+
+.color_blue_alice{
+    color: #f3f8fc;
+}
+.bg_blue_alice{
+    background: #f3f8fc;
+}
+.color_blue_royal{
+    color: #1a50cc;
+}
+.bg_black{
+    background: #000;
+}
+.color_black{
+    color: #000;
+}
+.bg_blue_royal{
+    background: #1a50cc;
+}
+.color_blue_light{
+    color: #3964ca;
+}
+.bg_blue_royal_light{
+    background: #3964ca;
+}
+.color_blue_midnight{
+    color: #1a2e5c;
+}
+.bg_blue_midnight{
+    background: #1a2e5c;
+}
+.bg_darkblue{
+    background: #0034aa;
+}
+.color_blue_darkslate{
+    color: #2c4fac;
+}
+.bg_blue_darkslate{
+    background: #2c4fac;
+}
+.color_gold{
+    color: #eebd31;
+}
+.bg_gold{
+    background: #eebd31;
+}

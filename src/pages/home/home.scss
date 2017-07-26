@@ -1,3 +1,96 @@
 page-home {
+    .scroll-content{
+        padding: 0 !important;
+    }
+    .menu_box{
+        font-weight: bold;
+        font-size: 15px;
 
+        i{
+            font-size: 40px;
+        }
+        .menu_title{
+            margin-top: 1em; 
+        }
+    }
 }
+.pos-ab{
+    position: absolute;
+}
+.h100{
+    height: 100%;
+}
+.h35vh{
+    height: 35vh;
+}
+.dis-tc{
+    display: table-cell;
+}
+.mg-left-10{
+    margin-left: 10px;
+}
+.pd2percent{
+    padding: 2%;
+}
+.pd4percent{
+    padding: 3.5%;
+}
+.f-size-15px{
+    font-size: 1.5rem;
+}
+.f-size-13px{
+    font-size: 1.3rem;
+}
+.f-size-10px{
+    font-size: 10px;
+}
+@media (max-width: 320px){
+   .f-size-15px{
+        font-size: 1rem;
+    }
+    .f-size-13px{
+        font-size: 1.3rem;
+    }
+}
+@media (min-width: 768px){
+   .f-size-13px{
+        font-size: 2rem;
+    }
+}
+.dis-t{
+    display: table;
+}
+.ver-mid{
+    vertical-align: middle;
+}
+.ver-sup{
+    vertical-align: super;
+}
+.ver-sub{
+    vertical-align: sub;
+}
+.h25percent{
+    height: 25%;
+}
+.h2percent{
+    height: 2%;
+}
+.h5percent{
+    height: 5%;
+}
+.h7percent{
+    height: 7%;
+}
+.h10percent{
+    height: 10%;
+}
+.h45percent{
+    height: 45%;
+}
+.h50percent{
+    height: 50%;
+}
+.h50percent-cal{
+    height: calc(98% / 2 - 2px);
+}
+

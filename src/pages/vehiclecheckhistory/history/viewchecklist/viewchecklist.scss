@@ -1,0 +1,20 @@
+page-viewchecklist{
+    .status_green{
+        background-color: green;
+    }
+    .status_red{
+        background-color: rgb(205, 0, 0);
+    }
+    .status_orange{
+        background-color: rgb(234, 137, 0);
+    }
+    .notes_color_green{
+        color: green;
+    }
+    .notes_color_red{
+        color: rgb(205, 0, 0);
+    }
+    .notes_color_orange{
+        color: rgb(234, 137, 0);
+    }
+}

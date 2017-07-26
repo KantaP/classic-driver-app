@@ -1,0 +1,50 @@
+/*
+    ADD COMPANY
+*/
+modal-addcompany{
+    .add_company_header{
+        height: 5vh;
+    }
+    .btn_close_modal{
+        padding: 1vh;
+        font-size: 1.5rem;
+    }
+    .add_company{
+        ion-input {
+            border: 1px solid #dedede;
+        }
+    }
+    .text-input[disabled]{
+        opacity:1;
+    }
+}
+
+/*
+    GLOBAL
+*/
+.modal-wrapper {
+    position: absolute;
+    overflow: hidden;
+    //max-width: 280px;
+    border-radius: 0px;
+    width: 80vw;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 0;
+    box-shadow: 0 16px 20px rgba(0,0,0,.4);
+    background-color: #fafafa;
+}
+
+.modal-h25vh{
+    height: 25vh
+}
+.modal-h42vh{
+    height: 42vh
+}
+
+ion-modal ion-backdrop{
+    visibility: visible !important;
+}
