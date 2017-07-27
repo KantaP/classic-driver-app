@@ -1,0 +1,76 @@
+<ion-header class="page-header-custom bg_blue_alice">
+  <ion-navbar>
+    <button right ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="txt_center">
+      <div class="w100 h100 dis-t">
+        <div class="dis-tc ver-mid">  
+          <div class="color_blue_midnight">
+            <div class="ver-sup ib page-header-custom-title txt_bold">
+                MESSAGE
+            </div>
+          </div>
+        </div>
+      </div>
+    </ion-title>
+  </ion-navbar>
+
+  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+      <div class="ib ver-mid w25px">
+        <img src="assets/img/signin_spot.png" alt="">
+      </div>
+
+      <div class="txt_white ib ver-mid mg-left-10">
+        Signed in : {{ signedin_vehicle_name }}
+      </div>
+  </div>
+
+</ion-header>
+
+<ion-content>
+    <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                Loading . . .
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading == false">
+        <div padding>
+            <ion-list>
+                <div class="pd-no-top pd-bottom-1px border-around" *ngFor="let c of cannedMessages; let i=index;" text-wrap >
+                    <div class="w100 h40px" (click)="toggleGroup(c.uid)" [ngClass]="{active: isGroupShown(c.uid)}">
+                        <div class="w100 h100 gravity-center-vertical txt-size-2rem">
+                            <div class="">
+                                <div class="ib mg-left-5-percent">
+                                    {{ c.cate }}
+                                </div>
+                                <div class="ib fr mg-right-5-percent">
+                                    <ion-icon color="success" [name]="isGroupShown(c.uid) ? 'ios-arrow-down' : 'ios-arrow-forward'"></ion-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="isGroupShown(c.uid)">
+                        <div ion-row>
+                            <div col-12 *ngFor="let m of c.message" class="border-around gravity-center-vertical h45px" (click)="setMessage(m)">
+                                <div class="mg-left-10-percent txt-size-2rem">
+                                    {{ m.message }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-list>
+            <input type="text" name="" value="" class="w100 h40px border-around" [(ngModel)]="message.subject">
+            <textarea rows="" cols="" class="w100 h13vh border-around mg-top10" [(ngModel)]="message.body" ></textarea>
+            <div class="w100 h40px txt_center txt_white mg-top10 bg_blue_royal_light gravity-center-vertical" (click)="sendMessage()">
+                <div>
+                    SEND
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

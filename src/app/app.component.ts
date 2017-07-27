@@ -1,3 +1,4 @@
+import { MessagePage } from './../pages/message/message'
 import { VehicleHistoryPage } from './../pages/vehiclecheckhistory/history/veh_history'
 import { VehiclecheckHistoryPage } from './../pages/vehiclecheckhistory/vehiclecheckhistory'
 import { ViewJobPage } from './../pages/job/jobslist/viewjob/viewjob'
@@ -48,6 +49,7 @@ export class MyApp {
       { title: "VIEW JOBS", component:JobsViewPage, show: true },
       { title: "VEHICLE CHECK", component: VehicleCheckPage, show: true },
       { title: "VEHICLE CHECK HISTORY", component: VehiclecheckHistoryPage, show: true },
+      { title: "MESSAGE", component: MessagePage, show: true },
       { title: "SETTING", component: SettingPage, show: true },
       { title: "ADD COMPANY", component: "add_company", show: true }
     ]

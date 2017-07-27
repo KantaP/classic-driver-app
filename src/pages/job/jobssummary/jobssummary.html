@@ -36,7 +36,7 @@
         </div>
 
         <ion-list padding>
-            <div class="pd-no-top pd-bottom-1px" *ngFor="let s of group.item; let i=index;" text-wrap (click)="toggleGroup(s.uid)" [ngClass]="{active: isGroupShown(s.uid)}" clas>
+            <div class="pd-no-top pd-bottom-1px" *ngFor="let s of group.item; let i=index;" text-wrap (click)="toggleGroup(s.uid)" [ngClass]="{active: isGroupShown(s.uid)}">
 
                 <div class="w100 h40px bg_blue_royal_light txt_white">
                     <div class="w100 h100 dis-t">

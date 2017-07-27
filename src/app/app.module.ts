@@ -1,3 +1,4 @@
+import { MessagePage } from './../pages/message/message'
 import { VehicleHistoryPage } from './../pages/vehiclecheckhistory/history/veh_history'
 import { VehiclecheckHistoryPage } from './../pages/vehiclecheckhistory/vehiclecheckhistory'
 import { ViewJobPage } from './../pages/job/jobslist/viewjob/viewjob'
@@ -29,6 +30,7 @@ import { StatusBar } from '@ionic-native/status-bar'
 import { SplashScreen } from '@ionic-native/splash-screen'
 import { Geolocation } from '@ionic-native/geolocation'
 import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist"
+import { MessageModal } from "../pages/message/modal/modal.sentmessage"
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewc
     JobsListPage,
     JobsSummaryPage,
     VehiclecheckHistoryPage,
+    MessageModal,
     VehicleHistoryPage,
     SignInVehicle,
     SignOutVehicle,
@@ -49,6 +52,7 @@ import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewc
     VehicleCheckListPage,
     ViewJobPage,
     QuestionPage,
+    MessagePage,
     VehicleCheckPage,
     SettingPage
   ],
@@ -72,8 +76,10 @@ import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewc
     StartWork,
     StopWork,
     SignInVehiclePage,
+    MessageModal,
     ViewJobPage,
     QuestionPage,
+    MessagePage,
     SignInVehicle,
     SignOutVehicle,
     VehicleCheckPage,

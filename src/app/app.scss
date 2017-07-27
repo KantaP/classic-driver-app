@@ -67,6 +67,9 @@ ion-icon{
 .h40px{
     height: 40px;
 }
+.h80percent{
+    height: 80%;
+}
 .pd-no-bottom{
     padding-bottom: 0px !important;
 }
@@ -90,6 +93,9 @@ ion-icon{
 }
 .pd-right-5-px{
     padding-right: 5px; 
+}
+.pd-right-5-percent{
+    padding-right: 5%; 
 }
 .pd-no-top{
     padding-top: 0px !important;
@@ -189,6 +195,9 @@ ion-icon{
 .h05vh{
     height: 0.5vh;
 }
+.h15percent{
+    height: 15%;
+}
 .h1vh{
     height: 1vh;
 }
@@ -222,6 +231,9 @@ ion-icon{
 .h45px{
     height: 45px;
 }
+.h85percent{
+    height: 85%;
+}
 .hinherit{
     height: inherit;
 }
@@ -248,6 +260,9 @@ ion-icon{
 }
 .w25px{
     width: 25px;
+}
+.w35percent{
+    width: 35%;
 }
 .w45{
     width: 45%;
@@ -307,6 +322,12 @@ ion-icon{
 }
 .mg-left-5-percent{
     margin-left: 5%;
+}
+.mg-left-10-percent{
+    margin-left: 10%;
+}
+.mg-right-5-percent{
+    margin-right: 5%;
 }
 .block{
     display: block;

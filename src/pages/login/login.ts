@@ -1,5 +1,5 @@
 import { LoginService } from './login.service'
-import { Component } from '@angular/core'
+import { Component, NgZone } from '@angular/core'
 import { IonicPage, NavController, MenuController, NavParams, ModalController, ViewController, Events, LoadingController } from 'ionic-angular'
 import { Http, Headers } from '@angular/http'
 
@@ -39,7 +39,8 @@ export class LoginPage {
     public menuCtrl: MenuController,
     private loginService: LoginService,
     public events: Events,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    private _ngZone: NgZone
   ) {
 
     this.comp_list = [{
@@ -90,56 +91,61 @@ export class LoginPage {
     // Find all company
     this.dataStore.getCompanyData()
       .subscribe((res)=>{
-        //console.log("getCompany succ:", res.rows)
+        console.log("getCompany succ:", res.rows)
 
-        let items = res.rows
+        this._ngZone.run(()=>{
 
-        if(items.length == 0){
+          let items = res.rows
 
-          this.add_comp_box = true
-          this.select_box   = false
-          this.login_box    = false
+          if(items.length == 0){
 
-        }else if(items.length == 1){
+            this.add_comp_box = true
+            this.select_box   = false
+            this.login_box    = false
 
-          this.add_comp_box = false
-          this.select_box   = false
-          this.login_box    = true
+          }else if(items.length == 1){
 
-          this.company_select = items.item(0).comp_code
+            this.add_comp_box = false
+            this.select_box   = false
+            this.login_box    = true
 
-        }else{
-          // if length of items > 1
-          this.add_comp_box = false
-          this.select_box   = true
-          this.login_box    = true
+            this.company_select = items.item(0).comp_code
 
-          this.comp_list = [{
-            index: 0,
-            comp_code: "0",
-            comp_name: "SELECT COMPANY",
-            driver_u: "",
-            driver_p: ""
-          }]
+          }else{
+            // if length of items > 1
+            this.add_comp_box = false
+            this.select_box   = true
+            this.login_box    = true
 
-          for(var i = 0; i < items.length; i++){
-            //console.log("items[i] :", items.item(i))
-            this.comp_list.push({
-              index: i+1,
-              comp_code: items.item(i).comp_code,
-              comp_name: items.item(i).comp_name,
-              driver_u: items.item(i).driver_username,
-              driver_p: items.item(i).driver_password
-            })
+            this.comp_list = [{
+              index: 0,
+              comp_code: "0",
+              comp_name: "SELECT COMPANY",
+              driver_u: "",
+              driver_p: ""
+            }]
+
+            for(var i = 0; i < items.length; i++){
+              //console.log("items[i] :", items.item(i))
+              this.comp_list.push({
+                index: i+1,
+                comp_code: items.item(i).comp_code,
+                comp_name: items.item(i).comp_name,
+                driver_u: items.item(i).driver_username,
+                driver_p: items.item(i).driver_password
+              })
+            }
+
           }
-
-        }
-        console.log(this.comp_list)
+          console.log(this.comp_list)
+        })
       },(err)=>{
         console.log("getCompany err:", err)
-        this.add_comp_box = true
-        this.select_box = false
-        this.login_box = false
+        this._ngZone.run(()=>{
+          this.add_comp_box = true
+          this.select_box = false
+          this.login_box = false
+        })
       })
   }
 
