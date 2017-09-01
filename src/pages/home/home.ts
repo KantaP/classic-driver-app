@@ -41,7 +41,7 @@ export class HomePage implements OnDestroy {
 
     if(dt != void(0) && dt != ''){
       this.lastLoginDate = moment(dt).format('DD MMM YYYY')
-      this.lastLoginTime = moment(dt).format('hh:mmA')
+      this.lastLoginTime = moment(dt).format('HH:mm')
     }
 
     console.log("last login ", dt, this.lastLoginDate, this.lastLoginTime)
@@ -67,7 +67,7 @@ export class HomePage implements OnDestroy {
     .timeInterval()
     .subscribe(
       (x)=>{
-          console.log('Next: ' + x)
+          console.log('Next: ', x)
           this.trackingService.sendTracking()
       },
       (err)=>{
@@ -109,6 +109,9 @@ export class HomePage implements OnDestroy {
     .subscribe((res)=>{
       console.log('getCheckNTrack succ:', res)
       this._ngZone.run(()=>{
+
+        //res.result = 1
+
         if(res.result == 1){
           this.isCheckNTrack = true
         }else{
@@ -127,12 +130,11 @@ export class HomePage implements OnDestroy {
     if(p == 'sign_in_vehicle'){
       this.navCtrl.push(SignInVehiclePage)
     }else if (p == 'vehicle_check') {
+      if(this.isCheckNTrack){ return }
       this.navCtrl.push(VehicleCheckPage)
     }
     else if (p == 'view_jobs') {
-
       if(this.isCheckNTrack){ return }
-      
       this.navCtrl.push(JobsViewPage)
     }
   }

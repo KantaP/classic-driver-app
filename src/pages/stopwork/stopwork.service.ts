@@ -17,7 +17,7 @@ export class StopWorkService {
 
     }
 
-    stopWork():Observable<any>{
+    stopWork(stopTime):Observable<any>{
 
         return Observable.create( observer =>{
 
@@ -29,6 +29,7 @@ export class StopWorkService {
             let body = {
                 lat: 0,
                 lng: 0,
+                time: stopTime,
                 start_id: Global.getGlobal('start_work_id')
             }
             

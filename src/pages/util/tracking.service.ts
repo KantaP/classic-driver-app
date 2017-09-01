@@ -65,10 +65,10 @@ export class TrackingService {
                 .map(res => res.json())
                 .subscribe(
                 (x)=>{
-                    console.log('Next: ' + x)
+                    console.log('Next: ', x)
                 },
                 (err)=>{
-                    console.log('Error: ' + err)
+                    console.log('Error: ', err)
                 },
                 ()=>{
                     console.log('Completed')

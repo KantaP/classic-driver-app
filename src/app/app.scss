@@ -18,6 +18,19 @@
 $var_color_blue_royal: #1a50cc;
 $var_color_white: #FFF;
 
+ion-menu{
+    button[disabled]{
+        opacity: 1 !important;
+    }
+    .list .item{
+        border-top: 2px solid #FFFFFF;
+    }
+    .list .item:last-child{
+        border-bottom: 2px solid #FFFFFF;
+    }
+
+}
+
 // GLOBAL
 .page-header-custom-title{
     font-size: 1.5rem;
@@ -308,6 +321,12 @@ ion-icon{
 .mg-auto{
     margin: auto;
 }
+.mg-right-no{
+    margin-right: 0;
+}
+.mg-left-no{
+    margin-left: 0;
+}
 .mg-top10{
     margin-top: 10px;
 }
@@ -358,7 +377,7 @@ ion-icon{
     background: #808080;
 }
 .color_grey{
-    color: #808080;
+    color: #808080 !important;
 }
 .bg_white{
     background: #FFF
@@ -370,7 +389,13 @@ ion-icon{
     color: #ebebeb;
 }
 .bg_grey_gainsboro{
-    background: #e1e1e1;
+    background: #e1e1e1 !important;
+}
+.bg_light_gray{
+    background: #cccccc !important;
+}
+.color_light_gray{
+    color: #cccccc !important;
 }
 .color_grey_gainsboro{
     color: #e1e1e1;

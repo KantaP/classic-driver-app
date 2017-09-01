@@ -1,5 +1,6 @@
-import { JobsListInterface } from './../../util/model/jobList.interface';
-import { JobsListService } from './jobslist.service';
+import { ViewJobPage } from './viewjob/viewjob'
+import { JobsListInterface } from './../../util/model/jobList.interface'
+import { JobsListService } from './jobslist.service'
 import { Global } from './../../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController } from 'ionic-angular'
@@ -50,5 +51,9 @@ export class JobsListPage {
                  this.loading = false
              })
         })
+    }
+
+    openViewJob(qid){
+        this.navCtrl.push(ViewJobPage, {data: qid})
     }
 }

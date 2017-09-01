@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { ViewController, Events } from 'ionic-angular'
+import { ViewController, Events, LoadingController } from 'ionic-angular'
 import { StartWorkService } from './startwork.service'
 import { Global } from '../util/global'
 import moment from 'moment'
@@ -16,10 +16,11 @@ export class StartWork {
   constructor(
     public viewCtrl: ViewController,
     private startWorkService: StartWorkService,
+    public loadingCtrl: LoadingController,
     public events: Events
     ) {
 
-      this.thisTime = moment().format('DD MMM YYYY   h.mmA')
+      this.thisTime = moment().format('DD MMM YYYY   HH:mm')
 
   }
 
@@ -29,15 +30,26 @@ export class StartWork {
 
   updateStartWork(){
     console.log("updateStartWork")
-    this.startWorkService.startWork()
+
+    let start = moment(this.thisTime).format("YYYY-MM-DD HH:mm")
+
+    let loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    })
+    loader.present()
+    
+    this.startWorkService.startWork(start)
       .subscribe((res)=>{
         console.log("startwork service succ:", res)
+
+        loader.dismiss()
 
         if(res.code === 2){
 
           this.events.publish('isStartWork', true)
 
           Global.setGlobal("start_work_id", res.result.insertId)
+          Global.setGlobal("start_work_time", res.result.workTime)
 
           alert(res.text)
 

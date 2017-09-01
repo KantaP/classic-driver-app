@@ -4,7 +4,7 @@
             <ion-label>
                 <i class="icon icon-Agenda"></i>
             </ion-label>
-            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date Start" [(ngModel)]="date.start"></ion-datetime>
+            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date Start" [(ngModel)]="date.start" (ionChange)="dateStartChange()"></ion-datetime>
         </ion-item>
     </div>
     <div col-6 class="pd-left-no">
@@ -12,7 +12,7 @@
             <ion-label>
                 <i class="icon icon-Agenda"></i>
             </ion-label>
-            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date End" [(ngModel)]="date.end"></ion-datetime>
+            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date End" [(ngModel)]="date.end" [min]="date.start" (ionChange)="dateEndChange()"></ion-datetime>
         </ion-item>
     </div>
 </div>
@@ -26,6 +26,13 @@
 </div>
 
 <div *ngIf="loading == false">
+    <div *ngIf="itemsGroup.length == 0" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                No result.
+            </div>
+        </div>
+    </div>
     <div *ngFor="let group of itemsGroup">
         <div class="w100 h40px txt_center bg_blue_royal txt_white">
             <div class="w100 h100 dis-t">

@@ -15,7 +15,7 @@ export class JobsSummaryPage {
         start: '',
         end:''
     }
-    loading:boolean = true
+    loading:boolean = false
     shownGroup = null
     uniqueId:number = 0
     summaryList: Array<SummaryItemInterface> = []
@@ -31,12 +31,12 @@ export class JobsSummaryPage {
         private events: Events,
         private jobsSummaryService: JobsSummaryService
     ) {
-        this.getSummaryList()
+        
     }
 
     getSummaryList(){
-        this.date.start = '2017-01-18'
-        this.date.end   = '2017-07-18'
+        this.loading = true
+
         this.jobsSummaryService.requestJobsSummary(this.date)
         .subscribe((res)=>{
             this._ngZone.run(()=>{
@@ -102,5 +102,14 @@ export class JobsSummaryPage {
     isGroupShown(group) {
         return this.shownGroup === group
     }
+
+    dateStartChange(){
+        this.date.end = this.date.start
+    }
+
+    dateEndChange(){
+        this.getSummaryList()
+    }
+    
 
 }

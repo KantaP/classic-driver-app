@@ -17,7 +17,7 @@ export class StartWorkService {
 
     }
 
-    startWork():Observable<any>{
+    startWork(startTime):Observable<any>{
 
         return Observable.create( observer =>{
 
@@ -28,7 +28,8 @@ export class StartWorkService {
 
             let body = {
                 lat: 0,
-                lng: 0
+                lng: 0,
+                time: startTime
             }
             
             this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000}).then((pos) => {

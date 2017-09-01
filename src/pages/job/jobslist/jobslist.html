@@ -1,4 +1,5 @@
 
+
 <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
     <div class="w100 h100 dis-t">
         <div class="w100 dis-tc ver-mid f-size-15px">
@@ -7,7 +8,7 @@
     </div>
 </div>
 <div *ngIf="loading == false">
-    <div class="w100" *ngFor="let job of jobs" >
+    <div class="w100" *ngFor="let job of jobs" (click)="openViewJob(job.quote_id)">
 
         <div class="w100 h40px  bg_blue_royal_light txt_white">
             <div class="w100 h100 dis-t pos-relate">
@@ -78,7 +79,7 @@
             <div col-3 class="txt_center">
                 <div class="w100 h13vh dis-t">
                     <div class="w100 h100 dis-tc ver-mid pos-relate">
-                        <div class="txt_right label_dollars color_green_forest">
+                        <div class="txt_right label_dollars color_green_forest" [hidden]="job.driver_pay == 0">
                             <i class="icon icon-Dollars"></i>
                         </div>
                         <div class="color_green_forest txt-size-2rem">

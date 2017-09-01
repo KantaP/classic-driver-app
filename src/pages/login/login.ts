@@ -166,6 +166,8 @@ export class LoginPage {
   }
 
   private login(){
+    this.username = "nodev"
+    this.password = "123456"
     if(this.username == "" || this.password == ""){
       alert("Please enter Username or Password")
       return

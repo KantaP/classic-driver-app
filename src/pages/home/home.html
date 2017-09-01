@@ -57,9 +57,9 @@
       <div class="w100 h100 dis-t">
         <div class="dis-tc ver-mid">
           <div>
-            <i class="icon icon-Pointer color_red"></i>
+            <i class="icon icon-Pointer color_green_forest"></i>
             <br>
-            <div class="menu_title">STOP WORK</div>
+            <div class="menu_title txt_red">STOP WORK</div>
           </div>
         </div>
       </div>
@@ -79,11 +79,11 @@
 
     <div class="block"></div>
 
-    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" (click)="openPage('vehicle_check')">
+    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" [ngClass]="{ 'grayscale' : isCheckNTrack }" (click)="openPage('vehicle_check')">
       <div class="w100 h100 dis-t">
         <div class="dis-tc ver-mid">
           <div>
-            <i class="icon icon-Tools color_blue_darkslate"></i>
+            <i class="icon icon-Tools" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_blue_darkslate':!isCheckNTrack }"></i>
             <br>
             <div class="menu_title">VEHICLE CHECK</div>
           </div>
@@ -91,11 +91,11 @@
       </div>
     </div>
 
-    <div class="w50-cal h50percent-cal ib bg_grey_lavender" [ngClass]="{ 'grayscale' : isCheckNTrack}"  (click)="openPage('view_jobs')">
+    <div class="w50-cal h50percent-cal ib bg_grey_lavender" [ngClass]="{ 'grayscale':isCheckNTrack }"  (click)="openPage('view_jobs')">
       <div class="w100 h100 dis-t">
         <div class="dis-tc ver-mid">
           <div>
-            <i class="icon icon-Search color_gold"></i>
+            <i class="icon icon-Search" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_gold':!isCheckNTrack }"></i>
             <br>
             <div class="menu_title">VIEW JOBS ({{jobsAmount}})</div>
           </div>

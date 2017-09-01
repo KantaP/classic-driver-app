@@ -45,7 +45,7 @@
         <div ion-row class="border-around">
             <div col-6>
                 <div>
-                    <strong> JOB ID:</strong> 125420
+                    <strong> JOB ID:</strong> {{qid}}
                 </div>
                 <div class="txt_bold">
                     Departure time 13:00
@@ -79,7 +79,7 @@
                         $ 10.25
                     </div>
                     <div col-5 class="ib color_green_forest">
-                        $ 50.25
+                        $ 50.2
                     </div>
                 </div>
             </div>
@@ -97,46 +97,60 @@
             </div>
         </div>
     </div>
-
-    <div class="">
-        <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal">
-            <div padding>
-                Journey 1
-            </div>
-        </div>
-        <div class="">
-            <div ion-row class="">
-                <div col-1 class="gravity-center-vertical">
-                    <div class="mg-auto">
-                        <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
-                    </div>
-                </div>
-                <div col-8 class="gravity-center-vertical">
-                    <div>
-                        London NW10 7XP, UK
-                    </div>
-                    <div>
-                        Stretford, Manchester M32, UK
-                    </div>
-                </div>
-                <div col-3 class="gravity-center-vertical txt_right">
-                    <div>
-                        <i class="icon icon-Time"></i> 13:00
-                    </div>
-                    <div>
-                        2 May 2017
-                    </div>
-                </div>
-                <div class="w100">
-                    <div style="
-                        height: 1px;
-                        width: 95%;
-                        background: #e1e1e1;
-                        margin: auto;
-                    "></div>
-                </div>
+    <div *ngIf="noResult == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                No Result
             </div>
         </div>
     </div>
-
+    <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                Loading . . .
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loading == false">
+        <div class="" *ngFor="let j of journey">
+            <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal" >
+                <div padding>
+                    Journey {{ j.journey_group }}
+                </div>
+            </div>
+            <div class="">
+                <div ion-row class="" *ngFor="let m of j.movement">
+                    <div col-1 class="gravity-center-vertical">
+                        <div class="mg-auto">
+                            <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
+                        </div>
+                    </div>
+                    <div col-8 class="gravity-center-vertical">
+                        <div>
+                            {{ m.collection_address }}
+                        </div>
+                        <div>
+                            {{ m.destination_address }}
+                        </div>
+                    </div>
+                    <div col-3 class="gravity-center-vertical txt_right">
+                        <div>
+                            <i class="icon icon-Time"></i> {{ m.time }}
+                        </div>
+                        <div>
+                            {{ m.date }}
+                        </div>
+                    </div>
+                    <div class="w100">
+                        <div style="
+                            height: 1px;
+                            width: 95%;
+                            background: #e1e1e1;
+                            margin: auto;
+                        "></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
 </ion-content>

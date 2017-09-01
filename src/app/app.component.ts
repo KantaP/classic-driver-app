@@ -28,7 +28,7 @@ export class MyApp {
 
   rootPage: any
 
-  pages: Array<{title: string, component: any, show:boolean}>
+  pages: Array<{title: string, component: any, show:boolean, isCheckNTrack: boolean}>
 
   constructor(
     public platform: Platform,
@@ -43,15 +43,16 @@ export class MyApp {
     this.initializeApp()
     
     this.pages = [
-      { title: "START WORK", component:"start_work", show: true },
-      { title: "STOP WORK", component:"stop_work", show: false },
-      { title: "SELECT THE VEHICLE", component: SignInVehiclePage, show: true },
-      { title: "VIEW JOBS", component:JobsViewPage, show: true },
-      { title: "VEHICLE CHECK", component: VehicleCheckPage, show: true },
-      { title: "VEHICLE CHECK HISTORY", component: VehiclecheckHistoryPage, show: true },
-      { title: "MESSAGE", component: MessagePage, show: true },
-      { title: "SETTING", component: SettingPage, show: true },
-      { title: "ADD COMPANY", component: "add_company", show: true }
+      { title: "START WORK", component:"start_work", show: true, isCheckNTrack:false },
+      { title: "STOP WORK", component:"stop_work", show: false, isCheckNTrack:false },
+      { title: "SELECT THE VEHICLE", component: SignInVehiclePage, show: true, isCheckNTrack:false },
+      { title: "VIEW JOBS", component:JobsViewPage, show: true, isCheckNTrack:false },
+      { title: "VEHICLE CHECK", component: VehicleCheckPage, show: true, isCheckNTrack:false },
+      { title: "VEHICLE CHECK HISTORY", component: VehiclecheckHistoryPage, show: true, isCheckNTrack:false },
+      { title: "MESSAGE", component: MessagePage, show: true, isCheckNTrack:false },
+      { title: "SETTING", component: SettingPage, show: false, isCheckNTrack:false },
+      { title: "ADD COMPANY", component: "add_company", show: true, isCheckNTrack:false },
+      { title: "LOGOUT", component: "logout", show: true, isCheckNTrack:false }
     ]
 
     this.events.subscribe('isStartWork', (isStart)=>{
@@ -67,14 +68,24 @@ export class MyApp {
     this.events.subscribe('isCheckNTrack', (isCheckNTrack)=>{
       if(isCheckNTrack){
         for (var i in this.pages) {
-          if (this.pages[i].component == JobsViewPage) {
-            this.pages[i].show = false
+          if (this.pages[i].component == JobsViewPage ||
+            this.pages[i].component == VehicleCheckPage ||
+            this.pages[i].component == VehiclecheckHistoryPage ||
+            this.pages[i].component == "add_company") {
+
+            this.pages[i].show = true
+            this.pages[i].isCheckNTrack = true
           }
         }
       }else{
         for (var i in this.pages) {
-          if (this.pages[i].component == JobsViewPage) {
+          if (this.pages[i].component == JobsViewPage ||
+            this.pages[i].component == VehicleCheckPage ||
+            this.pages[i].component == VehiclecheckHistoryPage ||
+            this.pages[i].component == "add_company") {
+
             this.pages[i].show = true
+            this.pages[i].isCheckNTrack = false
           }
         }
       }
@@ -109,6 +120,8 @@ export class MyApp {
       let modal = this.modalCtrl.create(AddCompany, "",{enableBackdropDismiss: false})
       modal.present()
 
+    }else if(page.component == "logout"){
+      this.nav.setRoot(LoginPage)
     }else{
       this.nav.push(page.component)
     }

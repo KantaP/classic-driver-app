@@ -1,18 +1,50 @@
 <ion-content>
     <div padding class="w100 h100 dis-t txt_center">
         <div class="w100 ver-mid content-box">
+            <div class="txt_bold">
+                START WORK
+            </div>
             <div>
+                {{ startWorkDate }} &nbsp;&nbsp; {{ startWorkTime }}
+            </div>
+            <div class="txt_bold">
                 STOP WORK
             </div>
-            <div>
-                {{ thisTime }}
+            <div *ngIf="!isEdit" >
+                {{ thisDate }} &nbsp;&nbsp; {{ thisTime }}
+            </div>
+            <div *ngIf="isEdit" ion-row class="">
+
+                <div class="border-around h50px pd-no-bottom pd-no-top pd-right-no mg-auto mg-right-no" col-6>
+                    <div col-9 class="ib hinherit fl txt-size-2rem">
+                        <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="editDate" [min]="minDate"></ion-datetime>
+                    </div>
+                    <div col-3 class="ver-sup pd-no ib hinherit txt_white bg_blue_darkslate gravity-center-vertical">
+                        <div class="icon icon-Agenda hinherit gravity-center-vertical"></div>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="border-around h50px pd-no-bottom pd-no-top pd-right-no mg-auto mg-left-no" col-5>
+                    <div col-9 class="ib hinherit fl txt-size-2rem">
+                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="editTime"></ion-datetime>
+                    </div>
+                    <div col-3 class="ver-sup pd-no ib hinherit txt_white bg_blue_darkslate gravity-center-vertical">
+                        <div class="icon icon-Time hinherit gravity-center-vertical"></div>
+                    </div>
+                </div>
+
             </div>
             <div>
-                <button class="w45 h5vh mg-top5percent txt_white bg_red" (click)="closeStopWorkModal()">
-                    No
+                <button class="w45 h5vh mg-top5percent txt_white bg_red" (click)="isEdit == true ? (isEdit = false) : (isEdit = true)">
+                    <div *ngIf="!isEdit" (click)="updateMinDate()">
+                        Edit
+                    </div>
+                    <div *ngIf="isEdit" (click)="clearStopDate()">
+                        Cancle
+                    </div>
                 </button>
                 <button class="w45 h5vh mg-top5percent txt_white bg_green_forest" (click)="updateStopWork()">
-                    Yes
+                    OK
                 </button>
             </div>
         </div>
