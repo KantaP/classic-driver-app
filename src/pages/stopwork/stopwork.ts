@@ -30,8 +30,8 @@ export class StopWork {
       this.thisDate = moment().format('DD MMM YYYY')
       this.thisTime = moment().format('HH:mm')
 
-      this.startWorkDate =  moment(Global.getGlobal("start_work_time")).format('DD MMM YYYY')
-      this.startWorkTime =  moment(Global.getGlobal("start_work_time")).format('HH:mm')
+      this.startWorkDate = moment(Global.getGlobal("start_work_time")).format('DD MMM YYYY')
+      this.startWorkTime = moment(Global.getGlobal("start_work_time")).format('HH:mm')
     
   }
 

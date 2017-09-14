@@ -52,9 +52,7 @@ export class LoginPage {
     }]
 
     this.company_select = "0"
-
     this.menuCtrl.enable(false)
-
     this.dataStore = new DataStorage()
 
     this.getApiKey()
@@ -73,15 +71,10 @@ export class LoginPage {
   private getApiKey(){
     this.loginService.requestApiKey()
       .subscribe( res =>{
-        
         console.log(res);
-
         Global.setGlobal("api_key", res.result)
-
         this.dataStore.addLogData("api_key", res.result)
-
         console.log('Global get ',Global.getGlobal("api_key"))
-        
       },
       err =>{
         console.log(err)
@@ -92,30 +85,22 @@ export class LoginPage {
     this.dataStore.getCompanyData()
       .subscribe((res)=>{
         console.log("getCompany succ:", res.rows)
-
         this._ngZone.run(()=>{
-
           let items = res.rows
-
           if(items.length == 0){
-
             this.add_comp_box = true
-            this.select_box   = false
-            this.login_box    = false
-
+            this.select_box = false
+            this.login_box = false
           }else if(items.length == 1){
-
             this.add_comp_box = false
-            this.select_box   = false
-            this.login_box    = true
-
+            this.select_box = false
+            this.login_box = true
             this.company_select = items.item(0).comp_code
-
           }else{
             // if length of items > 1
             this.add_comp_box = false
-            this.select_box   = true
-            this.login_box    = true
+            this.select_box = true
+            this.login_box = true
 
             this.comp_list = [{
               index: 0,
@@ -150,10 +135,8 @@ export class LoginPage {
   }
 
   private showModal(){
-
     let modal = this.modalCtrl.create(AddCompany, "",{enableBackdropDismiss: false});
     modal.present();
-    
   }
 
   private fillLoginBox(index){
@@ -166,8 +149,8 @@ export class LoginPage {
   }
 
   private login(){
-    this.username = "nodev"
-    this.password = "123456"
+    //this.username = "nodev"
+    //this.password = "123456"
     if(this.username == "" || this.password == ""){
       alert("Please enter Username or Password")
       return
@@ -221,6 +204,7 @@ export class LoginPage {
         return
       }
     },(err)=>{
+      loader.dismiss()
       console.log("err: ",err)
     })
   }

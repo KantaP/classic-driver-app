@@ -25,10 +25,8 @@ modal-addcompany{
 .modal-wrapper {
     position: absolute;
     overflow: hidden;
-    //max-width: 280px;
     border-radius: 0px;
     width: 80vw;
-    min-height: 200px;
     top: 0;
     bottom: 0;
     left: 0;
@@ -39,11 +37,13 @@ modal-addcompany{
     background-color: #fafafa;
 }
 
-.modal-h25vh{
-    height: 25vh
+.modal-fix-h170{
+    min-height: 170px;
+    max-height: 170px;
 }
-.modal-h42vh{
-    height: 42vh
+.modal-fix-h270{
+    min-height: 270px;
+    max-height: 270px;
 }
 
 ion-modal ion-backdrop{

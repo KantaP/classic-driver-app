@@ -17,7 +17,7 @@ export class VehicleCheckPage {
 
   vehicleList: Array<{index:any, vehicle_id:any, vehicle_reg:string}>
 
-  choosenVehicle: Array<{index:any, vehicle_id:any, vehicle_reg:string}> = []
+  choosenVehicle: {index:any, vehicle_id:any, vehicle_reg:string}
 
   constructor(
     public navCtrl: NavController,
@@ -37,11 +37,6 @@ export class VehicleCheckPage {
         this.isVehicleSignedIn = true
     }
 
-    this.vehicleList = [
-      { index:0, vehicle_id: 0, vehicle_reg: "Vehicle"},
-      { index:1, vehicle_id: 4, vehicle_reg: "Vehicle1"}
-    ]
-
     this.loadVehicleList()
   }
 
@@ -49,14 +44,16 @@ export class VehicleCheckPage {
    * loadVehicleList
    */
   public loadVehicleList(query='all'){
+    console.log("query", query)
+    if(query == '') query = 'all'
     this.thisService.requestVehicleList(query).subscribe(
         (res)=>{
           console.log('loadVehicleList succ:', res)
           if(res.code == 2){
 
-            this.vehicleList = [{ index:0, vehicle_id: 0, vehicle_reg: "Vehicle"}]
-
             this._ngZone.run( () => {
+
+              this.vehicleList = []
 
               for (var i = 0; i < res.result.length; i++) {
                 this.vehicleList.push({
@@ -76,6 +73,10 @@ export class VehicleCheckPage {
     )
   }
 
+  public sendSearch(key){
+    this.loadVehicleList(key)
+  }
+
   /**
   * openSignOutDialog
   */
@@ -87,12 +88,10 @@ export class VehicleCheckPage {
   /**
   * openCheckQuestionPage
   */
-  public setChoosenVehicle(index) {
-    console.log('openCheckQuestionPage', index, this.vehicleList[index])
-    if (this.choosenVehicle.length > 0) {
-      this.choosenVehicle.pop()
-    }
-    this.choosenVehicle.push(this.vehicleList[index])
+  public setChoosenVehicle(vehInstanceObject) {
+    console.log('openCheckQuestionPage', vehInstanceObject)
+    this.choosenVehicle = vehInstanceObject
+    this.openCheckQuestionPage()
   }
 
   /**
@@ -100,9 +99,9 @@ export class VehicleCheckPage {
    */
   public openCheckQuestionPage() {
 
-    if(this.choosenVehicle[0] != void(0) && 
-      this.choosenVehicle[0].vehicle_id != void(0) && 
-      this.choosenVehicle[0].vehicle_id > 0){
+    if(this.choosenVehicle != void(0) && 
+      this.choosenVehicle.vehicle_id != void(0) && 
+      this.choosenVehicle.vehicle_id > 0){
 
       this.navCtrl.push(QuestionPage, this.choosenVehicle)
     }else{

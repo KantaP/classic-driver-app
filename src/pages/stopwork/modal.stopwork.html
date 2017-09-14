@@ -10,23 +10,23 @@
             <div class="txt_bold">
                 STOP WORK
             </div>
-            <div *ngIf="!isEdit" >
+            <div *ngIf="!isEdit" class="h5vh" >
                 {{ thisDate }} &nbsp;&nbsp; {{ thisTime }}
             </div>
             <div *ngIf="isEdit" ion-row class="">
 
-                <div class="border-around h50px pd-no-bottom pd-no-top pd-right-no mg-auto mg-right-no" col-6>
-                    <div col-9 class="ib hinherit fl txt-size-2rem">
-                        <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="editDate" [min]="minDate"></ion-datetime>
+                <div class="border-around h35px pd-no-bottom pd-no-top pd-right-no mg-auto mg-right-no" col-6>
+                    <div col-9 class="ib hinherit fl txt-size-1-6rem">
+                        <ion-datetime class="pd-no" displayFormat="DD MMM YYYY" [(ngModel)]="editDate" [min]="minDate"></ion-datetime>
                     </div>
                     <div col-3 class="ver-sup pd-no ib hinherit txt_white bg_blue_darkslate gravity-center-vertical">
                         <div class="icon icon-Agenda hinherit gravity-center-vertical"></div>
                     </div>
                 </div>
                 &nbsp;
-                <div class="border-around h50px pd-no-bottom pd-no-top pd-right-no mg-auto mg-left-no" col-5>
-                    <div col-9 class="ib hinherit fl txt-size-2rem">
-                        <ion-datetime displayFormat="HH:mm" [(ngModel)]="editTime"></ion-datetime>
+                <div class="border-around h35px pd-no-bottom pd-no-top pd-right-no mg-auto mg-left-no" col-5>
+                    <div col-9 class="ib hinherit fl txt-size-1-6rem">
+                        <ion-datetime class="pd-no" displayFormat="HH:mm" [(ngModel)]="editTime"></ion-datetime>
                     </div>
                     <div col-3 class="ver-sup pd-no ib hinherit txt_white bg_blue_darkslate gravity-center-vertical">
                         <div class="icon icon-Time hinherit gravity-center-vertical"></div>

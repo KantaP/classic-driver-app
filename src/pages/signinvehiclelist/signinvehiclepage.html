@@ -4,7 +4,7 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title class="txt_center">
-      <div class="w100 h100 dis-t mg-left-10">
+      <div class="w100 h100 dis-t">
         <div class="dis-tc ver-mid">  
           <div class="color_blue_midnight">
             <div class="ver-sup ib page-header-custom-title txt_bold">
@@ -21,7 +21,7 @@
         <img src="assets/img/signin_spot.png" alt="">
       </div>
 
-      <div class="txt_white ib ver-mid mg-left-10">
+      <div class="txt_white ib ver-mid">
         Signed in : {{ signedin_vehicle_name }}
       </div>
   </div>
@@ -31,7 +31,7 @@
         <i class="icon icon-Search" ></i>
       </ion-label>
       
-      <ion-input type="text" class="" placeholder="Search Vehicle" [(ngModel)]="search" value="{{search}}"></ion-input>
+      <ion-input type="text" class="" placeholder="Search Vehicle" [(ngModel)]="search" value="{{search}}" (ionChange)="sendSearch(search)"></ion-input>
     </ion-item>
 
 </ion-header>

@@ -50,7 +50,7 @@ export class QuestionPage{
     ) {
         console.log('QuestionPage', this.navParams)
 
-        this.veh_id = this.navParams.data[0].vehicle_id
+        this.veh_id = this.navParams.data.vehicle_id
 
         this.getQuestionSheet()
     }

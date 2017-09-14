@@ -42,6 +42,8 @@ export class SignInVehiclePage{
      * loadVehicleList
      */
     public loadVehicleList(query='all'){
+        console.log("query", query)
+        if(query == '') query = 'all'
         this.thisService.requestVehicleList(query).subscribe(
             (res)=>{
                 console.log('loadVehicleList succ:', res)
@@ -58,6 +60,10 @@ export class SignInVehiclePage{
             }
         )
 
+    }
+
+    public sendSearch(key){
+        this.loadVehicleList(key)
     }
 
     /**

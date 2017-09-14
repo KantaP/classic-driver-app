@@ -23,12 +23,11 @@ ion-menu{
         opacity: 1 !important;
     }
     .list .item{
-        border-top: 2px solid #FFFFFF;
+        border-top: 1px solid $var_color_white;
     }
     .list .item:last-child{
-        border-bottom: 2px solid #FFFFFF;
+        border-bottom: 1px solid $var_color_white;
     }
-
 }
 
 // GLOBAL
@@ -75,7 +74,7 @@ ion-icon{
     font-size: 1em;
 }
 .pd-no{
-    padding: 0;
+    padding: 0 !important;
 }
 .h40px{
     height: 40px;
@@ -156,7 +155,6 @@ ion-icon{
         margin-top: 5%;
         margin-bottom: 5%;
     }
-
 }
 .fl{
     float: left;
@@ -175,7 +173,7 @@ ion-icon{
     border-radius: 0px;
     height: 2.8em;
     font-size: 1.6rem;
-    color: #fff;
+    color: $var_color_white;
     background-color: #1a50cc;
     padding: 0.5em 1em;
 }
@@ -194,10 +192,10 @@ ion-icon{
     border-bottom: 1px solid #e1e1e1;
 }
 .border-bottom-white{
-    border-bottom: 1px solid #FFF;
+    border-bottom: 1px solid $var_color_white;
 }
 .border-right-white{
-    border-right: 1px solid #FFF;
+    border-right: 1px solid $var_color_white;
 }
 .pd1{  
     padding: 1em 1em;
@@ -235,11 +233,14 @@ ion-icon{
 .h20vh{
     height: 20vh;
 }
+.h10px{
+    height: 10px;
+}
 .h50px{
     height: 50px;
 }
-.h10px{
-    height: 10px;
+.h35px{
+    height: 35px;
 }
 .h45px{
     height: 45px;
@@ -251,7 +252,7 @@ ion-icon{
     height: inherit;
 }
 .txt_white{
-    color: #FFF;
+    color: $var_color_white;
 }
 .txt_red{
     color:red;
@@ -355,6 +356,9 @@ ion-icon{
 .txt-size-2rem{
   font-size: 2rem;
 }
+.txt-size-1-6rem{
+    font-size: 1.6rem;
+  }
 .txt_bold{
     font-weight: bold;
 }
@@ -380,7 +384,7 @@ ion-icon{
     color: #808080 !important;
 }
 .bg_white{
-    background: #FFF
+    background: $var_color_white
 }
 .bg_grey_lavender{
     background: #ebebeb;

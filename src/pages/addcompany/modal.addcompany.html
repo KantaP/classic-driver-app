@@ -10,18 +10,18 @@
 
 <ion-content class="add_company">    
     <!-- Code -->
-    <div class="w100 pos-in" *ngIf="next != true">
+    <div class="w100 pos-in h100" *ngIf="next != true">
 
         <div class="w100 pd_hang_center txt_center hinherit">
 
-            <ion-input *ngIf="found_company != true" type="text" class="w100 ib hinherit" placeholder="Code" [(ngModel)]="companyCode" ></ion-input>
-            <div *ngIf="found_company != true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 hinherit pd1" (click)="findCompany(companyCode)">
+            <ion-input *ngIf="found_company != true" type="text" class="w100 ib" placeholder="Code" [(ngModel)]="companyCode" ></ion-input>
+            <div *ngIf="found_company != true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 pd1" (click)="findCompany(companyCode)">
                 SEARCH <i class="fr icon icon-Search" ></i>
             </div>
             
 
-            <ion-input *ngIf="found_company == true" type="text" disabled="true" class="w100 ib hinherit" placeholder="Code" value="{{company_name}}" ></ion-input>
-            <div *ngIf="found_company == true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 hinherit pd1" (click)="next = true; expandBox()">
+            <ion-input *ngIf="found_company == true" type="text" disabled="true" class="w100 ib" placeholder="Code" value="{{company_name}}" ></ion-input>
+            <div *ngIf="found_company == true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 pd1" (click)="next = true; expandBox()">
                 NEXT
             </div>
         </div>

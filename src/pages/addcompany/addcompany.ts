@@ -32,7 +32,7 @@ export class AddCompany{
 
   ngAfterViewInit() {
     this.eleRef = document.getElementsByClassName('modal-wrapper').item(0)
-    this.eleRef.classList.add('modal-h25vh')
+    this.eleRef.classList.add('modal-fix-h170')
   }
 
   public closeModal(){
@@ -43,7 +43,7 @@ export class AddCompany{
     console.log(code)
     if(code == void(0) || code == ""){
       alert("Please fill input form.")
-      return;
+      return
     }
 
     this.loginService.requestSiteURL(code)
@@ -63,8 +63,8 @@ export class AddCompany{
   }
 
   private expandBox(){
-    this.eleRef.classList.remove('modal-h25vh')
-    this.eleRef.classList.add('modal-h42vh')
+    this.eleRef.classList.remove('modal-fix-h170')
+    this.eleRef.classList.add('modal-fix-h270')
   }
 
   private apply(c_name, code, driver_id, username, password){

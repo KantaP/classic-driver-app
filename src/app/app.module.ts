@@ -1,3 +1,4 @@
+import { LoginPage } from '../pages/login/login'
 import { MessagePage } from './../pages/message/message'
 import { VehicleHistoryPage } from './../pages/vehiclecheckhistory/history/veh_history'
 import { VehiclecheckHistoryPage } from './../pages/vehiclecheckhistory/vehiclecheckhistory'
@@ -16,7 +17,6 @@ import { Diagnostic } from '@ionic-native/diagnostic'
 import { MyApp } from './app.component'
 import { HomePage } from '../pages/home/home'
 import { JobsViewPage } from '../pages/job/job'
-import { LoginPage } from '../pages/login/login'
 import { AddCompany } from '../pages/addcompany/addcompany'
 import { StartWork } from '../pages/startwork/startwork'
 import { StopWork } from '../pages/stopwork/stopwork'
@@ -35,9 +35,9 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
 @NgModule({
   declarations: [
     MyApp,
+    LoginPage,
     HomePage,
     JobsViewPage,
-    LoginPage,
     AddCompany,
     StartWork,
     StopWork,
@@ -64,9 +64,9 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    LoginPage,
     HomePage,
     JobsViewPage,
-    LoginPage,
     AddCompany,
     JobsListPage,
     JobsSummaryPage,
