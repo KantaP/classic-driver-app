@@ -4,7 +4,7 @@ import { MessageService } from './message.service'
 import { Component } from '@angular/core'
 import { ViewController, Events, ModalController, LoadingController } from 'ionic-angular'
 import { Global } from '../util/global'
-import moment from 'moment'
+// import moment from 'moment'
 
 @Component({
   selector: 'page-message',
@@ -34,14 +34,14 @@ export class MessagePage {
         private messageService: MessageService,
         public loadingCtrl: LoadingController
         ) {
-        
+
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
         this.events.subscribe('isVehicleSignIn', (isSignedIn)=>{
             this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
             this.isVehicleSignedIn = isSignedIn
         })
-        
+
         if(Global.getGlobal('vehicle_signin_insert_id') > 0){
             this.isVehicleSignedIn = true
         }

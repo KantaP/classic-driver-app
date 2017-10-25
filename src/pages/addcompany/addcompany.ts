@@ -1,3 +1,4 @@
+
 import { Global } from './../util/global'
 
 import { LoginService } from '../login/login.service'
@@ -9,25 +10,25 @@ import { CompanyModel } from '../util/model/company'
 @Component({
   selector: 'modal-addcompany',
   templateUrl: 'modal.addcompany.html',
-  providers: [LoginService]
+  providers: [LoginService, DataStorage]
 })
 
 export class AddCompany{
 
   found_company: boolean = false
   company_name = "Company Name"
-  dataStore: DataStorage
+  // dataStore: DataStorage
   next: boolean = false
   eleRef: Element
-  
+
   constructor(
     private viewCtrl: ViewController,
     private loginService: LoginService,
     public events: Events,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private dataStore: DataStorage
     ){
-      this.dataStore = new DataStorage()
-      
+      // this.dataStore = new DataStorage()
   }
 
   ngAfterViewInit() {
@@ -54,12 +55,12 @@ export class AddCompany{
           this.found_company = true
           this.company_name = res.name
         }
-      })    
+      })
     }, (err)=>{
       console.log(err)
       alert('Cann\'t connect server.')
     })
-    
+
   }
 
   private expandBox(){
@@ -68,9 +69,9 @@ export class AddCompany{
   }
 
   private apply(c_name, code, driver_id, username, password){
-    
+
     let comp_model = new CompanyModel(c_name, code, driver_id, username, password)
-    
+
     this.dataStore.addCompanyData(comp_model)
     .subscribe((data)=>{
       console.log('addCompanyData succ:', data)

@@ -5,27 +5,27 @@
         <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title class="txt_center">
-        <div class="w100 h100 dis-t">
-            <div class="dis-tc ver-mid">  
-                <div class="color_blue_midnight">
-                    <div class="ver-sup ib page-header-custom-title txt_bold">
-                        JOBS
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            JOBS
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </ion-title>
     </ion-navbar>
 
     <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
+        </div>
 
-      <div class="txt_white ib ver-mid mg-left-10">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid mg-left-10">
+            Signed in : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 </ion-header>
 
@@ -59,8 +59,7 @@
             </div>
             <div col-6>
                 <div>
-                    <i class="icon icon-Agenda color_gold"></i>
-                    1st Jan 2017
+                    <i class="icon icon-Agenda color_gold"></i> 1st Jan 2017
                 </div>
                 <div class="txt_bold">
                     On site before 12:30
@@ -75,8 +74,7 @@
             <div col-12>
                 <div col-8 class="mg-auto border-around txt_center">
                     <div col-5 class="ib color_green_forest">
-                        <i class="icon icon-Dollars"></i>
-                        $ 10.25
+                        <i class="icon icon-Dollars"></i> $ 10.25
                     </div>
                     <div col-5 class="ib color_green_forest">
                         $ 50.2
@@ -84,7 +82,7 @@
                 </div>
             </div>
             <div col-12 class="txt_center pd-no">
-                <div col-6 class="h40px fl bg_blue_royal txt_white txt_bold gravity-center-vertical">
+                <div col-6 class="h40px fl bg_blue_royal txt_white txt_bold gravity-center-vertical" (click)="acceptJob()">
                     <div>
                         ACCEPT
                     </div>
@@ -113,13 +111,13 @@
     </div>
     <div *ngIf="loading == false">
         <div class="" *ngFor="let j of journey">
-            <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal" >
+            <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal">
                 <div padding>
                     Journey {{ j.journey_group }}
                 </div>
             </div>
             <div class="">
-                <div ion-row class="" *ngFor="let m of j.movement">
+                <div ion-row class="" *ngFor="let m of j.movement" (click)="openPassenger(m.movement_id)">
                     <div col-1 class="gravity-center-vertical">
                         <div class="mg-auto">
                             <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
@@ -152,5 +150,5 @@
                 </div>
             </div>
         </div>
-    </div>   
+    </div>
 </ion-content>

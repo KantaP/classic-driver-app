@@ -27,6 +27,9 @@ plugins/android.json
 plugins/ios.json
 www/
 $RECYCLE.BIN/
+.sourcemaps
+.vscode
+platforms
 
 .DS_Store
 Thumbs.db

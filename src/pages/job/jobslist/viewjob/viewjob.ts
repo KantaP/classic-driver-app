@@ -1,8 +1,10 @@
+import { PassengerListPage } from './../../../passenger-list/passenger-list';
 import { SignOutVehicle } from './../../../signoutvehicle/signoutvehicle'
 import { Global } from './../../../util/global'
 import { Component, NgZone } from '@angular/core'
-import { NavController, Events, ModalController, NavParams } from 'ionic-angular'
+import { NavController, Events, ModalController, NavParams, LoadingController } from 'ionic-angular'
 import { ViewJobService } from './viewjob.service'
+
 
 @Component({
     selector: 'page-viewjob',
@@ -26,7 +28,8 @@ export class ViewJobPage {
         private _ngZone: NgZone,
         private modalCtrl: ModalController,
         private events: Events,
-        private viewJobService: ViewJobService
+        private viewJobService: ViewJobService,
+        private loadingCtrl: LoadingController
     ) {
 
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
@@ -35,7 +38,7 @@ export class ViewJobPage {
             this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
             this.isVehicleSignedIn = isSignedIn
         })
-        
+
         if(Global.getGlobal('vehicle_signin_insert_id') > 0){
             this.isVehicleSignedIn = true
         }
@@ -63,7 +66,7 @@ export class ViewJobPage {
                 }else{
                     this.noResult = true
                 }
-            })    
+            })
         },
         (err)=>{
             console.log('getJob err:', err)
@@ -72,5 +75,27 @@ export class ViewJobPage {
                 this.noResult = true
             })
         })
-    } 
+    }
+
+    acceptJob() {
+      var loader = this.loadingCtrl.create({
+        content: ''
+      })
+      loader.present()
+      this.viewJobService.acceptJob(Global.getGlobal("driver_id"),this.qid)
+      .subscribe(
+        (data)=>{
+          loader.dismiss()
+          console.log(data)
+        },
+        (err)=>{
+          loader.dismiss()
+          console.log(err)
+        }
+      )
+    }
+
+    openPassenger(movement_id: number) {
+      this.navCtrl.push(PassengerListPage, {movement_id})
+    }
 }

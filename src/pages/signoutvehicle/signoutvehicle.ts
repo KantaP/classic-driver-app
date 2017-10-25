@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { ViewController, Events } from 'ionic-angular'
 import { SignOutVehicleService } from './signoutvehicle.service'
 import { Global } from '../util/global'
-import moment from 'moment'
+// import moment from 'moment'
 
 @Component({
   selector: 'modal-signoutvehicle',
@@ -11,7 +11,7 @@ import moment from 'moment'
 })
 export class SignOutVehicle {
 
-  vehicleName: any 
+  vehicleName: any
   vehicleId: any
 
   constructor(
@@ -21,7 +21,7 @@ export class SignOutVehicle {
     ) {
       this.vehicleName = Global.getGlobal('signed_vehicle_name')
       this.vehicleId = Global.getGlobal('signed_vehicle_id')
-      
+
   }
 
   public closeSignOutVehicleModal(){
@@ -45,12 +45,12 @@ export class SignOutVehicle {
           alert(res.text)
 
           this.closeSignOutVehicleModal()
-          
+
         }else{
           alert("Cannot update.")
         }
-        
-        
+
+
       },(err)=>{
         console.log("signOutVehicle service err:", err)
         alert("Cannot update.")

@@ -1,3 +1,7 @@
+import { ModalProvider } from './../providers/modal/modal';
+import { ModalDirective } from './../directives/modal/modal';
+
+
 import { LoginPage } from '../pages/login/login'
 import { MessagePage } from './../pages/message/message'
 import { VehicleHistoryPage } from './../pages/vehiclecheckhistory/history/veh_history'
@@ -32,6 +36,11 @@ import { Geolocation } from '@ionic-native/geolocation'
 import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist"
 import { MessageModal } from "../pages/message/modal/modal.sentmessage"
 
+import { Network } from '@ionic-native/network';
+import { IonicStorageModule } from '@ionic/storage';
+import { SQLite } from '@ionic-native/sqlite';
+import { PassengerListPage } from './../pages/passenger-list/passenger-list';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -54,12 +63,18 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
     QuestionPage,
     MessagePage,
     VehicleCheckPage,
-    SettingPage
+    SettingPage,
+    PassengerListPage,
+    ModalDirective
   ],
   imports: [
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot({
+      name: '__classic_driver_app',
+         driverOrder: ['indexeddb', 'sqlite', 'websql']
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -83,7 +98,8 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
     SignInVehicle,
     SignOutVehicle,
     VehicleCheckPage,
-    SettingPage
+    SettingPage,
+    PassengerListPage
   ],
   providers: [
     StatusBar,
@@ -91,9 +107,12 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
     Geolocation,
     Camera,
     Diagnostic,
-    FileTransfer, 
+    FileTransfer,
     File,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Network,
+    SQLite,
+    ModalProvider
   ]
 })
 export class AppModule {}

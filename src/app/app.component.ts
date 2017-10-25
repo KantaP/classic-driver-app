@@ -1,3 +1,6 @@
+import { Global } from './../pages/util/global';
+import { PassengerListPage } from './../pages/passenger-list/passenger-list';
+import { Network } from '@ionic-native/network';
 import { MessagePage } from './../pages/message/message'
 import { VehicleHistoryPage } from './../pages/vehiclecheckhistory/history/veh_history'
 import { VehiclecheckHistoryPage } from './../pages/vehiclecheckhistory/vehiclecheckhistory'
@@ -19,6 +22,7 @@ import { VehicleCheckPage } from '../pages/vehiclecheck/vehiclecheck'
 import { QuestionPage } from '../pages/vehiclecheck/questionPage/questionpage'
 import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist"
 
+
 @Component({
   templateUrl: 'app.html',
   providers:[HomeService, DataStorage]
@@ -32,16 +36,17 @@ export class MyApp {
 
   constructor(
     public platform: Platform,
-    public statusBar: StatusBar, 
+    public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public modalCtrl: ModalController,
     public events: Events,
     private homeService:HomeService,
-    private dataStorage: DataStorage
+    private dataStorage: DataStorage,
+    private network: Network,
   ) {
-    
+
     this.initializeApp()
-    
+
     this.pages = [
       { title: "START WORK", component:"start_work", show: true, isCheckNTrack:false },
       { title: "STOP WORK", component:"stop_work", show: false, isCheckNTrack:false },
@@ -91,18 +96,27 @@ export class MyApp {
       }
     })
 
-    
+
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      // this.rootPage = PassengerListPage
       this.rootPage = LoginPage
       this.statusBar.styleDefault()
       this.splashScreen.hide()
 
-      this.dataStorage = new DataStorage()
+      // this.dataStorage = new DataStorage()
+      if(this.platform.is('cordova')) {
+        let connectSubscription = this.network.onConnect().subscribe(() => {
+          alert(this.network.type)
+        })
+        let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+          alert('Please check your internet.')
+        })
+      }
 
     });
   }

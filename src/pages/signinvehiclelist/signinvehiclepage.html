@@ -1,11 +1,11 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <!-- <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title class="txt_center">
       <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
+        <div class="dis-tc ver-mid">
           <div class="color_blue_midnight">
             <div class="ver-sup ib page-header-custom-title txt_bold">
               SIGN IN VEHICLE
@@ -13,25 +13,33 @@
           </div>
         </div>
       </div>
-    </ion-title>
-  </ion-navbar>
+    </ion-title> -->
+        <ion-title>
+            <div class="color_blue_midnight">
+                <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub">
+                <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
+                    DRIVER APP
+                </div>
+            </div>
+        </ion-title>
+    </ion-navbar>
 
-  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
+    <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
+        </div>
 
-      <div class="txt_white ib ver-mid">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid">
+            Signed in : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
-  <ion-item class="search_box" padding> 
-      <ion-label margin>
-        <i class="icon icon-Search" ></i>
-      </ion-label>
-      
-      <ion-input type="text" class="" placeholder="Search Vehicle" [(ngModel)]="search" value="{{search}}" (ionChange)="sendSearch(search)"></ion-input>
+    <ion-item class="search_box" padding>
+        <ion-label margin>
+            <i class="icon icon-Search"></i>
+        </ion-label>
+
+        <ion-input type="text" class="" placeholder="Search Vehicle" [(ngModel)]="search" value="{{search}}" (ionChange)="sendSearch(search)"></ion-input>
     </ion-item>
 
 </ion-header>

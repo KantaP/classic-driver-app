@@ -1,11 +1,11 @@
 <ion-header class="page-header-custom bg_blue_alice">
-    <ion-navbar>
+    <!-- <ion-navbar>
         <button right ion-button menuToggle>
         <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title class="txt_center">
         <div class="w100 h100 dis-t">
-            <div class="dis-tc ver-mid">  
+            <div class="dis-tc ver-mid">
             <div class="color_blue_midnight">
                 <div class="ver-sup ib page-header-custom-title txt_bold">
                     JOBS
@@ -14,28 +14,43 @@
             </div>
         </div>
         </ion-title>
+    </ion-navbar> -->
+    <ion-navbar>
+        <ion-title>
+            <div class="color_blue_midnight">
+                <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub">
+                <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
+                    DRIVER APP
+                </div>
+            </div>
+        </ion-title>
+        <!-- <ion-buttons end>
+            <button ion-button menuToggle icon-only>
+                <ion-icon name='menu'></ion-icon>
+              </button>
+        </ion-buttons> -->
     </ion-navbar>
 
     <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
+        </div>
 
-      <div class="txt_white ib ver-mid">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid">
+            Signed in : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 
 </ion-header>
 
-<ion-content> 
-      <ion-segment [(ngModel)]="tabs" class="txt_bold f-size-15px">
+<ion-content>
+    <ion-segment [(ngModel)]="tabs" class="txt_bold f-size-15px">
 
         <ion-segment-button value="jobs_list" class="custom-segment-btn" (click)="changeTabs('jobs_list')">
             <div class="w100 hinherit dis-t">
                 <div class="w100 dis-tc ver-mid">
-                    <i class="icon icon-Search"></i> 
+                    <i class="icon icon-Search"></i>
                     <div>
                         VIEW JOBS ({{jobsAmount}})
                     </div>
@@ -46,17 +61,17 @@
         <ion-segment-button value="jobs_summary" class="custom-segment-btn" (click)="changeTabs('jobs_summary')">
             <div class="w100 hinherit dis-t">
                 <div class="w100 dis-tc ver-mid">
-                    <i class="icon icon-List"></i> 
+                    <i class="icon icon-List"></i>
                     <div>
                         JOBS SUMMARY
-                    </div> 
+                    </div>
                 </div>
             </div>
         </ion-segment-button>
-        
+
     </ion-segment>
     <div [ngSwitch]="tabs">
-        <page-jobslist *ngSwitchCase="'jobs_list'" ></page-jobslist>
-        <page-jobssummary *ngSwitchCase="'jobs_summary'" ></page-jobssummary>
+        <page-jobslist *ngSwitchCase="'jobs_list'"></page-jobslist>
+        <page-jobssummary *ngSwitchCase="'jobs_summary'"></page-jobssummary>
     </div>
 </ion-content>

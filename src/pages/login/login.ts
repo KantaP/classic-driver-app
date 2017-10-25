@@ -1,6 +1,6 @@
 import { LoginService } from './login.service'
 import { Component, NgZone } from '@angular/core'
-import { IonicPage, NavController, MenuController, NavParams, ModalController, ViewController, Events, LoadingController } from 'ionic-angular'
+import { IonicPage, NavController, MenuController, Platform , NavParams, ModalController, ViewController, Events, LoadingController } from 'ionic-angular'
 import { Http, Headers } from '@angular/http'
 
 import { HomePage } from '../home/home'
@@ -8,7 +8,6 @@ import { DataStorage } from '../util/storage'
 import { CompanyModel } from '../util/model/company'
 import { Global } from '../util/global'
 import { AddCompany } from '../addcompany/addcompany'
-
 /**
  * Generated class for the LoginPage page.
  *
@@ -26,21 +25,23 @@ export class LoginPage {
   company_select:string = ""
   username:string = ""
   password:string = ""
-  dataStore: DataStorage
+  // dataStore: DataStorage
   login_box: boolean = false
   select_box: boolean = false
   add_comp_box: boolean = false
   comp_list:Array<{index:any,comp_code:string, comp_name:string, driver_u:string, driver_p:string}>
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
-    public modalCtrl: ModalController, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public modalCtrl: ModalController,
     public menuCtrl: MenuController,
     private loginService: LoginService,
     public events: Events,
     public loadingCtrl: LoadingController,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private dataStore: DataStorage,
+    private platform: Platform
   ) {
 
     this.comp_list = [{
@@ -53,10 +54,9 @@ export class LoginPage {
 
     this.company_select = "0"
     this.menuCtrl.enable(false)
-    this.dataStore = new DataStorage()
+    // this.dataStore = new DataStorage()
 
-    this.getApiKey()
-    this.getCompany()
+
 
     this.events.subscribe('company:added', () => {
       console.log('Welcome')
@@ -66,6 +66,8 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage')
+    this.getApiKey()
+    this.getCompany()
   }
 
   private getApiKey(){
@@ -84,9 +86,17 @@ export class LoginPage {
     // Find all company
     this.dataStore.getCompanyData()
       .subscribe((res)=>{
+        // when test on web browser
+        // console.log(res)
+        if(res == null) {
+          res = {
+            rows: []
+          }
+        }
         console.log("getCompany succ:", res.rows)
         this._ngZone.run(()=>{
           let items = res.rows
+          // console.log(items.item(0))
           if(items.length == 0){
             this.add_comp_box = true
             this.select_box = false
@@ -120,9 +130,8 @@ export class LoginPage {
                 driver_p: items.item(i).driver_password
               })
             }
-
+            console.log(this.comp_list)
           }
-          console.log(this.comp_list)
         })
       },(err)=>{
         console.log("getCompany err:", err)
@@ -165,7 +174,7 @@ export class LoginPage {
     .subscribe((res)=>{
 
       loader.dismiss()
-      
+
       console.log("loginService", res)
       if(res.code == 2){
 

@@ -18,6 +18,7 @@ export class TrackingService {
     sendTracking(){
 
         let quote_id    = (Global.getGlobal('quote_id') == void(0) ? 0 : Global.getGlobal('quote_id'))
+        let journey_id  = (Global.getGlobal('journey_id') == void(0) ? 0 : Global.getGlobal('journey_id'))
         let movement_id = (Global.getGlobal('movement_id') == void(0) ? 0 : Global.getGlobal('movement_id'))
         let status      = (Global.getGlobal('job_status') == void(0) ? 0 : Global.getGlobal('job_status'))
         let lat         = 0
@@ -27,6 +28,7 @@ export class TrackingService {
         let body = {
             quote_id: quote_id,
             movement_id: movement_id,
+            journey_id: journey_id,
             lat: lat,
             lng: lng,
             status: status,
@@ -42,9 +44,9 @@ export class TrackingService {
             body.speed = pos.coords.speed
 
             this.sent(body)
-            
+
         }).catch((error) => {
-            
+
             console.log('sendTracking err:', error)
             this.sent(body)
         })
@@ -57,8 +59,8 @@ export class TrackingService {
             'x-access-token': Global.getGlobal('api_token')
         })
 
-        this.http.post( 
-                    Util.getSystemURL() + '/api/ecmdriver/tracking', 
+        this.http.post(
+                    Util.getSystemURL() + '/api/ecmdriver/tracking',
                     body,
                     { headers: headers }
                 )

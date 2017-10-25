@@ -26,10 +26,10 @@ export class LoginService {
     let headers = new Headers({
       'x-access-key': Global.getGlobal('api_key')
     })
-    
 
-    return this.http.post( 
-        Util.getSystemURL() + '/api/ecmdriver/companycode', 
+
+    return this.http.post(
+        Util.getSystemURL() + '/api/ecmdriver/companycode',
         body,
         {
           headers: headers
@@ -44,13 +44,13 @@ export class LoginService {
       _u: user,
       _p: pass
     }
-
+    console.log(Global.getGlobal('api_key'))
     let headers = new Headers({
       'x-access-key': Global.getGlobal('api_key')
     })
-    
-    return this.http.post( 
-        Util.getSystemURL() + '/api/ecmdriver/authenticate', 
+
+    return this.http.post(
+        Util.getSystemURL() + '/api/ecmdriver/authenticate',
         body,
         { headers: headers }
       )
