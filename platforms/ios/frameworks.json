@@ -1,6 +1,0 @@
-{
-    "SystemConfiguration.framework": 1,
-    "CoreTelephony.framework": 1,
-    "WebKit.framework": 2,
-    "libz.tbd": 2
-}

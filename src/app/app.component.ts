@@ -21,7 +21,7 @@ import { SignInVehiclePage } from '../pages/signinvehiclelist/signinvehiclepage'
 import { VehicleCheckPage } from '../pages/vehiclecheck/vehiclecheck'
 import { QuestionPage } from '../pages/vehiclecheck/questionPage/questionpage'
 import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist"
-
+import { Push } from '@ionic-native/push';
 
 @Component({
   templateUrl: 'app.html',
@@ -43,6 +43,7 @@ export class MyApp {
     private homeService:HomeService,
     private dataStorage: DataStorage,
     private network: Network,
+    private push: Push
   ) {
 
     this.initializeApp()
@@ -57,7 +58,9 @@ export class MyApp {
       { title: "MESSAGE", component: MessagePage, show: true, isCheckNTrack:false },
       { title: "SETTING", component: SettingPage, show: false, isCheckNTrack:false },
       { title: "ADD COMPANY", component: "add_company", show: true, isCheckNTrack:false },
-      { title: "LOGOUT", component: "logout", show: true, isCheckNTrack:false }
+      { title: "LOGOUT", component: "logout", show: true, isCheckNTrack:false },
+      { title: "LOGIN", component: LoginPage, show:false , isCheckNTrack: false},
+      { title: "HOME", component: HomePage, show:false , isCheckNTrack: false}
     ]
 
     this.events.subscribe('isStartWork', (isStart)=>{
@@ -105,16 +108,27 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       // this.rootPage = PassengerListPage
       this.rootPage = LoginPage
+      // this.dataStorage.getLogData('auth')
+      // .subscribe(
+      //   (res)=>{
+      //     console.log(res.rows.length)
+      //     if(res.rows.length > 0) {
+      //       this.openPage(this.pages.filter((item)=>item.title == 'HOME')[0])
+      //     }else{
+      //       this.openPage(this.pages.filter((item)=>item.title == 'LOGIN')[0])
+      //     }
+      //   }
+      // )
       this.statusBar.styleDefault()
       this.splashScreen.hide()
 
       // this.dataStorage = new DataStorage()
       if(this.platform.is('cordova')) {
         let connectSubscription = this.network.onConnect().subscribe(() => {
-          alert(this.network.type)
+          // alert(this.network.type)
         })
         let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-          alert('Please check your internet.')
+          // alert('Please check your internet.')
         })
       }
 
@@ -135,7 +149,18 @@ export class MyApp {
       modal.present()
 
     }else if(page.component == "logout"){
-      this.nav.setRoot(LoginPage)
+      var pushObject = this.push.init({})
+      pushObject.unregister()
+      this.dataStorage.getLogData('push_token')
+      .subscribe((res)=>{
+        let items = res.rows
+        console.log(items)
+        this.dataStorage.clearLogDB('push_token')
+        this.dataStorage.clearLogDB('auth')
+        this.homeService.requestRemoveToken(items.item(0))
+        .subscribe((res)=>{this.nav.setRoot(LoginPage)})
+      })
+
     }else{
       this.nav.push(page.component)
     }

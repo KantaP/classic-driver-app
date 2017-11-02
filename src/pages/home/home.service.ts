@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core'
 import { ModalController } from 'ionic-angular'
 import { StartWork } from '../startwork/startwork'
 import { StopWork } from '../stopwork/stopwork'
-import { Http, Headers } from '@angular/http'
+import { Http, Headers , RequestOptions } from '@angular/http'
 import { Util } from '../util/util'
 import 'rxjs/add/operator/map'
 
@@ -61,6 +61,18 @@ export class HomeService {
             { headers: headers }
         )
         .map(res => res.json())
+    }
+
+    requestRemoveToken(token) {
+      let body = {
+        token
+      }
+      let headers = new Headers()
+      headers.append('x-access-key', Global.getGlobal('api_key'));
+      headers.append('x-access-token', Global.getGlobal('api_token'));
+      let options = new RequestOptions({ headers: headers });
+      return this.http.post(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/deletetoken',body,options)
+                  .map((body)=>body.json())
     }
 
 

@@ -2,7 +2,7 @@ import { LoginService } from './login.service'
 import { Component, NgZone } from '@angular/core'
 import { IonicPage, NavController, MenuController, Platform , NavParams, ModalController, ViewController, Events, LoadingController } from 'ionic-angular'
 import { Http, Headers } from '@angular/http'
-
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { HomePage } from '../home/home'
 import { DataStorage } from '../util/storage'
 import { CompanyModel } from '../util/model/company'
@@ -41,7 +41,8 @@ export class LoginPage {
     public loadingCtrl: LoadingController,
     private _ngZone: NgZone,
     private dataStore: DataStorage,
-    private platform: Platform
+    private platform: Platform,
+    private push: Push
   ) {
 
     this.comp_list = [{
@@ -68,6 +69,35 @@ export class LoginPage {
     console.log('ionViewDidLoad LoginPage')
     this.getApiKey()
     this.getCompany()
+  }
+
+  registerFCMToken() {
+    const options: PushOptions = {
+      android: {},
+      ios: {
+        alert: 'true',
+        badge: false,
+        sound: 'true'
+      },
+      windows: {}
+    };
+    const pushObject: PushObject = this.push.init(options);
+
+    pushObject.on('registration').subscribe((data: any) => {
+      console.log('device token -> ' + data.registrationId);
+      this.savePushToken(data.registrationId)
+      this.dataStore.addLogData("push_token", data.registrationId)
+      //TODO - send device token to server
+    });
+  }
+
+  savePushToken(token: string) {
+    this.loginService.saveToken(token)
+    .subscribe(
+      (res)=>{
+        console.log('save token result: ' , res)
+      }
+    )
   }
 
   private getApiKey(){
@@ -187,7 +217,11 @@ export class LoginPage {
         let datetimeLogin = {
           datetime: ''
         }
-
+        this.dataStore.addLogData('auth',true)
+        console.log('logged in on platform : ' + this.platform._platforms)
+        if(this.platform.is('cordova')) {
+          this.registerFCMToken()
+        }
         this.dataStore.getLastLogin(res.driver_id)
           .subscribe((res)=>{
             console.log("getLastLogin succ:", res)

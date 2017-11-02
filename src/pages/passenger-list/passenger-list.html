@@ -109,3 +109,38 @@
     </div>
     <div class="modal-background"></div>
 </modal>
+
+<modal id="warning-popup">
+    <div class="modal">
+        <div class="modal-body">
+            <ion-grid no-padding>
+                <ion-row justify-content-between class="modal-title">
+                    <div>FAILED BOARDING LIST</div>
+                    <ion-icon ios="md-close" md="md-close" (click)="closeModal()"></ion-icon>
+                </ion-row>
+                <ion-row>
+                    <div style="position:relative;width:100%;">
+                        <img [src]="failedItem.icon" class="modal-picture" />
+                    </div>
+                </ion-row>
+                <ion-row>
+                    <ion-grid style="padding:10px;">
+                        <ion-row class="margin-top-3">
+                            <div>{{failedItem.title}}</div>
+                        </ion-row>
+                        <ion-row class="margin-top-3" *ngIf="failedItem.sholdBeAddress">
+                            <div>: Should Be : {{failedItem.shouldBeAddress}}?</div>
+                        </ion-row>
+                        <ion-row class="margin-top-3">
+                            <button ion-button block color="secondary">AOLLOW</button>
+                        </ion-row>
+                        <ion-row class="margin-top-1">
+                            <button ion-button block color="danger">CANCEL</button>
+                        </ion-row>
+                    </ion-grid>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>

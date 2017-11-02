@@ -96,7 +96,7 @@ export class JobsSummaryPage {
                 latestDateBuffer = re[i].date_start_convert
               }
             }
-            this.itemsGroup.pop()
+            // this.itemsGroup.pop()
           }
           this.loading = false
           console.log('this.itemsGroup', this.itemsGroup)

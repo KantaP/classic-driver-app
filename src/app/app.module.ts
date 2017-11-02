@@ -39,6 +39,7 @@ import { MessageModal } from "../pages/message/modal/modal.sentmessage"
 import { Network } from '@ionic-native/network';
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
+import { Push } from '@ionic-native/push';
 import { PassengerListPage } from './../pages/passenger-list/passenger-list';
 import { ActionStorageProvider } from '../providers/action-storage/action-storage';
 
@@ -114,7 +115,8 @@ import { ActionStorageProvider } from '../providers/action-storage/action-storag
     Network,
     SQLite,
     ModalProvider,
-    ActionStorageProvider
+    ActionStorageProvider,
+    Push
   ]
 })
 export class AppModule {}

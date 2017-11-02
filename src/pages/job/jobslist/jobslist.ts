@@ -41,7 +41,7 @@ export class JobsListPage {
                     }
                 }
                 // don't know why always add blank array in last index
-                this.jobs.pop()
+                // this.jobs.pop()
                 // console.log(this.jobs)
                 this.loading = false
             })

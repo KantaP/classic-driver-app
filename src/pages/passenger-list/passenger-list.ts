@@ -21,6 +21,7 @@ interface Passenger {
   RFID?: string;
   pickup?: number
   point_id?: number
+  fromOtherRoute?: boolean
 }
 
 interface ListTodo {
@@ -28,6 +29,12 @@ interface ListTodo {
   waitAlign?: number;
   aligned?: number;
   availableOnBus?: number;
+}
+
+interface FailedItem {
+  title?: string;
+  shouldBeAddress?: string;
+  icon?: string;
 }
 
 @Component({
@@ -52,7 +59,7 @@ export class PassengerListPage {
   private timerSearch: any
   private routeString: string
   private callback: any
-  private shouldBeAddress: string
+  private failedItem: FailedItem
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http,
     private modal: ModalProvider, private loading: LoadingController ,@Inject(ElementRef) elementRef: ElementRef) {
     this.passengers = []
@@ -76,7 +83,11 @@ export class PassengerListPage {
     this.elements = elementRef
     this.routeString = ""
     this.callback = this.navParams.get('callback')
-    this.shouldBeAddress = ""
+    this.failedItem = {
+      icon: '',
+      title: '',
+      shouldBeAddress: ''
+    }
   }
 
   //for read rfid
@@ -138,6 +149,7 @@ export class PassengerListPage {
     .subscribe((data) => {
       data = data.map((item) => {
         if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
+        item.fromOtherRoute = false
         return item
       })
       this.passengers = data
@@ -147,24 +159,14 @@ export class PassengerListPage {
     this.routeString = this.navParams.get('collection_address') + ' >>> ' + this.navParams.get('destination_address')
   }
 
-  // doRefresh(refresher) {
-  //   console.log('Begin async operation', refresher);
-
-  //   setTimeout(() => {
-  //     this.getPassengerInRoute()
-  //     .subscribe((data) => {
-  //       data = data.map((item) => {
-  //         if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
-  //         return item
-  //       })
-  //       this.passengers = data
-  //       this.passengerStore = data
-  //       this.calculateTodo()
-  //       refresher.complete();
-  //       console.log('Async operation has ended');
-  //     })
-  //   }, 2000);
-  // }
+  getAllPassengerInJob() {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/allPassengerInJob/' + this.navParams.get('quote_id'), options)
+      .map((body) => body.json())
+  }
 
   getPassengerInRoute() {
     let headers = new Headers()
@@ -203,6 +205,7 @@ export class PassengerListPage {
               loader.dismiss()
               res.results = res.results.map((item) => {
                 if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
+                item.fromOtherRoute = true
                 return item
               })
               this.passengers = res.results
@@ -341,5 +344,20 @@ export class PassengerListPage {
         alert('Cannot end this route')
       }
     )
+  }
+
+  openFailedModal(content: string, failedType: string, shouldBeAddress?: string) {
+    this.failedItem.title = content
+    if(failedType == 'ALEADY_BOARD') {
+      this.failedItem.icon = 'assets/img/icon-failed-board-2.png'
+      this.failedItem.shouldBeAddress = ''
+    }else if(failedType == 'WRONG_ADDRESS'){
+      this.failedItem.icon = 'assets/img/icon-failed-board-1.png'
+      this.failedItem.shouldBeAddress = shouldBeAddress
+    }else if(failedType == 'NOT_HAVE_PASSENGER') {
+      this.failedItem.icon = 'assets/img/icon-failed-board-1.png'
+      this.failedItem.shouldBeAddress = ''
+    }
+    this.modal.open('warning-popup')
   }
 }
