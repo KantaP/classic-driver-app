@@ -35,6 +35,8 @@
 		44BE3B18503146228E1BB23F /* GCDWebServerStreamedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C50C46F6E0D453F8CB46C2E /* GCDWebServerStreamedResponse.m */; };
 		3CE84B13D2E2401FBA92CA46 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852C7C2C7D7F4F659019E3AF /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		388F9388F1B5428485BE119C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EDF65F140DB402B8FC8E0ED /* libz.tbd */; };
+		2DCAA005DA1242F293DA42AE /* AppDelegate+notification.m in Sources */ = {isa = PBXBuildFile; fileRef = 93169937F0074A3AAA18E00E /* AppDelegate+notification.m */; };
+		E74D4193CB234199BBCE2D90 /* PushPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 92C234FD722A4F3DA4B2C275 /* PushPlugin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +115,10 @@
 		1886825CFEA74781B7748B3A /* GCDWebServerStreamedResponse.h */ = {isa = PBXFileReference; name = "GCDWebServerStreamedResponse.h"; path = "cordova-plugin-ionic-webview/GCDWebServerStreamedResponse.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		852C7C2C7D7F4F659019E3AF /* WebKit.framework */ = {isa = PBXFileReference; name = "WebKit.framework"; path = "System/Library/Frameworks/WebKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		5EDF65F140DB402B8FC8E0ED /* libz.tbd */ = {isa = PBXFileReference; name = "libz.tbd"; path = "usr/lib/libz.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
+		93169937F0074A3AAA18E00E /* AppDelegate+notification.m */ = {isa = PBXFileReference; name = "AppDelegate+notification.m"; path = "phonegap-plugin-push/AppDelegate+notification.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		92C234FD722A4F3DA4B2C275 /* PushPlugin.m */ = {isa = PBXFileReference; name = "PushPlugin.m"; path = "phonegap-plugin-push/PushPlugin.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		A1E6B2C037784B8CAC8FDF88 /* AppDelegate+notification.h */ = {isa = PBXFileReference; name = "AppDelegate+notification.h"; path = "phonegap-plugin-push/AppDelegate+notification.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		6526A829A7D64232BB7E632E /* PushPlugin.h */ = {isa = PBXFileReference; name = "PushPlugin.h"; path = "phonegap-plugin-push/PushPlugin.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +262,10 @@
 				2217E0FCEB7A4FCEBDB84FAA /* GCDWebServerErrorResponse.h */,
 				2D1239174D5F40C7B71D3C5A /* GCDWebServerFileResponse.h */,
 				1886825CFEA74781B7748B3A /* GCDWebServerStreamedResponse.h */,
+				93169937F0074A3AAA18E00E /* AppDelegate+notification.m */,
+				92C234FD722A4F3DA4B2C275 /* PushPlugin.m */,
+				A1E6B2C037784B8CAC8FDF88 /* AppDelegate+notification.h */,
+				6526A829A7D64232BB7E632E /* PushPlugin.h */,
 			);
 			name = Plugins;
 			path = "Ecm Driver/Plugins";
@@ -385,6 +395,8 @@
 				9DD09A9EDF8C4C978D60F690 /* GCDWebServerErrorResponse.m in Sources */,
 				4F1C1411BD674A9296E93967 /* GCDWebServerFileResponse.m in Sources */,
 				44BE3B18503146228E1BB23F /* GCDWebServerStreamedResponse.m in Sources */,
+				2DCAA005DA1242F293DA42AE /* AppDelegate+notification.m in Sources */,
+				E74D4193CB234199BBCE2D90 /* PushPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

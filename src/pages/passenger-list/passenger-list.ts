@@ -52,6 +52,7 @@ export class PassengerListPage {
   private timerSearch: any
   private routeString: string
   private callback: any
+  private shouldBeAddress: string
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http,
     private modal: ModalProvider, private loading: LoadingController ,@Inject(ElementRef) elementRef: ElementRef) {
     this.passengers = []
@@ -75,6 +76,7 @@ export class PassengerListPage {
     this.elements = elementRef
     this.routeString = ""
     this.callback = this.navParams.get('callback')
+    this.shouldBeAddress = ""
   }
 
   //for read rfid
@@ -241,8 +243,7 @@ export class PassengerListPage {
     let options = new RequestOptions({ headers: headers });
     var quote_id = this.navParams.get('quote_id')
     return this.http.get(
-      Util.getSystemURL() + '/api/ecmdriver/passengers/searchPassenger/' + quote_id + '/' + query,
-      options)
+      Util.getSystemURL() + '/api/ecmdriver/passengers/searchPassenger/' + quote_id + '/' + query,options)
       .map((body)=>body.json())
   }
 
