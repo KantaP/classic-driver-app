@@ -45,10 +45,10 @@
         <div ion-row class="border-around">
             <div col-6>
                 <div>
-                    <strong> JOB ID:</strong> {{qid}}
+                    <strong> JOB ID:</strong> {{job.quote_id}}
                 </div>
                 <div class="txt_bold">
-                    Departure time 13:00
+                    Departure time {{job.time_departure}}
                 </div>
                 <div class="txt_bold">
                     Passenger Name :
@@ -59,29 +59,29 @@
             </div>
             <div col-6>
                 <div>
-                    <i class="icon icon-Agenda color_gold"></i> 1st Jan 2017
+                    <i class="icon icon-Agenda color_gold"></i> {{job.date_departure}}
                 </div>
                 <div class="txt_bold">
-                    On site before 12:30
+                    On site before {{job.onsite_before}}
                 </div>
                 <div>
-                    Mr.smith
+                    {{job.passenger_name}}
                 </div>
                 <div>
-                    +66 (0) 1234567
+                    {{job.passenger_num}}
                 </div>
             </div>
             <div col-12>
                 <div col-8 class="mg-auto border-around txt_center">
                     <div col-5 class="ib color_green_forest">
-                        <i class="icon icon-Dollars"></i> $ 10.25
+                        <i class="icon icon-Dollars"></i> $ {{job.driver_pay}}
                     </div>
                     <div col-5 class="ib color_green_forest">
-                        $ 50.2
+                        $ {{job.price}}
                     </div>
                 </div>
             </div>
-            <div col-12 class="txt_center pd-no">
+            <div col-12 class="txt_center pd-no" *ngIf="!alreadyAccept">
                 <div col-6 class="h40px fl bg_blue_royal txt_white txt_bold gravity-center-vertical" (click)="acceptJob()">
                     <div>
                         ACCEPT
@@ -117,7 +117,7 @@
                 </div>
             </div>
             <div class="">
-                <div ion-row class="" *ngFor="let m of j.movement" (click)="openPassenger(m.movement_id)">
+                <div ion-row [ngClass]="{'disable-row':m.progress == 10 || !alreadyAccept}" *ngFor="let m of j.movement" (click)="openPassenger(m.movement_id,m.collection_address,m.destination_address,m.progress)">
                     <div col-1 class="gravity-center-vertical">
                         <div class="mg-auto">
                             <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
@@ -150,5 +150,48 @@
                 </div>
             </div>
         </div>
+        <div *ngIf="showAllJob && journeyOther.length > 0">
+            <div class="" *ngFor="let j of journeyOther">
+                <div class="disable-row-header h40px gravity-center-vertical txt_white txt_bold bg_blue_royal">
+                    <div padding>
+                        Journey {{ j.journey_group }}
+                    </div>
+                </div>
+                <div class="">
+                    <div ion-row class="disable-row" *ngFor="let m of j.movement">
+                        <div col-1 class="gravity-center-vertical">
+                            <div class="mg-auto">
+                                <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
+                            </div>
+                        </div>
+                        <div col-8 class="gravity-center-vertical">
+                            <div>
+                                {{ m.collection_address }}
+                            </div>
+                            <div>
+                                {{ m.destination_address }}
+                            </div>
+                        </div>
+                        <div col-3 class="gravity-center-vertical txt_right">
+                            <div>
+                                <i class="icon icon-Time"></i> {{ m.time }}
+                            </div>
+                            <div>
+                                {{ m.date }}
+                            </div>
+                        </div>
+                        <div class="w100">
+                            <div style="
+                                height: 1px;
+                                width: 95%;
+                                background: #e1e1e1;
+                                margin: auto;
+                            "></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </ion-content>

@@ -12,54 +12,55 @@
             <ion-label>
                 <i class="icon icon-Agenda"></i>
             </ion-label>
-            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date End" [(ngModel)]="date.end" [min]="date.start" (ionChange)="dateEndChange()"></ion-datetime>
+            <ion-datetime [disabled]="ifStartEmtpy()" displayFormat="MM/DD/YYYY " placeholder="Date End " [(ngModel)]="date.end " [min]="date.start " (ionChange)="dateEndChange() "></ion-datetime>
         </ion-item>
     </div>
 </div>
 
-<div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
-    <div class="w100 h100 dis-t">
-        <div class="w100 dis-tc ver-mid f-size-15px">
+<div *ngIf="loading== true " class="w100 h40px txt_center bg_blue_royal_light txt_white ">
+    <div class="w100 h100 dis-t ">
+        <div class="w100 dis-tc ver-mid f-size-15px ">
             Loading . . .
         </div>
     </div>
 </div>
 
 <div *ngIf="loading == false">
-    <div *ngIf="itemsGroup.length == 0" class="w100 h40px txt_center bg_blue_royal_light txt_white">
-        <div class="w100 h100 dis-t">
-            <div class="w100 dis-tc ver-mid f-size-15px">
+    <div *ngIf="itemsGroup.length==0 " class="w100 h40px txt_center bg_blue_royal_light txt_white ">
+        <div class="w100 h100 dis-t ">
+            <div class="w100 dis-tc ver-mid f-size-15px ">
                 No result.
             </div>
         </div>
     </div>
-    <div *ngFor="let group of itemsGroup">
-        <div class="w100 h40px txt_center bg_blue_royal txt_white">
-            <div class="w100 h100 dis-t">
-                <div class="w100 dis-tc ver-mid f-size-15px">
+    <div *ngFor="let group of itemsGroup ">
+        <div class="w100 h40px txt_center bg_blue_royal txt_white ">
+            <div class="w100 h100 dis-t ">
+                <div class="w100 dis-tc ver-mid f-size-15px ">
                     {{ group.date }}
                 </div>
             </div>
         </div>
 
         <ion-list padding>
-            <div class="pd-no-top pd-bottom-1px" *ngFor="let s of group.item; let i=index;" text-wrap (click)="toggleGroup(s.uid)" [ngClass]="{active: isGroupShown(s.uid)}">
+            <div [ngClass]="{'active':isGroupShown(s.uid), 'pd-no-top pd-bottom-1px':true}" *ngFor="let s of group.item; let i=index;" text-wrap (click)="toggleGroup(s.uid)">
 
-                <div class="w100 h40px bg_blue_royal_light txt_white">
-                    <div class="w100 h100 dis-t">
-                        <div class="w10 dis-tc ver-mid f-size-15px">
-                            <div class="txt_center border-right-white">
+                <div class="w100 bg_blue_royal_light txt_white padding-2 ">
+                    <div class="w100 h100 dis-t ">
+                        <div class="w10 dis-tc ver-mid f-size-15px ">
+                            <div class="txt_center border-right-white ">
                                 {{ s.time_pickup }}
                             </div>
                         </div>
-                        <div class="w50 dis-tc ver-mid f-size-15px">
-                            <div class="txt_center">
-                                {{ s.name_pickup.split(',')[0] }}
-                                <br>
-                                {{ s.name_destination.split(',')[0] }}
+                        <div class="w50 dis-tc ver-mid f-size-15px ">
+                            <div class="txt_left margin-left-2 ">
+                                {{ splitIitem(s.name_pickup) }}
+                            </div>
+                            <div class="txt_left margin-left-2 ">
+                                {{ splitIitem(s.name_destination) }}
                             </div>
                         </div>
-                        <div class="w10 dis-tc ver-mid f-size-15px">
+                        <div class="w10 dis-tc ver-mid f-size-15px ">
                             <div class="txt_center">
                                 <ion-icon color="success" [name]="isGroupShown(s.uid) ? 'ios-arrow-down' : 'ios-arrow-forward'"></ion-icon>
                             </div>
@@ -68,123 +69,122 @@
                 </div>
                 <div *ngIf="isGroupShown(s.uid)">
                     <div ion-row>
-
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Depart
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.time_depart }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Pick-up
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.time_pickup }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Pick-up
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.name_pickup }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Note Pick-up
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.note_pickup }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Dest
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.name_destination }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Note Dest
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.note_des }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Arrival
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.time_arrival }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Leave
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.time_leave }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Finish
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.name_destination }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Size
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.size }}
                             </div>
                         </div>
 
-                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical">
+                        <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
                                 Bus
                             </div>
                         </div>
-                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical">
+                        <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
                             <div>
                                 {{ s.name_bus }}
                             </div>

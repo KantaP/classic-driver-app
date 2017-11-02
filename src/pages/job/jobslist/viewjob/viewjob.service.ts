@@ -28,6 +28,19 @@ export class ViewJobService {
       .map(res => res.json())
   }
 
+  requestOtherJob(quote_id) {
+    let headers = new Headers({
+      'x-access-key': Global.getGlobal('api_key'),
+      'x-access-token': Global.getGlobal('api_token')
+    })
+
+    return this.http.get(
+        Util.getSystemURL() + '/api/ecmdriver/jobs/otherMovmentByQuote/' + quote_id,
+        { headers: headers }
+      )
+      .map(res => res.json())
+  }
+
   acceptJob(driver_id , quote_id) {
     let headers = new Headers({
       'x-access-key': Global.getGlobal('api_key'),

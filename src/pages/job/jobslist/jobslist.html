@@ -1,5 +1,3 @@
-
-
 <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
     <div class="w100 h100 dis-t">
         <div class="w100 dis-tc ver-mid f-size-15px">
@@ -8,7 +6,7 @@
     </div>
 </div>
 <div *ngIf="loading == false">
-    <div class="w100" *ngFor="let job of jobs" (click)="openViewJob(job.quote_id)">
+    <div class="w100" *ngFor="let job of jobs" (click)="openViewJob(job)">
 
         <div class="w100 h40px  bg_blue_royal_light txt_white">
             <div class="w100 h100 dis-t pos-relate">
@@ -17,13 +15,12 @@
                 </div>
                 <div class="dis-tc ver-mid pd-left-10-px pd-right-5-px">
                     <div class="w50-cal txt_left ib">
-                        <i class="icon icon-Agenda"></i> 
-                        &nbsp; 
+                        <i class="icon icon-Agenda"></i> &nbsp;
                         <span>{{ job.outward }}</span>
                     </div>
                     <div class="w50-cal txt_right ib">
-                        <i class="icon icon-User"></i> 
-                        <span>{{ job.passengers_num }}</span>
+                        <i class="icon icon-User"></i>
+                        <span>{{ job.max_passenger }}</span>
                     </div>
                 </div>
             </div>
@@ -36,8 +33,7 @@
                     <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
                         <div class="w100 h5vh dis-t">
                             <div class="w100 dis-tc ver-mid">
-                                <i class="icon icon-Pointer"></i>
-                                PICK UP  
+                                <i class="icon icon-Pointer"></i> PICK UP
                             </div>
                         </div>
                     </div>
@@ -45,13 +41,12 @@
                         {{ job.pickup }}
                     </div>
                 </div>
-                
+
                 <div ion-row class="txt_left">
                     <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
                         <div class="w100 h5vh dis-t">
                             <div class="w100 dis-tc ver-mid">
-                                <i class="icon icon-Pointer"></i>
-                                DEST
+                                <i class="icon icon-Pointer"></i> DEST
                             </div>
                         </div>
                     </div>
@@ -59,27 +54,27 @@
                         {{ job.destination }}
                     </div>
                 </div>
-                
+
                 <div ion-row class="">
                     <div col-4 class="txt_left txt_bold pd-left-10-px">
-                        <img src="assets/img/icon_note_user.png" class="icon-note-user ver-top"/> 
+                        <img src="assets/img/icon_note_user.png" class="icon-note-user ver-top" />
                         <div class="ib txt_bold f-size-xx-small ver-top">
-                            Passenger Name
+                            Passenger Name {{job.passenger_name}}
                         </div>
                     </div>
                     <div col-8 class="txt_red f-size-x-small">
-                        <span *ngIf="job.driver_accept == false" >
+                        <span *ngIf="job.driver_accept == false">
                             Awaiting Acceptance
                         </span>
                     </div>
                 </div>
-                
+
 
             </div>
             <div col-3 class="txt_center">
                 <div class="w100 h13vh dis-t">
                     <div class="w100 h100 dis-tc ver-mid pos-relate">
-                        <div class="txt_right label_dollars color_green_forest" [hidden]="job.driver_pay == 0">
+                        <div class="txt_right label_dollars color_green_forest" [hidden]="job.pay_ok != 'C'">
                             <i class="icon icon-Dollars"></i>
                         </div>
                         <div class="color_green_forest txt-size-2rem">

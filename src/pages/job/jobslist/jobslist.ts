@@ -40,10 +40,11 @@ export class JobsListPage {
                         latestQuoteBuffer = re[i].quote_id
                     }
                 }
-
-                console.log(this.jobs)
+                // don't know why always add blank array in last index
+                this.jobs.pop()
+                // console.log(this.jobs)
                 this.loading = false
-            })    
+            })
         },
         (err)=>{
             console.log('getJobs err:', err)
@@ -53,7 +54,14 @@ export class JobsListPage {
         })
     }
 
-    openViewJob(qid){
-        this.navCtrl.push(ViewJobPage, {data: qid})
+    callbackForUpdate(needUpdate: boolean, _param?: any) {
+      return new Promise((resolve, reject) => {
+        console.log("callbackForUpdate")
+      })
+
+    }
+
+    openViewJob(job){
+        this.navCtrl.push(ViewJobPage, {data: job, callback: this.callbackForUpdate.bind(this)})
     }
 }

@@ -50,4 +50,18 @@ export class HomeService {
         .map(res => res.json())
     }
 
+    requestMobileSetting() {
+      let headers = new Headers({
+        'x-access-key': Global.getGlobal('api_key'),
+        'x-access-token': Global.getGlobal('api_token')
+        })
+
+        return this.http.get(
+            Util.getSystemURL() + '/api/ecmdriver/mobileSettings',
+            { headers: headers }
+        )
+        .map(res => res.json())
+    }
+
+
 }

@@ -20,6 +20,7 @@ interface Passenger {
   photo?: string;
   RFID?: string;
   pickup?: number
+  point_id?: number
 }
 
 interface ListTodo {
@@ -49,6 +50,8 @@ export class PassengerListPage {
   private rfValue: string
   private elements: any
   private timerSearch: any
+  private routeString: string
+  private callback: any
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http,
     private modal: ModalProvider, private loading: LoadingController ,@Inject(ElementRef) elementRef: ElementRef) {
     this.passengers = []
@@ -70,6 +73,8 @@ export class PassengerListPage {
     this.startRead = false
     this.rfValue = ""
     this.elements = elementRef
+    this.routeString = ""
+    this.callback = this.navParams.get('callback')
   }
 
   //for read rfid
@@ -93,10 +98,10 @@ export class PassengerListPage {
         var new_status = 0
         this.closeModal()
         if (passenger.length > 0) {
-          if ((passenger[0].status == 0 && passenger[0].pickup == 1) || (passenger[0].status == 0 && passenger[0].pickup == 0)) new_status = 1
+          if (((passenger[0].status == 0 || passenger[0].status == -1) && passenger[0].pickup == 1) || (passenger[0].status == 0 && passenger[0].pickup == 0)) new_status = 1
           this.openModal(passenger[0])
           if (new_status > 0) {
-            this.updatePassengerStatus(passenger[0].passenger_id, new_status, this.navParams.get('movement_id'), 0, passenger[0].pickup)
+            this.updatePassengerStatus(passenger[0].passenger_id, new_status, passenger[0].point_id , 0, passenger[0].pickup , this.navParams.get('movement_id'))
               .map((body) => body.json())
               .subscribe((data) => {
                 loader.dismiss()
@@ -137,26 +142,27 @@ export class PassengerListPage {
       this.passengerStore = data
       this.calculateTodo()
     })
+    this.routeString = this.navParams.get('collection_address') + ' >>> ' + this.navParams.get('destination_address')
   }
 
-  doRefresh(refresher) {
-    console.log('Begin async operation', refresher);
+  // doRefresh(refresher) {
+  //   console.log('Begin async operation', refresher);
 
-    setTimeout(() => {
-      this.getPassengerInRoute()
-      .subscribe((data) => {
-        data = data.map((item) => {
-          if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
-          return item
-        })
-        this.passengers = data
-        this.passengerStore = data
-        this.calculateTodo()
-        refresher.complete();
-        console.log('Async operation has ended');
-      })
-    }, 2000);
-  }
+  //   setTimeout(() => {
+  //     this.getPassengerInRoute()
+  //     .subscribe((data) => {
+  //       data = data.map((item) => {
+  //         if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
+  //         return item
+  //       })
+  //       this.passengers = data
+  //       this.passengerStore = data
+  //       this.calculateTodo()
+  //       refresher.complete();
+  //       console.log('Async operation has ended');
+  //     })
+  //   }, 2000);
+  // }
 
   getPassengerInRoute() {
     let headers = new Headers()
@@ -178,25 +184,74 @@ export class PassengerListPage {
   searchPassengers(e:Event) {
     clearTimeout(this.timerSearch)
     this.timerSearch = setTimeout(() => {
+      var loader = this.loading.create({
+        content: ''
+      })
+      loader.present()
       this.passengers = []
-      console.log(this.searchInput)
+      // console.log(this.searchInput)
       if (this.searchInput != "") {
         var filterPassengers = this.passengerStore
           .filter((passenger) => (passenger.first_name.includes(this.searchInput) || passenger.first_name.includes(this.searchInput)))
         this.passengers = filterPassengers
+        if(this.passengers.length == 0) {
+          this.searchFromApi(this.searchInput)
+          .subscribe(
+            (res)=>{
+              loader.dismiss()
+              res.results = res.results.map((item) => {
+                if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
+                return item
+              })
+              this.passengers = res.results
+              this.passengers = this.passengers.filter((item)=>{
+                // find duplicate
+                var duplicate = this.passengers.filter((item2)=>item2.passenger_id == item.passenger_id)
+                if(duplicate.length > 1) {
+                  // check if has failboard return else return waitalign
+                  var failBoard = duplicate.filter((item3)=>item3.pickup == 1 && item3.status == -1)
+                  if(failBoard.length > 0) return (item.pickup == 1 && item.status == -1)
+                  else return (item.pickup == 0 && item.status == 0)
+                }else{
+                  return item
+                }
+              })
+            },
+            (err)=>{
+              loader.dismiss()
+              // console.log(err)
+            }
+          )
+        }
+        else {
+          loader.dismiss()
+        }
       } else {
         this.passengers = this.passengerStore
+        loader.dismiss()
       }
       clearTimeout(this.timerSearch)
     }, 1000)
   }
 
-  updatePassengerStatus(passenger_id: number, status_new: number, movement_id: number, force_login: number, pickup: number) {
+  searchFromApi(query: string) {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
-    let body = { passenger_id, status_new, movement_id, force_login, pickup }
+    var quote_id = this.navParams.get('quote_id')
+    return this.http.get(
+      Util.getSystemURL() + '/api/ecmdriver/passengers/searchPassenger/' + quote_id + '/' + query,
+      options)
+      .map((body)=>body.json())
+  }
+
+  updatePassengerStatus(passenger_id: number, status_new: number, movement_id: number, force_login: number, pickup: number, action_point_id: number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    let body = { passenger_id, status_new, movement_id, force_login, pickup , action_point_id}
     return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options)
   }
 
@@ -240,7 +295,7 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force login...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, 1, this.navParams.get('movement_id'), 1, passenger.pickup)
+    this.updatePassengerStatus(passenger.passenger_id, 1, passenger.point_id, 1, passenger.pickup , this.navParams.get('movement_id'))
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
@@ -260,5 +315,30 @@ export class PassengerListPage {
           this.calculateTodo()
         }
       })
+  }
+
+  enroute() {
+    var loader = this.loading.create({
+      content: ''
+    })
+    loader.present()
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    this.http.post(Util.getSystemURL() + '/api/ecmdriver/jobs/enroute',{movement_id: this.navParams.get('movement_id')} ,options)
+    .map((body) => body.json())
+    .subscribe(
+      (res)=>{
+        loader.dismiss()
+        this.callback({movement_id: this.navParams.get('movement_id')})
+        .then(()=>{
+          this.navCtrl.pop()
+        })
+      },
+      (err)=>{
+        alert('Cannot end this route')
+      }
+    )
   }
 }

@@ -17,13 +17,12 @@
 
 </ion-header>
 
-
 <ion-content>
-    <ion-refresher (ionRefresh)="doRefresh($event)">
+    <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
         <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText=""></ion-refresher-content>
-    </ion-refresher>
+    </ion-refresher> -->
     <ion-grid style="padding:0px;">
-        <input type="text" id="rfRead" style="visibility:hidden;" />
+        <input type="text" id="rfRead" style="visibility:hidden;height:0px;" />
         <ion-item class="search_box" padding>
             <ion-label margin>
                 <i class="icon icon-Search"></i>
@@ -31,27 +30,28 @@
             <ion-input type="text" [(ngModel)]="searchInput" name="searchInput" (keyup)="searchPassengers($event)" placeholder="Search Passenger"></ion-input>
 
         </ion-item>
-        <div *ngIf="passengers.length > 0">
-            <ion-row>
-                <ion-col col-12 class="h7percent bg_blue_royal txt_center txt_white pd4percent f-size-15px">
-                    PASSENGERS
-                </ion-col>
-            </ion-row>
-            <ion-row justify-content-center class="margin-top-1 txt_white txt_center">
-                <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-primary">
-                    <span class="txt_center">{{listTodo.waitBus}}</span>
-                </ion-col>
-                <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-secondary">
-                    <span class="txt_center">{{listTodo.waitAlign}}</span>
-                </ion-col>
-                <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-third">
-                    <span class="txt_center">{{listTodo.availableOnBus}}</span>
-                </ion-col>
-                <ion-col col-2 class="h7percent padding-vertical-2-2  margin-half-1 passenger-box-fourth">
-                    <span class="txt_center">{{listTodo.aligned}}</span>
-                </ion-col>
-            </ion-row>
-            <br/>
+
+        <ion-row>
+            <ion-col col-12 class="h7percent bg_blue_royal txt_center txt_white pd4percent f-size-15px">
+                PASSENGERS
+            </ion-col>
+        </ion-row>
+        <ion-row justify-content-center class="margin-top-1 txt_white txt_center">
+            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-primary">
+                <span class="txt_center">{{listTodo.waitBus}}</span>
+            </ion-col>
+            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-secondary">
+                <span class="txt_center">{{listTodo.waitAlign}}</span>
+            </ion-col>
+            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-third">
+                <span class="txt_center">{{listTodo.availableOnBus}}</span>
+            </ion-col>
+            <ion-col col-2 class="h7percent padding-vertical-2-2  margin-half-1 passenger-box-fourth">
+                <span class="txt_center">{{listTodo.aligned}}</span>
+            </ion-col>
+        </ion-row>
+        <br/>
+        <div *ngIf="passengers.length > 0" class="passenger-block">
             <ion-row *ngFor="let passenger of passengers;let i = index" class="passenger-list" (click)="openModal(passenger,false)">
                 <ion-col col-4 align-self-center [class]="generateStatusColor(passenger.status,passenger.pickup)">
                     <img [src]="passenger.photo" class="avatar-img">
@@ -61,6 +61,16 @@
                 </ion-col>
             </ion-row>
         </div>
+    </ion-grid>
+    <ion-grid ion-fixed no-padding style="bottom:0px; height:10vh;" class="all-no-padding">
+        <ion-row class="h100 route-bottom-bg">
+            <ion-col col-8 class="all-no-margin" align-self-center>
+                <marquee behavior="scroll" direction="left" style="font-weight:bold">{{routeString}}</marquee>
+            </ion-col>
+            <ion-col col-4 class="all-no-margin">
+                <a ion-button color="primary" class="w100 h100" (click)="enroute()">EN-ROUTE</a>
+            </ion-col>
+        </ion-row>
     </ion-grid>
 </ion-content>
 

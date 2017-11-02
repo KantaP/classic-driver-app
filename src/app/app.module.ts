@@ -40,6 +40,7 @@ import { Network } from '@ionic-native/network';
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
 import { PassengerListPage } from './../pages/passenger-list/passenger-list';
+import { ActionStorageProvider } from '../providers/action-storage/action-storage';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,8 @@ import { PassengerListPage } from './../pages/passenger-list/passenger-list';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Network,
     SQLite,
-    ModalProvider
+    ModalProvider,
+    ActionStorageProvider
   ]
 })
 export class AppModule {}

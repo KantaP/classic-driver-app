@@ -716,6 +716,12 @@ $colors-passenger: (primary: #1a50cc, secondary: #febe04, third: #09a003, fourth
 .passenger-list {
     border: 1px solid #ccc;
     background: #fff;
+    margin-top: 2px;
+}
+
+.passenger-block {
+    overflow: auto;
+    height: 48vh;
 }
 
 ion-row[class^="passenger-list"]:first-child {
@@ -815,4 +821,20 @@ body.modal-open {
     border-radius: 50%;
     bottom: -10px;
     right: 5%;
+}
+
+.all-no-padding {
+    & * {
+        padding: 0px;
+    }
+}
+
+.all-no-margin {
+    & * {
+        margin: 0px;
+    }
+}
+
+.h100 {
+    height: 100%;
 }

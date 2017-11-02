@@ -1,18 +1,25 @@
-page-viewjob{
-    ion-select{
+page-viewjob {
+    ion-select {
         max-width: 100%;
         width: 100%;
     }
-    ion-select .select-text{
+    ion-select .select-text {
         text-align: center
     }
-    ion-select .select-icon-inner{
+    ion-select .select-icon-inner {
         color: #FFF !important;
     }
-    .img_movement{
+    .img_movement {
         width: 9px;
         height: 25px;
         //image-rendering: pixelated;
     }
-
+    .disable-row {
+        background: #ccc;
+        color: #999
+    }
+    .disable-row-header {
+        background: #666;
+        color: #999;
+    }
 }

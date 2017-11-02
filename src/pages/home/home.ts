@@ -35,8 +35,8 @@ export class HomePage implements OnDestroy {
     public menuCtrl: MenuController,
     public events: Events,
     public _ngZone: NgZone,
-    public trackingService: TrackingService) {  
-    
+    public trackingService: TrackingService) {
+
     let dt = this.navParams.get('datetime')
 
     if(dt != void(0) && dt != ''){
@@ -55,9 +55,9 @@ export class HomePage implements OnDestroy {
     })
 
     this.getJobAmount()
-
+    this.getMobileSetting()
     this.getCheckNTrack()
-    
+
     this.timer = this.startTracking()
   }
 
@@ -87,7 +87,7 @@ export class HomePage implements OnDestroy {
   ngOnDestroy() {
     console.log('Home ngOnDestroy')
     this.unSubscribe(this.timer)
-    
+
   }
 
   private getJobAmount(){
@@ -102,6 +102,17 @@ export class HomePage implements OnDestroy {
     },(err)=>{
       console.log('requestJobsAmount err:', err)
     })
+  }
+
+  private getMobileSetting() {
+    this.homeService.requestMobileSetting()
+    .subscribe(
+      (res)=>{
+        this._ngZone.run(()=>{
+          Global.setGlobal('mobile_settings',res.result)
+        })
+      }
+    )
   }
 
   private getCheckNTrack(){
