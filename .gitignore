@@ -23,6 +23,8 @@ tmp/
 temp/
 hooks/
 plugins/
+platforms/
+!platforms/ios
 plugins/android.json
 plugins/ios.json
 www/

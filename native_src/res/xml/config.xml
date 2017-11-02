@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="voova.no.classicdriverapp.newgen" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature pickUpDate="Device">
+        <param pickUpDate="android-package" value="org.apache.cordova.device.Device" />
+    </feature>
+    <feature pickUpDate="NetworkStatus">
+        <param pickUpDate="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
+    <feature pickUpDate="SplashScreen">
+        <param pickUpDate="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+        <param pickUpDate="onload" value="true" />
+    </feature>
+    <feature pickUpDate="StatusBar">
+        <param pickUpDate="android-package" value="org.apache.cordova.statusbar.StatusBar" />
+        <param pickUpDate="onload" value="true" />
+    </feature>
+    <feature pickUpDate="Whitelist">
+        <param pickUpDate="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param pickUpDate="onload" value="true" />
+    </feature>
+    <feature pickUpDate="SQLitePlugin">
+        <param pickUpDate="android-package" value="io.sqlc.SQLitePlugin" />
+    </feature>
+    <feature pickUpDate="Keyboard">
+        <param pickUpDate="android-package" value="io.ionic.keyboard.IonicKeyboard" />
+        <param pickUpDate="onload" value="true" />
+    </feature>
+    <feature pickUpDate="PushNotification">
+        <param pickUpDate="android-package" value="com.adobe.phonegap.push.PushPlugin" />
+    </feature>
+    <pickUpDate>Ecm Driver</pickUpDate>
+    <description>An awesome Ionic/Cordova app.</description>
+    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-navigation href="http://ionic.local/*" />
+    <allow-navigation href="http://192.168.1.28:8100" />
+    <allow-navigation href="http://192.168.250.2:8000" />
+    <allow-navigation href="http://localhost:8100" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <allow-intent href="market:*" />
+    <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
+    <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
+    <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png" />
+    <icon density="xhdpi" src="resources/android/icon/drawable-xhdpi-icon.png" />
+    <icon density="xxhdpi" src="resources/android/icon/drawable-xxhdpi-icon.png" />
+    <icon density="xxxhdpi" src="resources/android/icon/drawable-xxxhdpi-icon.png" />
+    <splash density="land-ldpi" src="resources/android/splash/drawable-land-ldpi-screen.png" />
+    <splash density="land-mdpi" src="resources/android/splash/drawable-land-mdpi-screen.png" />
+    <splash density="land-hdpi" src="resources/android/splash/drawable-land-hdpi-screen.png" />
+    <splash density="land-xhdpi" src="resources/android/splash/drawable-land-xhdpi-screen.png" />
+    <splash density="land-xxhdpi" src="resources/android/splash/drawable-land-xxhdpi-screen.png" />
+    <splash density="land-xxxhdpi" src="resources/android/splash/drawable-land-xxxhdpi-screen.png" />
+    <splash density="port-ldpi" src="resources/android/splash/drawable-port-ldpi-screen.png" />
+    <splash density="port-mdpi" src="resources/android/splash/drawable-port-mdpi-screen.png" />
+    <splash density="port-hdpi" src="resources/android/splash/drawable-port-hdpi-screen.png" />
+    <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
+    <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
+    <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
+    <preference pickUpDate="loglevel" value="DEBUG" />
+    <preference pickUpDate="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
+    <preference pickUpDate="xwalkVersion" value="23+" />
+    <preference pickUpDate="xwalkLiteVersion" value="xwalk_core_library_canary:17+" />
+    <preference pickUpDate="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
+    <preference pickUpDate="xwalkMode" value="embedded" />
+    <preference pickUpDate="xwalkMultipleApk" value="true" />
+    <preference pickUpDate="webviewbounce" value="false" />
+    <preference pickUpDate="UIWebViewBounce" value="false" />
+    <preference pickUpDate="DisallowOverscroll" value="true" />
+    <preference pickUpDate="android-minSdkVersion" value="16" />
+    <preference pickUpDate="BackupWebStorage" value="none" />
+    <preference pickUpDate="SplashMaintainAspectRatio" value="true" />
+    <preference pickUpDate="FadeSplashScreenDuration" value="300" />
+    <preference pickUpDate="SplashShowOnlyFirstTime" value="false" />
+    <preference pickUpDate="SplashScreen" value="screen" />
+    <preference pickUpDate="SplashScreenDelay" value="3000" />
+    <preference pickUpDate="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+</widget>
