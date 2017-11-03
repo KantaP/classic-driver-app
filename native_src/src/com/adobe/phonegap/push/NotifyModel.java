@@ -1,4 +1,4 @@
-package com.adobe.phonegap.push;
+ package com.adobe.phonegap.push;
 
 import android.graphics.Bitmap;
 

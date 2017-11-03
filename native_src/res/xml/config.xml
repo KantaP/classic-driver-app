@@ -1,34 +1,34 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="voova.no.classicdriverapp.newgen" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <feature pickUpDate="Device">
-        <param pickUpDate="android-package" value="org.apache.cordova.device.Device" />
+    <feature name="Device">
+        <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
-    <feature pickUpDate="NetworkStatus">
-        <param pickUpDate="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
-    <feature pickUpDate="SplashScreen">
-        <param pickUpDate="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
-        <param pickUpDate="onload" value="true" />
+    <feature name="SplashScreen">
+        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+        <param name="onload" value="true" />
     </feature>
-    <feature pickUpDate="StatusBar">
-        <param pickUpDate="android-package" value="org.apache.cordova.statusbar.StatusBar" />
-        <param pickUpDate="onload" value="true" />
+    <feature name="StatusBar">
+        <param name="android-package" value="org.apache.cordova.statusbar.StatusBar" />
+        <param name="onload" value="true" />
     </feature>
-    <feature pickUpDate="Whitelist">
-        <param pickUpDate="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
-        <param pickUpDate="onload" value="true" />
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
     </feature>
-    <feature pickUpDate="SQLitePlugin">
-        <param pickUpDate="android-package" value="io.sqlc.SQLitePlugin" />
+    <feature name="SQLitePlugin">
+        <param name="android-package" value="io.sqlc.SQLitePlugin" />
     </feature>
-    <feature pickUpDate="Keyboard">
-        <param pickUpDate="android-package" value="io.ionic.keyboard.IonicKeyboard" />
-        <param pickUpDate="onload" value="true" />
+    <feature name="Keyboard">
+        <param name="android-package" value="io.ionic.keyboard.IonicKeyboard" />
+        <param name="onload" value="true" />
     </feature>
-    <feature pickUpDate="PushNotification">
-        <param pickUpDate="android-package" value="com.adobe.phonegap.push.PushPlugin" />
+    <feature name="PushNotification">
+        <param name="android-package" value="com.adobe.phonegap.push.PushPlugin" />
     </feature>
-    <pickUpDate>Ecm Driver</pickUpDate>
+    <name>Ecm Driver</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
     <content src="index.html" />
@@ -44,6 +44,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
+    <resource-file src="google-services.json" target="google-services.json" />
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
     <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png" />
@@ -62,22 +63,22 @@
     <splash density="port-xhdpi" src="resources/android/splash/drawable-port-xhdpi-screen.png" />
     <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
     <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
-    <preference pickUpDate="loglevel" value="DEBUG" />
-    <preference pickUpDate="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
-    <preference pickUpDate="xwalkVersion" value="23+" />
-    <preference pickUpDate="xwalkLiteVersion" value="xwalk_core_library_canary:17+" />
-    <preference pickUpDate="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
-    <preference pickUpDate="xwalkMode" value="embedded" />
-    <preference pickUpDate="xwalkMultipleApk" value="true" />
-    <preference pickUpDate="webviewbounce" value="false" />
-    <preference pickUpDate="UIWebViewBounce" value="false" />
-    <preference pickUpDate="DisallowOverscroll" value="true" />
-    <preference pickUpDate="android-minSdkVersion" value="16" />
-    <preference pickUpDate="BackupWebStorage" value="none" />
-    <preference pickUpDate="SplashMaintainAspectRatio" value="true" />
-    <preference pickUpDate="FadeSplashScreenDuration" value="300" />
-    <preference pickUpDate="SplashShowOnlyFirstTime" value="false" />
-    <preference pickUpDate="SplashScreen" value="screen" />
-    <preference pickUpDate="SplashScreenDelay" value="3000" />
-    <preference pickUpDate="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+    <preference name="loglevel" value="DEBUG" />
+    <preference name="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
+    <preference name="xwalkVersion" value="23+" />
+    <preference name="xwalkLiteVersion" value="xwalk_core_library_canary:17+" />
+    <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
+    <preference name="xwalkMode" value="embedded" />
+    <preference name="xwalkMultipleApk" value="true" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="UIWebViewBounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="16" />
+    <preference name="BackupWebStorage" value="none" />
+    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="FadeSplashScreenDuration" value="300" />
+    <preference name="SplashShowOnlyFirstTime" value="false" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
 </widget>

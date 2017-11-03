@@ -178,7 +178,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
       ));
     }
 
-    startActivity(intentActivity);
+    //startActivity(intentActivity);
 
 
     String from = message.getFrom();
