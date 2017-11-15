@@ -1,0 +1,33 @@
+page-passenger-add-note {
+    .head {
+        font-size: 18px;
+    }
+    .sub-head {
+        padding-top: 10px;
+        padding-bottom: 5px;
+        font-size: 14px;
+        color: #999;
+    }
+    .item {
+        padding-left: 0px;
+        margin-top: 4%;
+        &.item-radio {
+            margin-top: 0px;
+        }
+    }
+    .item-radio {
+        & .item-inner {
+            border: 0px !important;
+        }
+    }
+    .item-inner {
+        border: 1px solid #dedede;
+    }
+    .item-input ion-label {
+        margin-left: 0.5em;
+    }
+    .item-md .radio-md[item-left],
+    .item-md .radio-md[item-start] {
+        margin: 9px 10px 9px 0;
+    }
+}

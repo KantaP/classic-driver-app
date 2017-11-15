@@ -62,6 +62,7 @@ export class JobsListPage {
     }
 
     openViewJob(job){
+      console.log(job)
         this.navCtrl.push(ViewJobPage, {data: job, callback: this.callbackForUpdate.bind(this)})
     }
 }

@@ -1,3 +1,4 @@
+import { FormBuilder , FormGroup , Validators} from '@angular/forms';
 import { MessageModal } from './modal/modal.sentmessage'
 import { SignOutVehicle } from './../signoutvehicle/signoutvehicle'
 import { MessageService } from './message.service'
@@ -25,14 +26,16 @@ export class MessagePage {
         body: ''
     }
 
-    cannedMessages: Array<MessageInterface> = []
+    cannedMessages: Array<any> = []
+    messageForm : FormGroup
 
     constructor(
         public viewCtrl: ViewController,
         public events: Events,
         private modalCtrl: ModalController,
         private messageService: MessageService,
-        public loadingCtrl: LoadingController
+        public loadingCtrl: LoadingController,
+        private fb: FormBuilder
         ) {
 
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
@@ -45,7 +48,10 @@ export class MessagePage {
         if(Global.getGlobal('vehicle_signin_insert_id') > 0){
             this.isVehicleSignedIn = true
         }
-
+        this.messageForm = this.fb.group({
+          title: ['',Validators.required],
+          body: ['',Validators.required]
+        })
         this.getMessage()
     }
 
@@ -77,13 +83,16 @@ export class MessagePage {
     }
 
     sendMessage(){
-        console.log(this.message)
+
 
         let loader = this.loadingCtrl.create({
             content: "Please wait..."
         })
         loader.present()
-
+        this.message = {
+          subject: this.messageForm.controls['title'].value,
+          body: this.messageForm.controls['body'].value,
+        }
         this.messageService.sendMessageToServer(this.message)
         .subscribe((x)=>{
             console.log('sendMessage succ:', x)
@@ -97,21 +106,26 @@ export class MessagePage {
             console.log('sendMessage err:', err)
         })
     }
-    setMessage(msg){
-        this.message.subject = msg.title
-        this.message.body = msg.message
-    }
+    // setMessage(msg){
+    //     this.message.subject = msg.title
+    //     this.message.body = msg.message
+    // }
 
-    toggleGroup(group) {
-        if (this.isGroupShown(group)) {
-            this.shownGroup = null
-        } else {
-            this.shownGroup = group
-        }
-    }
+    // toggleGroup(group) {
+    //     if (this.isGroupShown(group)) {
+    //         this.shownGroup = null
+    //     } else {
+    //         this.shownGroup = group
+    //     }
+    // }
 
-    isGroupShown(group) {
-        return this.shownGroup === group
+    // isGroupShown(group) {
+    //     return this.shownGroup === group
+    // }
+
+    selectMessage(e:any) {
+      this.messageForm.controls['title'].patchValue(e.title)
+      this.messageForm.controls['body'].patchValue(e.message)
     }
 
 }

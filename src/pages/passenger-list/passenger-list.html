@@ -65,10 +65,11 @@
     <ion-grid ion-fixed no-padding style="bottom:0px; height:10vh;" class="all-no-padding">
         <ion-row class="h100 route-bottom-bg">
             <ion-col col-8 class="all-no-margin" align-self-center>
-                <marquee behavior="scroll" direction="left" style="font-weight:bold">{{routeString}}</marquee>
+                <marquee behavior="scroll" direction="left" style="font-weight:bold" loop="infinite">{{routeString}}</marquee>
             </ion-col>
             <ion-col col-4 class="all-no-margin">
-                <a ion-button color="primary" class="w100 h100" (click)="enroute()">EN-ROUTE</a>
+                <a *ngIf="!lastPoint" ion-button color="primary" class="w100 h100" (click)="enroute()">EN-ROUTE</a>
+                <a *ngIf="lastPoint" ion-button color="dark" class="w100 h100" (click)="endroute()">END</a>
             </ion-col>
         </ion-row>
     </ion-grid>
@@ -80,7 +81,7 @@
             <ion-grid no-padding>
                 <ion-row justify-content-between class="modal-title">
                     <div>PASSENGER INFO</div>
-                    <ion-icon ios="md-close" md="md-close" (click)="closeModal()"></ion-icon>
+                    <ion-icon ios="md-close" md="md-close" (click)="closeModal('passenger-item')"></ion-icon>
                 </ion-row>
                 <ion-row>
                     <div style="position:relative;width:100%;">
@@ -93,14 +94,20 @@
                         <ion-row class="margin-top-3">
                             <div><b>Name</b>: {{passengerItem.first_name}} {{passengerItem.surname}}</div>
                         </ion-row>
-                        <ion-row class="margin-top-3">
+                        <!-- <ion-row class="margin-top-3">
                             <button ion-button block [disabled]="viewinstructors" [color]="colorViewInstructors">VIEW SPECIAL INSTRUTORS</button>
-                        </ion-row>
+                        </ion-row> -->
                         <ion-row class="margin-top-1">
-                            <button ion-button block color="primary">ADD NOTE</button>
+                            <button ion-button block color="primary" (click)="openAddNote(passengerItem)">ADD NOTE</button>
                         </ion-row>
-                        <ion-row class="margin-top-1">
+                        <ion-row class="margin-top-1" *ngIf="(passengerItem.pickup == 1 && passengerItem.status == 0)||(passengerItem.pickup == 0 && passengerItem.status == 1)||(passengerItem.status == -1)">
                             <button ion-button block [disabled]="viewForceLogin" [color]="colorViewForceLogin" (click)="forceLogin(passengerItem)">FORCE LOGIN</button>
+                        </ion-row>
+                        <ion-row class="margin-top-1" *ngIf="(passengerItem.pickup == 1 && passengerItem.status == 1) || (passengerItem.pickup == 0 && passengerItem.status == 0)">
+                            <button ion-button block [color]="colorViewForceLogout" (click)="forceLogout(passengerItem)">FORCE LOGOUT</button>
+                        </ion-row>
+                        <ion-row class="margin-top-1">
+                            <button ion-button block color="primary" (click)="closeModal('passenger-item')">PASSENGER LIST</button>
                         </ion-row>
                     </ion-grid>
                 </ion-row>
@@ -116,26 +123,26 @@
             <ion-grid no-padding>
                 <ion-row justify-content-between class="modal-title">
                     <div>FAILED BOARDING LIST</div>
-                    <ion-icon ios="md-close" md="md-close" (click)="closeModal()"></ion-icon>
+                    <ion-icon ios="md-close" md="md-close" (click)="closeModal('warning-popup')"></ion-icon>
                 </ion-row>
                 <ion-row>
-                    <div style="position:relative;width:100%;">
-                        <img [src]="failedItem.icon" class="modal-picture" />
+                    <div style="position:relative;width:100%;text-align:center">
+                        <img [src]="failedItem.icon" class="modal-icon" />
                     </div>
                 </ion-row>
                 <ion-row>
                     <ion-grid style="padding:10px;">
                         <ion-row class="margin-top-3">
-                            <div>{{failedItem.title}}</div>
+                            <div><b>{{failedItem.title}}</b></div>
                         </ion-row>
-                        <ion-row class="margin-top-3" *ngIf="failedItem.sholdBeAddress">
-                            <div>: Should Be : {{failedItem.shouldBeAddress}}?</div>
+                        <ion-row class="margin-top-3" *ngIf="failedItem.shouldBeAddress">
+                            <div><b>Should Be : {{failedItem.shouldBeAddress}}?</b></div>
                         </ion-row>
-                        <ion-row class="margin-top-3">
-                            <button ion-button block color="secondary">AOLLOW</button>
+                        <ion-row class="margin-top-3" *ngIf="!failedItem.notAllow">
+                            <button ion-button block color="secondary" (click)="failedItem.callback()">AOLLOW</button>
                         </ion-row>
-                        <ion-row class="margin-top-1">
-                            <button ion-button block color="danger">CANCEL</button>
+                        <ion-row class="margin-top-1" *ngIf="!failedItem.notAllow">
+                            <button ion-button block color="danger" (click)="closeModal('warning-popup')">CANCEL</button>
                         </ion-row>
                     </ion-grid>
                 </ion-row>

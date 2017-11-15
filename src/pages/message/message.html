@@ -1,30 +1,30 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <div class="ver-sup ib page-header-custom-title txt_bold">
-                MESSAGE
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            MESSAGE
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </ion-title>
+    </ion-navbar>
+
+    <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
         </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
 
-  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
-
-      <div class="txt_white ib ver-mid mg-left-10">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid mg-left-10">
+            Signed in : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 </ion-header>
 
@@ -38,7 +38,7 @@
     </div>
 
     <div *ngIf="loading == false">
-        <div padding>
+        <!-- <div padding>
             <ion-list>
                 <div class="pd-no-top pd-bottom-1px border-around" *ngFor="let c of cannedMessages; let i=index;" text-wrap >
                     <div class="w100 h40px" (click)="toggleGroup(c.uid)" [ngClass]="{active: isGroupShown(c.uid)}">
@@ -71,6 +71,31 @@
                     SEND
                 </div>
             </div>
-        </div>
+        </div> -->
+        <ion-grid>
+            <ion-row *ngFor="let c of cannedMessages; let i=index;" class="margin-top-3">
+                <ion-item>
+                    <ion-label>{{ c.cate }}</ion-label>
+                    <ion-select (ionChange)="selectMessage($event)">
+                        <ion-option [value]="m" *ngFor="let m of c.message">{{ m.title }}</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-row>
+            <form [formGroup]="messageForm" novalidate>
+                <ion-row class="margin-top-3">
+                    <ion-item>
+                        <ion-input formControlName="title" type="text" placeholder="Subject"></ion-input>
+                    </ion-item>
+                </ion-row>
+                <ion-row class="margin-top-3">
+                    <ion-item>
+                        <ion-input formControlName="body" type="text" placeholder="Message"></ion-input>
+                    </ion-item>
+                </ion-row>
+                <ion-row class="margin-top-20" style="padding-right:16px;padding-left:16px;">
+                    <button ion-button block class="btn_blue" (click)="sendMessage()">SEND</button>
+                </ion-row>
+            </form>
+        </ion-grid>
     </div>
 </ion-content>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+
+  android:id="@+id/layoutDialog"
+  android:layout_height="wrap_content"
+  android:layout_gravity="center"
+  android:layout_width="300dp"
+  android:theme="@android:style/Theme.Holo.NoActionBar">
+
+  <!-- Btn Nav -->
+  <RelativeLayout
+    android:id="@+id/layoutMain"
+    android:gravity="center"
+    android:background="#f7931e"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:orientation="horizontal"
+      >
+      <ImageButton
+        android:id="@+id/btnNavLeft"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical|left"
+        android:background="@android:color/transparent"
+        android:src="@drawable/nav_left"
+        android:tint="#ffff" />
+
+      <ImageButton
+        android:id="@+id/btnNavRight"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical|right"
+        android:background="@android:color/transparent"
+        android:src="@drawable/nav_right"
+        android:tint="#ffff" />
+
+    </FrameLayout>
+
+    <LinearLayout
+      android:id="@+id/inner_dialog"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:orientation="vertical">
+
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Header -->
+        <ImageView
+          android:id="@+id/logoDialog"
+          android:layout_marginTop="16dp"
+          android:layout_marginBottom="24dp"
+          android:layout_width="100dp"
+          android:layout_height="79dp"
+          android:background="@drawable/logo_driver_dialog"
+          android:scaleType="fitCenter" />
+
+      </LinearLayout>
+
+
+      <!-- Content -->
+      <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp">
+
+        <ViewFlipper
+          android:id="@+id/viewFlipper"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <RelativeLayout
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <!-- Content Here -->
+
+
+          </RelativeLayout>
+
+        </ViewFlipper>
+
+      </FrameLayout>
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@id/layoutContent"
+        android:orientation="vertical">
+
+        <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="#d7d7d7">
+
+        </FrameLayout>
+
+        <Button
+          android:id="@+id/btnOk"
+          android:layout_width="wrap_content"
+          android:layout_height="40dp"
+          android:layout_gravity="right"
+          android:background="?android:attr/selectableItemBackground"
+          android:text="OK"
+          android:textColor="#ffff"
+          android:textSize="20dp"
+          android:textStyle="bold" />
+
+      </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+</LinearLayout>

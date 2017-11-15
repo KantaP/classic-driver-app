@@ -1,0 +1,87 @@
+<!--
+  Generated template for the PassengerAddNotePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header class="page-header-custom bg_blue_alice">
+
+    <ion-navbar>
+        <ion-title>
+            <div class="color_blue_midnight">
+                PASSENGERS NOTE
+            </div>
+
+        </ion-title>
+    </ion-navbar>
+
+</ion-header>
+
+
+<ion-content no-padding>
+    <ion-grid no-padding>
+        <ion-row class="padding-2 bg_grey_gainsboro">
+            <ion-col col-3 class="txt_center" align-self-center>
+                <img class="avatar-img bg_white" [src]="passenger.photo">
+            </ion-col>
+            <ion-col col-9>
+                <div class="head">
+                    {{passenger.first_name}} {{passenger.surname}}
+                </div>
+                <div class="sub-head">
+                    This boy is poor man. bla bla bla bla blabal
+                </div>
+            </ion-col>
+        </ion-row>
+        <form [formGroup]="questionForm" *ngIf="questionForm || async">
+            <ion-row class="padding-left-4 padding-right-4" *ngFor="let question of questions;">
+
+                <ion-item *ngIf="question.qut_format == 'text'">
+                    <ion-input type="text" [id]="question.qut_name" [formControlName]="question.qut_name" [placeholder]="question.qut_description"></ion-input>
+                </ion-item>
+                <ion-item radio-group [formControlName]="question.qut_name" *ngIf="question.qut_format == 'option' && question.qut_options == ''">
+                    <ion-radio [id]="question.qut_name" [value]="question.qut_name" item-start></ion-radio>
+                    <ion-label item-end>{{question.qut_name}}</ion-label>
+                </ion-item>
+                <ion-item *ngIf="question.qut_format == 'option' && question.qut_options != ''">
+                    <ion-radio #test (ionSelect)="expandSub(question.qut_name,test)" item-start></ion-radio>
+                    <ion-label item-end>{{question.qut_name}}</ion-label>
+                </ion-item>
+                <ion-row *ngIf="question.qut_format == 'option' && question.qut_options != '' && expandedItem(question.qut_name)" radio-group [formControlName]="question.qut_name" class="padding-left-8">
+                    <ion-item *ngFor="let item of question.options;">
+                        <ion-radio [id]="question.qut_name" [value]="item" item-start></ion-radio>
+                        <ion-label item-end>{{item}}</ion-label>
+                    </ion-item>
+                </ion-row>
+            </ion-row>
+        </form>
+        <ion-row class="padding-left-4 padding-right-4">
+            <ion-item>
+                <ion-label></ion-label>
+                <ion-input type="text" placeholder="Note" [(ngModel)]="passengerNote"></ion-input>
+            </ion-item>
+        </ion-row>
+        <ion-row class="padding-left-4 padding-right-4">
+            <button ion-button block color="primary" class="btn_blue" (click)="submitForm()">Submit</button>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<!-- <modal id="alert-popup">
+    <div class="modal">
+        <div class="modal-body" style="margin-top:50%;margin-left:22px;margin-right:22px;">
+            <ion-grid no-padding style="background: #154AC6;">
+                <ion-row justify-content-center style="padding: 10px;">
+                    <img src="assets/img/logo_app_white.png" style="height:12vh;" />
+                </ion-row>
+                <ion-row justify-content-center style="font-size: 18px;color: #fff; margin-top: 10px;">
+                    {{popUpMessage}}
+                </ion-row>
+                <ion-row justify-content-end style="border-top: 1px solid #fff;margin-top: 10px;">
+                    <button ion-button style="    border: 1px solid transparent;background: transparent;box-shadow: none;" (click)="closePopup()">OK</button>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal> -->

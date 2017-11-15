@@ -110,30 +110,34 @@
         </div>
     </div>
     <div *ngIf="loading == false">
-        <div class="" *ngFor="let j of journey">
+        <div class="" *ngFor="let j of journey;let ji = index">
             <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal">
                 <div padding>
                     Journey {{ j.journey_group }}
                 </div>
             </div>
+            <!--(click)="openPassenger(m.movement_id,m.collection_address,m.destination_address,m.progress)"-->
             <div class="">
-                <div ion-row [ngClass]="{'disable-row':m.progress == 10 || !alreadyAccept}" *ngFor="let m of j.movement" (click)="openPassenger(m.movement_id,m.collection_address,m.destination_address,m.progress)">
+                <div ion-row [ngClass]="{'disable-row': !alreadyAccept}" *ngFor="let m of j.movement;let i = index" (click)="openViewRoute(m,ji,i)">
                     <div col-1 class="gravity-center-vertical">
                         <div class="mg-auto">
                             <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
                         </div>
                     </div>
                     <div col-8 class="gravity-center-vertical">
-                        <div>
+                        <div *ngIf="i != (j.movement.length-1)">
                             {{ m.collection_address }}
                         </div>
-                        <div>
+                        <div *ngIf="i == (j.movement.length-1)">
                             {{ m.destination_address }}
                         </div>
                     </div>
                     <div col-3 class="gravity-center-vertical txt_right">
-                        <div>
+                        <div *ngIf="i != (j.movement.length-1)">
                             <i class="icon icon-Time"></i> {{ m.time }}
+                        </div>
+                        <div *ngIf="i == (j.movement.length-1)">
+                            <i class="icon icon-Time"></i> {{ m.timeEnd }}
                         </div>
                         <div>
                             {{ m.date }}
@@ -158,23 +162,26 @@
                     </div>
                 </div>
                 <div class="">
-                    <div ion-row class="disable-row" *ngFor="let m of j.movement">
+                    <div ion-row class="disable-row" *ngFor="let m of j.movement; let i = index">
                         <div col-1 class="gravity-center-vertical">
                             <div class="mg-auto">
                                 <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
                             </div>
                         </div>
                         <div col-8 class="gravity-center-vertical">
-                            <div>
+                            <div *ngIf="i != (j.movement.length-1)">
                                 {{ m.collection_address }}
                             </div>
-                            <div>
+                            <div *ngIf="i == (j.movement.length-1)">
                                 {{ m.destination_address }}
                             </div>
                         </div>
                         <div col-3 class="gravity-center-vertical txt_right">
-                            <div>
+                            <div *ngIf="i != (j.movement.length-1)">
                                 <i class="icon icon-Time"></i> {{ m.time }}
+                            </div>
+                            <div *ngIf="i == (j.movement.length-1)">
+                                <i class="icon icon-Time"></i> {{ m.timeEnd }}
                             </div>
                             <div>
                                 {{ m.date }}
@@ -194,4 +201,42 @@
         </div>
 
     </div>
+    <modal id="route-item" google="true" googleEle="#map" [route]="routeForModal">
+        <div class="modal">
+            <div class="modal-body">
+                <ion-grid no-padding>
+                    <ion-row justify-content-between class="modal-title">
+                        <div>ROUTE INFO</div>
+                        <ion-icon ios="md-close" md="md-close" (click)="closeViewRoute()"></ion-icon>
+                    </ion-row>
+                    <ion-row>
+                        <div style="position:relative;width:100%;">
+                            <div id="map" style="height:35vh;"></div>
+                            <div class="passenger-status-cirle passenger-box-primary" (click)="openNavigation()">
+                                <ion-grid no-padding style="height:100%;">
+                                    <ion-row justify-content-center align-items-center style="height:inherit;">
+                                        <ion-icon name="send" ios="ios-send" md="ios-send" style="font-size:5vw;color:#fff;"></ion-icon>
+                                    </ion-row>
+                                </ion-grid>
+                            </div>
+                        </div>
+                    </ion-row>
+                    <ion-row style="margin-top:5px;">
+                        <ion-grid style="padding:10px;">
+                            <ion-row>
+                                <div><b>Next Stop</b>: {{onSiteDetail.next_place}}</div>
+                            </ion-row>
+                            <ion-row class="margin-top-3">
+                                <button ion-button color="primary" block (click)="openWholeRoute()">View Route</button>
+                            </ion-row>
+                            <ion-row class="margin-top-1">
+                                <button ion-button color="danger" block (click)="openPassenger(onSiteDetail.movement,onSiteDetail.isLast,onSiteDetail.isFirst)">On Site</button>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-row>
+                </ion-grid>
+            </div>
+        </div>
+        <div class="modal-background"></div>
+    </modal>
 </ion-content>

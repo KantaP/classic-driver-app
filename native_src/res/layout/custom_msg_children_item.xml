@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <LinearLayout
+      android:id="@+id/layoutChildren"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="#000000"
+      android:orientation="vertical">
+
+      <!-- Quote id -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="Quote ID : "
+          android:layout_gravity="start"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/txtQuoteId"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="123456789"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+      </LinearLayout>
+
+      <!-- Pick up date -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="Pick up Date : "
+          android:layout_gravity="start"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/txtPickUpDate"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="01 Jan 1990"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+      </LinearLayout>
+
+      <!-- PickqouteIdtime -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="Pick up Time : "
+          android:layout_gravity="start"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/txtPickUpTime"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="12:00"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+      </LinearLayout>
+
+      <!-- location -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="Pick up Address : "
+          android:layout_gravity="start"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/txtPickUpAddress"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="01 Jan 1990"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+      </LinearLayout>
+
+      <!-- Alighted -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="Passenger Number : "
+          android:textColor="#FFF"
+          android:layout_gravity="start"
+          android:textSize="14sp" />
+
+        <TextView
+          android:id="@+id/txtPassengerNumber"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:text="123456789"
+          android:textColor="#FFF"
+          android:textSize="14sp" />
+
+
+
+      </LinearLayout>
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="12dp">
+
+      </FrameLayout>
+
+
+    </LinearLayout>
+

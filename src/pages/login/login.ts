@@ -1,6 +1,8 @@
+
+import { RequestProvider } from './../../providers/request/request';
 import { LoginService } from './login.service'
 import { Component, NgZone } from '@angular/core'
-import { IonicPage, NavController, MenuController, Platform , NavParams, ModalController, ViewController, Events, LoadingController } from 'ionic-angular'
+import { IonicPage, NavController, MenuController, Platform , NavParams, ModalController, ViewController, Events, LoadingController, normalizeURL } from 'ionic-angular'
 import { Http, Headers } from '@angular/http'
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { HomePage } from '../home/home'
@@ -8,6 +10,7 @@ import { DataStorage } from '../util/storage'
 import { CompanyModel } from '../util/model/company'
 import { Global } from '../util/global'
 import { AddCompany } from '../addcompany/addcompany'
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -42,7 +45,8 @@ export class LoginPage {
     private _ngZone: NgZone,
     private dataStore: DataStorage,
     private platform: Platform,
-    private push: Push
+    private push: Push,
+    private request: RequestProvider
   ) {
 
     this.comp_list = [{
@@ -222,6 +226,7 @@ export class LoginPage {
         if(this.platform.is('cordova')) {
           this.registerFCMToken()
         }
+
         this.dataStore.getLastLogin(res.driver_id)
           .subscribe((res)=>{
             console.log("getLastLogin succ:", res)
@@ -236,10 +241,31 @@ export class LoginPage {
             datetimeLogin.datetime = (re.item(0) == void(0) ? '':re.item(0).datetime)
 
             console.log('datetimeLogin', datetimeLogin)
-            this.navCtrl.setRoot(HomePage, datetimeLogin)
+
           },(err)=>{
             console.log("getLastLogin err:", err)
-            this.navCtrl.setRoot(HomePage, datetimeLogin)
+            // this.navCtrl.setRoot(HomePage, datetimeLogin)
+        })
+        this.dataStore.clearLogDB('AlreadyEnRoute')
+        var promiseData = []
+        promiseData.push(this.request.getAllPassengerInSystemPromise())
+        promiseData.push(this.request.getPassengerQuestionsPromise())
+        Promise.all(promiseData)
+        .then((items)=>{
+          console.log(items)
+          items.forEach((item,index)=>{
+            var label = item.label || 'item#'+index
+            if(label == 'getAllPassengerInSystem') {
+              item.results = item.results.map((passenger) => {
+                if (passenger.photo == "") passenger.photo = normalizeURL("assets/img/nouser.png")
+                passenger.fromOtherRoute = true
+                return passenger
+              })
+            }
+            this.dataStore.clearLogDB(label)
+            this.dataStore.addLogData(label,item.results)
+          })
+          this.navCtrl.setRoot(HomePage, datetimeLogin)
         })
 
       }else{

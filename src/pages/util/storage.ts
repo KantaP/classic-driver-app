@@ -402,6 +402,7 @@ export class DataStorage{
           return Observable.create((observer)=>{
             this.sqlstorage.get('log_'+key)
             .then((data)=>{
+              if(typeof data != 'object') data = [data]
               var logInfo = new ReplicaSQL(data)
               observer.next(logInfo)
             })

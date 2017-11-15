@@ -1,3 +1,5 @@
+import { ViewNavigationPage } from './../pages/view-navigation/view-navigation';
+import { ViewRoutePage } from './../pages/view-route/view-route';
 import { ModalProvider } from './../providers/modal/modal';
 import { ModalDirective } from './../directives/modal/modal';
 
@@ -41,7 +43,10 @@ import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite';
 import { Push } from '@ionic-native/push';
 import { PassengerListPage } from './../pages/passenger-list/passenger-list';
-import { ActionStorageProvider } from '../providers/action-storage/action-storage';
+
+import { RequestProvider } from '../providers/request/request';
+import { PassengerAddNotePage } from '../pages/passenger-add-note/passenger-add-note';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -67,7 +72,10 @@ import { ActionStorageProvider } from '../providers/action-storage/action-storag
     VehicleCheckPage,
     SettingPage,
     PassengerListPage,
-    ModalDirective
+    ModalDirective,
+    ViewRoutePage,
+    ViewNavigationPage,
+    PassengerAddNotePage
   ],
   imports: [
     BrowserModule,
@@ -76,7 +84,9 @@ import { ActionStorageProvider } from '../providers/action-storage/action-storag
     IonicStorageModule.forRoot({
       name: '__classic_driver_app',
          driverOrder: ['indexeddb', 'sqlite', 'websql']
-    })
+    }),
+    FormsModule,
+    ReactiveFormsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -101,7 +111,10 @@ import { ActionStorageProvider } from '../providers/action-storage/action-storag
     SignOutVehicle,
     VehicleCheckPage,
     SettingPage,
-    PassengerListPage
+    PassengerListPage,
+    ViewRoutePage,
+    ViewNavigationPage,
+    PassengerAddNotePage
   ],
   providers: [
     StatusBar,
@@ -115,8 +128,8 @@ import { ActionStorageProvider } from '../providers/action-storage/action-storag
     Network,
     SQLite,
     ModalProvider,
-    ActionStorageProvider,
-    Push
+    Push,
+    RequestProvider,
   ]
 })
 export class AppModule {}

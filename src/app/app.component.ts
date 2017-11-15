@@ -154,7 +154,6 @@ export class MyApp {
       this.dataStorage.getLogData('push_token')
       .subscribe((res)=>{
         let items = res.rows
-        console.log(items)
         this.dataStorage.clearLogDB('push_token')
         this.dataStorage.clearLogDB('auth')
         this.homeService.requestRemoveToken(items.item(0))
