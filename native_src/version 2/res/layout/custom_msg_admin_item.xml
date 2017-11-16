@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:background="#000000">
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/txtTopic"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      android:maxLines="16"
+      android:paddingBottom="8dp"
+      android:text="IMPORTANT INFORMATION:"
+      android:textColor="#ffff"
+      android:textStyle="bold"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/txtAdminMsg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="start"
+      android:maxLines="16"
+      android:paddingBottom="24dp"
+      android:text="Almost heaven, West Virginia, Blue Ridge Mountains, Shenandoah River.Life is old there, older than the trees, younger than the mountains, blowing like a breeze."
+      android:textColor="#ffff"
+      android:textSize="16sp" />
+
+
+  </LinearLayout>
+
+
+
+</FrameLayout>
