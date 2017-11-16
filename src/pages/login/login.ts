@@ -224,7 +224,12 @@ export class LoginPage {
         this.dataStore.addLogData('auth',true)
         console.log('logged in on platform : ' + this.platform._platforms)
         if(this.platform.is('cordova')) {
-          this.registerFCMToken()
+          this.dataStore.getLogData('push_token')
+          .subscribe((data)=>{
+            if(data.rows.length == 0) {
+              this.registerFCMToken()
+            }
+          })
         }
 
         this.dataStore.getLastLogin(res.driver_id)

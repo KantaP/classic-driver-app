@@ -597,6 +597,22 @@ export class PassengerListPage {
             return item
           })
           this.modal.close('warning-popup')
+          for(let parent of passenger.parents){
+            var dataPayload: NotiPayload = {}
+            if(this.navParams.get('current_place') != passenger.correctPickUp) {
+              this.wrong_point = '1'
+            }
+            dataPayload.message = "Passenger update"
+            dataPayload.title = "Passenger Update"
+            dataPayload.route = passenger.jobPattern[0].job_name || ""
+            dataPayload.place =  this.navParams.get('current_place')
+            dataPayload.sentfrom = ""
+            dataPayload.name = passenger.first_name + ' ' + passenger.surname
+            dataPayload.time = moment().format('HH:mm')
+            dataPayload.wrong_point = this.wrong_point
+            dataPayload.status = 'Boarded'
+            this.sendNotification(parent.email, dataPayload)
+          }
           this.initPassengers()
         }
       })
@@ -634,13 +650,29 @@ export class PassengerListPage {
       if (data.status) {
         var movement_id = action
         this.allPassenger = this.allPassenger.map((item) => {
-          if (item.passenger_id == passenger.passenger_id && item.point_id == movement_id && item.pickup == 0) {
+          if (item.passenger_id == passenger.passenger_id && item.pickup == 0) {
             item.status = 1
             item.action_point_id = action
           }
           return item
         })
         this.modal.close('warning-popup')
+        for(let parent of passenger.parents){
+          var dataPayload: NotiPayload = {}
+          if(this.navParams.get('current_place') != passenger.correctDestination) {
+            this.wrong_point = '1'
+          }
+          dataPayload.message = "Passenger update"
+          dataPayload.title = "Passenger Update"
+          dataPayload.route = passenger.jobPattern[0].job_name || ""
+          dataPayload.place = this.navParams.get('current_place')
+          dataPayload.sentfrom = ""
+          dataPayload.name = passenger.first_name + ' ' + passenger.surname
+          dataPayload.time = moment().format('HH:mm')
+          dataPayload.wrong_point = this.wrong_point
+          dataPayload.status = 'Aligted'
+          this.sendNotification(parent.email, dataPayload)
+        }
         this.initPassengers()
       }
     })

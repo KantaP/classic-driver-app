@@ -32,24 +32,22 @@ public class NotifyAlertDialog extends Activity {
   private static String TAG = "NotifyAlertDialog";
   private ArrayList<NotifyModel> notifyModel;
 
-  LinearLayout layoutChildren;
+
   RelativeLayout layoutMain;
   TextView txtQuoteId,
     txtPickUpdate,
     txtPickUpTime,
     txtPickUpAddress,
     txtPassengerNumber,
-    txtTopic,
     txtAdminMsg;
   ImageButton btnNavLeft, btnNavRight;
   Button btnOk;
   ImageView imgViewLogoDialog;
 
   ViewFlipper viewFlipper;
-  Animation in;
-  Animation out;
+  //Animation in;
+  //Animation out;
   private float initialX;
-  RelativeLayout layoutContent;
   private static View viewContentLoader;
 
   private FCMService fcmService = new FCMService();
@@ -61,9 +59,7 @@ public class NotifyAlertDialog extends Activity {
     setFinishOnTouchOutside(false);
     setContentView(R.layout.custom_dialog);
 
-
     notifyModel = new ArrayList<NotifyModel>();
-
     initView();
 
     btnOk.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +71,7 @@ public class NotifyAlertDialog extends Activity {
 
         finish();
 
-        Log.v(TAG, " btnOK Click!");
+        //Log.v(TAG, " btnOK Click!");
       }
     });
 
@@ -85,7 +81,7 @@ public class NotifyAlertDialog extends Activity {
         viewFlipper.setInAnimation(NotifyAlertDialog.this, R.anim.in_left);
         viewFlipper.setOutAnimation(NotifyAlertDialog.this, R.anim.out_right);
         viewFlipper.showPrevious();
-        Log.v(TAG, " viewFlipper Previous");
+        //Log.v(TAG, " viewFlipper Previous");
       }
     });
 
@@ -96,7 +92,7 @@ public class NotifyAlertDialog extends Activity {
         viewFlipper.setInAnimation(NotifyAlertDialog.this, R.anim.in_right);
         viewFlipper.setOutAnimation(NotifyAlertDialog.this, R.anim.out_left);
         viewFlipper.showNext();
-        Log.v(TAG, " viewFlipper Next");
+        //Log.v(TAG, " viewFlipper Next");
       }
     });
 
@@ -125,31 +121,18 @@ public class NotifyAlertDialog extends Activity {
 
       // admin message
       if(dao.getDao(i).getFrom() != null) {
+
         if (dao.getDao(i).getFrom().equals("admin")) {
           if (i == 0) {
             layoutMain.setBackgroundColor(Color.parseColor("#f7931e"));
           }
           viewContentLoader = (View) inflater.inflate(R.layout.custom_msg_admin_item, null);
           viewContentLoader.setBackgroundColor(0);
-          txtTopic = (TextView)viewContentLoader.findViewById(R.id.txtTopic);
-          txtTopic.setText(dao.getDao(i).getMessage() + ":");
+          //txtTopic = (TextView)viewContentLoader.findViewById(R.id.txtTopic);
+          //txtTopic.setText(dao.getDao(i).getMessage() + ":");
 
           txtAdminMsg = (TextView) viewContentLoader.findViewById(R.id.txtAdminMsg);
           txtAdminMsg.setText(dao.getDao(i).getMessage());
-
-        }
-        if (dao.getDao(i).getFrom().equals("driverSentMsg")) {
-          if (i == 0) {
-            layoutMain.setBackgroundColor(Color.parseColor("#144ac6"));
-          }
-          viewContentLoader = (View) inflater.inflate(R.layout.custom_msg_admin_item, null);
-          viewContentLoader.setBackgroundColor(0);
-          txtTopic = (TextView)viewContentLoader.findViewById(R.id.txtTopic);
-          txtTopic.setVisibility(View.GONE);
-
-          txtAdminMsg = (TextView) viewContentLoader.findViewById(R.id.txtAdminMsg);
-          txtAdminMsg.setText(dao.getDao(i).getMessage());
-          txtAdminMsg.setGravity(Gravity.CENTER);
 
         }
 
@@ -169,8 +152,8 @@ public class NotifyAlertDialog extends Activity {
         txtQuoteId.setText(dao.getDao(i).getQuoteId());
         txtPickUpdate.setText(dao.getDao(i).getPickUpDate());
         txtPickUpTime.setText(dao.getDao(i).getPickUpTime());
-        txtPickUpAddress.setText(dao.getDao(i).getPassengerNumber());
-        txtPassengerNumber.setText(dao.getDao(i).getPassengerNumber());
+        txtPickUpAddress.setText(dao.getDao(i).getPickup());
+        txtPassengerNumber.setText(dao.getDao(i).getPassenger());
       }
       viewFlipper.addView(viewContentLoader, i); // add view into flipper
       //i = dao.getSize(); // for test once data

@@ -113,31 +113,33 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         if (key.equals("message")) {
           model.setMessage(value);
         }
-        if (key.equals("sentFrom")) {
+        if (key.equals("sentfrom")) {
           if(value.equals("admin")){
             if(looper == 0) {
               notifyModel.clear();
               NotifyListManager.getInstance().remove();
             }
+            model.setFrom(value);
+          } else {
+              model.setFrom(null);
           }
-          model.setFrom(value);
-
 
         }
-        if (key.equals("time")) {
+
+        if (key.equals("quote_id")) {
           model.setQuoteId(value);
         }
-        if (key.equals("name")) {
+        if (key.equals("pickupDate")) {
           model.setPickUpDate(value);
         }
-        if (key.equals("route")) {
+        if (key.equals("pickupTime")) {
           model.setPickUpTime(value);
         }
-        if (key.equals("place")) {
-          model.setPassengerNumber(value);
+        if (key.equals("pickup")) {
+          model.setPickup(value);
         }
-        if (key.equals("channel")) {
-          model.setChannel(value);
+        if (key.equals("pax")) {
+          model.setPassenger(value);
         }
         if (key.equals("logo_name")){
           model.setLogoName(value + "_school.jpg");
@@ -152,7 +154,7 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
     }
 
     notifyModel.add(model);
-    NotifyListManager.getInstance().remove();
+    //NotifyListManager.getInstance().remove();
 
     for (int i = 0; i < notifyModel.size(); i++) {
 
@@ -171,8 +173,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         notifyModel.get(i).getQuoteId(),
         notifyModel.get(i).getPickUpDate(),
         notifyModel.get(i).getPickUpTime(),
-        notifyModel.get(i).getPassengerNumber(),
-        notifyModel.get(i).getChannel(),
+        notifyModel.get(i).getPickup(),
+        notifyModel.get(i).getPassenger(),
         notifyModel.get(i).getLogoName(),
         null
       ));
@@ -224,8 +226,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         Log.d(LOG_TAG, "foreground force");
         extras.putBoolean(FOREGROUND, true);
         extras.putBoolean(COLDSTART, false);
-
-        showNotificationIfPossible(applicationContext, extras);
+        startActivity(intentActivity);
+        //showNotificationIfPossible(applicationContext, extras);
 
       }
       // if we are not in the foreground always send notification if the data has at least a message or title
@@ -233,7 +235,8 @@ public class FCMService extends FirebaseMessagingService implements PushConstant
         Log.d(LOG_TAG, "background");
         extras.putBoolean(FOREGROUND, false);
         extras.putBoolean(COLDSTART, PushPlugin.isActive());
-        showNotificationIfPossible(applicationContext, extras);
+        startActivity(intentActivity);
+        //showNotificationIfPossible(applicationContext, extras);
 
       }
     }
