@@ -28,12 +28,12 @@ export class DataStorage{
     private db: SQLiteObject
 
     constructor(private platform: Platform, private _storage: Storage , private _sqlLite: SQLite) {
-        if(this.platform.is('cordova')) {
-          this.sqlstorage = this._sqlLite
-          this.createDataBase()
-        }else{
+        // if(this.platform.is('cordova')) {
+        //   this.sqlstorage = this._sqlLite
+        //   this.createDataBase()
+        // }else{
           this.sqlstorage = this._storage
-        }
+        // }
 
     }
     // OPEN DATABASE ------------------
@@ -100,35 +100,35 @@ export class DataStorage{
 
     // LAST LOGIN ----------------
     public addLastLogin(){
-      if(this.platform.is('cordova')) {
-        let sql = "INSERT INTO last_login (driver_id, datetime)" +" VALUES(?, ?)"
-        let driver_id = Global.getGlobal('driver_id')
-        let datetime = moment().format("YYYY-MM-DD HH:mm:ss")
-        console.log("addLastLogin datetime", datetime)
-        return Observable.create((observer)=>{
-            this.openDatabase().subscribe(
-                (next)=>{
-                    //console.log("addLastLogin next:")
-                    this.db.transaction((tx)=>{
-                        tx.executeSql(sql , [driver_id, datetime],
-                            (tx, rs)=>{
-                                //console.log("transaction succ: ", rs)
-                                observer.next(rs)
-                            },
-                            (tx, err)=>{
-                                //console.log("transaction err: ", err)
-                                observer.error(err)
-                            }
-                        )
-                    })
-                },
-                (err)=>{
-                    //console.log("addLastLogin err:", err)
-                    observer.error(err)
-                }
-            )
-        })
-      }else{
+      // if(this.platform.is('cordova')) {
+      //   let sql = "INSERT INTO last_login (driver_id, datetime)" +" VALUES(?, ?)"
+      //   let driver_id = Global.getGlobal('driver_id')
+      //   let datetime = moment().format("YYYY-MM-DD HH:mm:ss")
+      //   console.log("addLastLogin datetime", datetime)
+      //   return Observable.create((observer)=>{
+      //       this.openDatabase().subscribe(
+      //           (next)=>{
+      //               //console.log("addLastLogin next:")
+      //               this.db.transaction((tx)=>{
+      //                   tx.executeSql(sql , [driver_id, datetime],
+      //                       (tx, rs)=>{
+      //                           //console.log("transaction succ: ", rs)
+      //                           observer.next(rs)
+      //                       },
+      //                       (tx, err)=>{
+      //                           //console.log("transaction err: ", err)
+      //                           observer.error(err)
+      //                       }
+      //                   )
+      //               })
+      //           },
+      //           (err)=>{
+      //               //console.log("addLastLogin err:", err)
+      //               observer.error(err)
+      //           }
+      //       )
+      //   })
+      // }else{
         return Observable.create((observer)=>{
           this.sqlstorage.get('lastLogin')
           .then((data)=>{
@@ -140,40 +140,40 @@ export class DataStorage{
           })
 
         })
-      }
+      // }
     }
 
     public getLastLogin(driver_id){
-        if(this.platform.is('cordova')) {
-          let where = ''
-          if(driver_id != void(0) && driver_id != ''){
-              where = " WHERE driver_id = " + driver_id + " ORDER BY datetime DESC LIMIT 0,1"
-          }
-          let sql = "SELECT * FROM last_login" + where
-          return Observable.create((observer)=>{
-              this.openDatabase().subscribe(
-                  (next)=>{
-                      //console.log("getLastLogin next:")
-                      this.db.transaction((tx)=>{
-                          tx.executeSql(sql , [],
-                              (tx, rs)=>{
-                                  //console.log("transaction succ: ", rs)
-                                  observer.next(rs)
-                              },
-                              (tx, err)=>{
-                                  //console.log("transaction err: ", err)
-                                  observer.error(err)
-                              }
-                          )
-                      })
-                  },
-                  (err)=>{
-                      //console.log("getLastLogin err:", err)
-                      observer.error(err)
-                  }
-              )
-          })
-        }else{
+        // if(this.platform.is('cordova')) {
+        //   let where = ''
+        //   if(driver_id != void(0) && driver_id != ''){
+        //       where = " WHERE driver_id = " + driver_id + " ORDER BY datetime DESC LIMIT 0,1"
+        //   }
+        //   let sql = "SELECT * FROM last_login" + where
+        //   return Observable.create((observer)=>{
+        //       this.openDatabase().subscribe(
+        //           (next)=>{
+        //               //console.log("getLastLogin next:")
+        //               this.db.transaction((tx)=>{
+        //                   tx.executeSql(sql , [],
+        //                       (tx, rs)=>{
+        //                           //console.log("transaction succ: ", rs)
+        //                           observer.next(rs)
+        //                       },
+        //                       (tx, err)=>{
+        //                           //console.log("transaction err: ", err)
+        //                           observer.error(err)
+        //                       }
+        //                   )
+        //               })
+        //           },
+        //           (err)=>{
+        //               //console.log("getLastLogin err:", err)
+        //               observer.error(err)
+        //           }
+        //       )
+        //   })
+        // }else{
           return Observable.create((observer)=>{
             this.sqlstorage.get('lastLogin')
             .then((data)=>{
@@ -193,7 +193,7 @@ export class DataStorage{
               observer.error(err)
             })
           })
-        }
+        // }
     }
 
 
@@ -201,33 +201,33 @@ export class DataStorage{
 
     public addCompanyData(company:CompanyModel) {
 
-        console.log("addCompanyData", company.comp_name, company.comp_code, company.driver_id, company.driver_username, company.driver_password)
-        if(this.platform.is('cordova')) {
-          let sql = "INSERT INTO company_data (comp_name, comp_code, driver_id, driver_username, driver_password)"+" VALUES (?, ?, ?, ?, ?)"
-            return Observable.create((observer)=>{
-              this.openDatabase().subscribe(
-                (next)=>{
-                  //console.log("addCompanyData next:")
-                  this.db.transaction((tx)=>{
-                      tx.executeSql(sql , [company.comp_name, company.comp_code, company.driver_id, company.driver_username, company.driver_password],
-                          (tx, rs)=>{
-                              //console.log("transaction succ: ", rs)
-                              observer.next(rs)
-                          },
-                          (tx, err)=>{
-                              //console.log("transaction err: ", err)
-                              observer.error(err)
-                          }
-                      )
-                  })
-                },
-                (err)=>{
-                  //console.log("addCompanyData err:", err)
-                  observer.error(err)
-                }
-              )
-            })
-        }else{
+        // console.log("addCompanyData", company.comp_name, company.comp_code, company.driver_id, company.driver_username, company.driver_password)
+        // if(this.platform.is('cordova')) {
+        //   let sql = "INSERT INTO company_data (comp_name, comp_code, driver_id, driver_username, driver_password)"+" VALUES (?, ?, ?, ?, ?)"
+        //     return Observable.create((observer)=>{
+        //       this.openDatabase().subscribe(
+        //         (next)=>{
+        //           //console.log("addCompanyData next:")
+        //           this.db.transaction((tx)=>{
+        //               tx.executeSql(sql , [company.comp_name, company.comp_code, company.driver_id, company.driver_username, company.driver_password],
+        //                   (tx, rs)=>{
+        //                       //console.log("transaction succ: ", rs)
+        //                       observer.next(rs)
+        //                   },
+        //                   (tx, err)=>{
+        //                       //console.log("transaction err: ", err)
+        //                       observer.error(err)
+        //                   }
+        //               )
+        //           })
+        //         },
+        //         (err)=>{
+        //           //console.log("addCompanyData err:", err)
+        //           observer.error(err)
+        //         }
+        //       )
+        //     })
+        // }else{
           return Observable.create((observer)=> {
             this.sqlstorage.get('company')
             .then((data)=>{
@@ -238,42 +238,42 @@ export class DataStorage{
               .then(()=>{observer.next(true)})
             })
           })
-        }
+        // }
     }
 
     public getCompanyData(comp_code?){
 
-        if(this.platform.is('cordova')) {
-          let sqlCondition = ""
-          if(comp_code != void(0) && comp_code != ''){
-              sqlCondition = " WHERE comp_code = " + comp_code
-          }
-          let sql = 'SELECT * FROM company_data' + sqlCondition
-          console.log(sql)
-          return Observable.create((observer)=>{
-              this.openDatabase().subscribe(
-                  (next)=>{
-                      //console.log("getCompanyData next:")
-                      this.db.transaction((tx)=>{
-                          tx.executeSql(sql , [],
-                              (tx, rs)=>{
-                                  console.log("SELECT succ: ", tx, rs)
-                                  observer.next(rs)
-                              },
-                              (tx, err)=>{
-                                  console.log("SELECT err: ", tx, err)
-                                  observer.error(err)
-                              }
-                          )
-                      })
-                  },
-                  (err)=>{
-                      //console.log("getCompanyData err:", err)
-                      observer.error(err)
-                  }
-              )
-          })
-        }else{
+        // if(this.platform.is('cordova')) {
+        //   let sqlCondition = ""
+        //   if(comp_code != void(0) && comp_code != ''){
+        //       sqlCondition = " WHERE comp_code = " + comp_code
+        //   }
+        //   let sql = 'SELECT * FROM company_data' + sqlCondition
+        //   console.log(sql)
+        //   return Observable.create((observer)=>{
+        //       this.openDatabase().subscribe(
+        //           (next)=>{
+        //               //console.log("getCompanyData next:")
+        //               this.db.transaction((tx)=>{
+        //                   tx.executeSql(sql , [],
+        //                       (tx, rs)=>{
+        //                           console.log("SELECT succ: ", tx, rs)
+        //                           observer.next(rs)
+        //                       },
+        //                       (tx, err)=>{
+        //                           console.log("SELECT err: ", tx, err)
+        //                           observer.error(err)
+        //                       }
+        //                   )
+        //               })
+        //           },
+        //           (err)=>{
+        //               //console.log("getCompanyData err:", err)
+        //               observer.error(err)
+        //           }
+        //       )
+        //   })
+        // }else{
           return Observable.create((observer)=>{
             console.log('Get company: ' +comp_code)
             this.sqlstorage.get('company')
@@ -292,32 +292,32 @@ export class DataStorage{
             })
 
           })
-        }
+        // }
 
     }
 
     public clearCompanyDB(comp_code){
-        if(this.platform.is('cordova')){
-          this.openDatabase().subscribe(
-                (next)=>{
-                    console.log("clearCompanyDB next:")
-                    this.db.transaction((tx)=>{
-                      tx.executeSql('DELETE FROM company_data WHERE comp_code = ?' , [comp_code],
-                          (tx, rs)=>{ console.log("DELETE succ: ", rs) },
-                          (tx, err)=>{ console.log("DELETE err: ", err) }
-                      )
-                    }).then((succ)=>{
-                        console.log("transaction succ: ", succ)
-                    })
-                    .catch((err)=>{
-                      console.log("transaction err: ", err)
-                    })
-                },
-                (err)=>{
-                  console.log("clearCompanyDB err:", err)
-                }
-          )
-      }else{
+      //   if(this.platform.is('cordova')){
+      //     this.openDatabase().subscribe(
+      //           (next)=>{
+      //               console.log("clearCompanyDB next:")
+      //               this.db.transaction((tx)=>{
+      //                 tx.executeSql('DELETE FROM company_data WHERE comp_code = ?' , [comp_code],
+      //                     (tx, rs)=>{ console.log("DELETE succ: ", rs) },
+      //                     (tx, err)=>{ console.log("DELETE err: ", err) }
+      //                 )
+      //               }).then((succ)=>{
+      //                   console.log("transaction succ: ", succ)
+      //               })
+      //               .catch((err)=>{
+      //                 console.log("transaction err: ", err)
+      //               })
+      //           },
+      //           (err)=>{
+      //             console.log("clearCompanyDB err:", err)
+      //           }
+      //     )
+      // }else{
         this.sqlstorage.get('company')
         .then((data)=>{
           var companies = new ReplicaSQL(data)
@@ -325,7 +325,7 @@ export class DataStorage{
           companies.rows = companies.rows.filter((item)=>item.comp_code != comp_code)
           this.sqlstorage.set('company',companies.rows)
         })
-      }
+      // }
 
 
     }
@@ -333,72 +333,74 @@ export class DataStorage{
     // LOG DATA ------------------
 
     public addLogData(key, value) {
-         if(this.platform.is('cordova')) {
-            this.openDatabase().subscribe(
-                (next)=>{
-                    console.log("addLogData next:")
-                    this.db.transaction((tx)=>{
-                      tx.executeSql('DELETE FROM log WHERE key = ?' , [key],
-                          (tx, rs)=>{ console.log("DELETE succ: ", rs) },
-                          (tx, err)=>{ console.log("DELETE err: ", err) }
-                      )
 
-                      tx.executeSql("INSERT INTO log (key, value) VALUES (?, ?)", [key, value],
-                          (tx, rs)=>{ console.log("INSERT succ: ", rs) },
-                          (tx, err)=>{ console.log("INSERT err: ", err) }
-                      )
-                    }).then((succ)=>{
-                      console.log("addLogData transaction succ: ", succ)
-                    })
-                    .catch((err)=>{
-                      console.log("addLogData transaction err: ", err)
-                    })
-                },
-                (err)=>{
-                  console.log("addLogData err:", err)
-                }
-            )
-         }else{
+        //  if(this.platform.is('cordova')) {
+        //     this.openDatabase().subscribe(
+        //         (next)=>{
+        //             console.log("addLogData next:" , key, value)
+        //             this.db.transaction((tx)=>{
+        //               tx.executeSql('DELETE FROM log WHERE key = ?' , [key],
+        //                   (tx, rs)=>{ console.log("DELETE  "+key+" succ: ", rs) },
+        //                   (tx, err)=>{ console.log("DELETE  "+key+" err: ", err) }
+        //               )
+
+        //               tx.executeSql("INSERT INTO log (key, value) VALUES (?, ?)", [key, value],
+        //                   (tx, rs)=>{ console.log("INSERT "+key+"succ: ", rs) },
+        //                   (tx, err)=>{ console.log("INSERT  "+key+" err: ", err) }
+        //               )
+        //             }).then((succ)=>{
+        //               console.log("addLogData transaction succ: ", succ)
+        //             })
+        //             .catch((err)=>{
+        //               console.log("addLogData transaction err: ", err)
+        //             })
+        //         },
+        //         (err)=>{
+        //           console.log("addLogData err:", err)
+        //         }
+        //     )
+        //  }else{
            this.sqlstorage.set('log_'+key,value)
-         }
+        //  }
 
     }
 
     public getLogData(key?: string): Observable<any>{
 
-        if(this.platform.is('cordova')) {
-          if(key != void(0) || key != ''){
-              key = "WHERE key LIKE '" + key + "'"
-          }else{
-              key = ''
-          }
+        // if(this.platform.is('cordova')) {
 
-          let sql = 'SELECT * FROM log '+key
+        //   return Observable.create((observer)=>{
+        //     if(key != void(0) || key != ''){
+        //       key = "WHERE key = '" + key + "'"
+        //   }else{
+        //       key = ''
+        //   }
 
-          return Observable.create((observer)=>{
-              this.openDatabase().subscribe(
-                  (next)=>{
-                      //console.log("getLogData next:")
-                      this.db.transaction((tx)=>{
-                          tx.executeSql(sql , [],
-                              (tx, rs)=>{
-                                  //console.log("transaction succ: ", rs)
-                                  observer.next(rs)
-                              },
-                              (tx, err)=>{
-                                  //console.log("transaction err: ", err)
-                                  observer.error(err)
-                              }
-                          )
-                      })
-                  },
-                  (err)=>{
-                      //console.log("getLogData err:", err)
-                      observer.error(err)
-                  }
-              )
-          })
-        }else{
+        //   let sql = 'SELECT * FROM log '+key
+        //   console.log(sql)
+        //       this.openDatabase().subscribe(
+        //           (next)=>{
+        //               //console.log("getLogData next:")
+        //               this.db.transaction((tx)=>{
+        //                   tx.executeSql(sql , [],
+        //                       (tx, rs)=>{
+        //                           console.log("transaction succ: ", rs)
+        //                           observer.next(rs)
+        //                       },
+        //                       (tx, err)=>{
+        //                           console.log("transaction err: ", err)
+        //                           observer.error(err)
+        //                       }
+        //                   )
+        //               })
+        //           },
+        //           (err)=>{
+        //               //console.log("getLogData err:", err)
+        //               observer.error(err)
+        //           }
+        //       )
+        //   })
+        // }else{
           return Observable.create((observer)=>{
             this.sqlstorage.get('log_'+key)
             .then((data)=>{
@@ -410,34 +412,34 @@ export class DataStorage{
               observer.error(err)
             })
           })
-        }
+        // }
     }
 
 
     public clearLogDB(key){
-        if(this.platform.is('cordova')) {
-          this.openDatabase().subscribe(
-                (next)=>{
-                    console.log("clearLogDB next:")
-                    this.db.transaction((tx)=>{
-                      tx.executeSql('DELETE FROM log WHERE key = ?' , [key],
-                          (tx, rs)=>{ console.log("DELETE succ: ", rs) },
-                          (tx, err)=>{ console.log("DELETE err: ", err) }
-                      )
-                    }).then((succ)=>{
-                        console.log("transaction succ: ", succ)
-                    })
-                    .catch((err)=>{
-                      console.log("transaction err: ", err)
-                    })
-                },
-                (err)=>{
-                  console.log("clearLogDB err:", err)
-                }
-          )
-        }else{
+        // if(this.platform.is('cordova')) {
+        //   this.openDatabase().subscribe(
+        //         (next)=>{
+        //             console.log("clearLogDB next:")
+        //             this.db.transaction((tx)=>{
+        //               tx.executeSql('DELETE FROM log WHERE key = ?' , [key],
+        //                   (tx, rs)=>{ console.log("DELETE succ: ", rs) },
+        //                   (tx, err)=>{ console.log("DELETE err: ", err) }
+        //               )
+        //             }).then((succ)=>{
+        //                 console.log("transaction succ: ", succ)
+        //             })
+        //             .catch((err)=>{
+        //               console.log("transaction err: ", err)
+        //             })
+        //         },
+        //         (err)=>{
+        //           console.log("clearLogDB err:", err)
+        //         }
+        //   )
+        // }else{
           this.sqlstorage.remove('log_'+key)
-        }
+        // }
 
     }
 }

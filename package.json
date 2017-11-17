@@ -36,6 +36,7 @@
     "cordova-plugin-console": "1.0.5",
     "cordova-plugin-crosswalk-webview": "~2.3.0",
     "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-geolocation": "^3.0.0",
     "cordova-plugin-ionic-webview": "~1.1.15",
     "cordova-plugin-network-information": "~1.3.3",
     "cordova-plugin-splashscreen": "~4.0.1",
@@ -77,6 +78,9 @@
       "cordova-plugin-ionic-webview": {},
       "phonegap-plugin-push": {
         "SENDER_ID": "1:25666590030:android:565fd22432e8d1f2"
+      },
+      "cordova-plugin-geolocation": {
+        "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
       }
     },
     "platforms": [

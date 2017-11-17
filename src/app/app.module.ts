@@ -83,7 +83,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot({
       name: '__classic_driver_app',
-         driverOrder: ['indexeddb', 'sqlite', 'websql']
+         driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     FormsModule,
     ReactiveFormsModule

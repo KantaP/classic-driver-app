@@ -43,13 +43,14 @@ export class PassengerAddNotePage {
     this.popUpMessage = ""
   }
 
-  ngAfterViewInit(){
+  ionViewDidLoad(){
     this.initQuestion()
   }
 
   initQuestion(){
     this.dataStore.getLogData('passengerQuestions')
     .subscribe((data)=>{
+      console.log(data)
       var rows = data.rows
       let group: any = {};
       for(let i = 0 ; i < rows.length; i++) {

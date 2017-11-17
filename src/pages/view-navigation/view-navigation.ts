@@ -26,8 +26,18 @@ export class ViewNavigationPage {
     this.userRadius = null
   }
 
+  ionViewWillEnter() {
+    this.geo.getCurrentPosition().then((resp)=>{
+      console.log(resp)
+      this.initMap(resp)
+    })
+    .catch((error) => {
+      console.log('Error getting location', error);
+    });
+  }
+
   ionViewDidLoad() {
-    this.geo.getCurrentPosition().then(this.initMap.bind(this))
+
     this.watchPosition = this.geo.watchPosition().subscribe(
       (resp)=>{
         this.updatePosition(resp)
@@ -53,6 +63,7 @@ export class ViewNavigationPage {
   initMap(resp: Geoposition){
     var routeDetil = this.navParams.get('routeDetil')
     console.log(routeDetil)
+    console.log(resp)
     var directionsService = new google.maps.DirectionsService;
     this.map = new google.maps.Map(document.querySelector('#map'),{
       center: new google.maps.LatLng(resp.coords.latitude,resp.coords.longitude),

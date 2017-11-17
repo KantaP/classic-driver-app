@@ -262,7 +262,7 @@ export class PassengerListPage {
         action = this.navParams.get('movement_id')
       }
 
-      this.updatePassengerStatus(passenger[0].passenger_id, new_status, passenger[0].point_id, 0, passenger[0].pickup, action)
+      this.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action)
         .map((body) => body.json())
         .subscribe((data) => {
           if (data.status) {
@@ -494,12 +494,12 @@ export class PassengerListPage {
       .map((body) => body.json())
   }
 
-  updatePassengerStatus(passenger_id: number, status_new: number, movement_id: number, force_login: number, pickup: number, action_point_id: number) {
+  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number) {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
-    let body = { passenger_id, status_new, movement_id, force_login, pickup, action_point_id }
+    let body = { passenger_id, status_new ,force_login, pickup, action_point_id }
     return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options)
   }
 
@@ -535,6 +535,7 @@ export class PassengerListPage {
   }
 
   forceLogin(passenger: any) {
+    console.log(passenger)
     var action = this.navParams.get('movement_id')
     var movement_order = this.navParams.get('movement_order')
     var isLast = this.navParams.get('is_last')
@@ -543,37 +544,37 @@ export class PassengerListPage {
     var pickUpUpdate = 0
     var newStatus = 0
     if(passenger.pickup != 1 && passenger.movement_order != movement_order) {
-      options.title = `Incorrect Pickup Point`
-      options.icon = 'WRONG_ADDRESS'
-      options.shouldBeAddress = passenger.correctPickUp
-      this.modal.close('passenger-item')
-      this.openFailedModal(
-        options.title,
-        options.icon,
-        options.shouldBeAddress,
-        this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+      // options.title = `Incorrect Pickup Point`
+      // options.icon = 'WRONG_ADDRESS'
+      // options.shouldBeAddress = passenger.correctPickUp
+      // this.modal.close('passenger-item')
+      // this.openFailedModal(
+      //   options.title,
+      //   options.icon,
+      //   options.shouldBeAddress,
+      //   this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+      this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }else if(passenger.pickup != 1 && passenger.movement_order == movement_order) {
-      this.modal.close('passenger-item')
       this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }else if(passenger.pickup == 1 && passenger.point_id != action) {
       // wrong pickup
       // passenger from search
       pickUpUpdate = 1
       newStatus = 1
-      options.title = `Incorrect Pickup Point`
-      options.icon = 'WRONG_ADDRESS'
-      options.shouldBeAddress = passenger.correctPickUp
-      this.modal.close('passenger-item')
-      this.openFailedModal(
-        options.title,
-        options.icon,
-        options.shouldBeAddress,
-        this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+    //   options.title = `Incorrect Pickup Point`
+    //   options.icon = 'WRONG_ADDRESS'
+    //   options.shouldBeAddress = passenger.correctPickUp
+    //   this.modal.close('passenger-item')
+    //   this.openFailedModal(
+    //     options.title,
+    //     options.icon,
+    //     options.shouldBeAddress,
+    //     this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+      this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }
     else{
       pickUpUpdate = 1
       newStatus = 1
-      this.modal.close('passenger-item')
       this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }
     this.modal.close('passenger-item')
@@ -583,7 +584,7 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force login...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, status, passenger.point_id, 1, pickUp, action)
+    this.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action)
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
@@ -596,18 +597,21 @@ export class PassengerListPage {
             }
             return item
           })
+          var swapPassenger = this.allPassenger.filter((item)=>item.pickup == 1  && item.passenger_id == passenger.passenger_id)[0]
           this.modal.close('warning-popup')
-          for(let parent of passenger.parents){
+          for(let parent of swapPassenger.parents){
             var dataPayload: NotiPayload = {}
-            if(this.navParams.get('current_place') != passenger.correctPickUp) {
+            if(!this.navParams.get('current_place').includes(swapPassenger.correctPickUp)) {
               this.wrong_point = '1'
+            }else{
+              this.wrong_point = '0'
             }
             dataPayload.message = "Passenger update"
             dataPayload.title = "Passenger Update"
-            dataPayload.route = passenger.jobPattern[0].job_name || ""
+            dataPayload.route = swapPassenger.jobPattern[0].job_name || ""
             dataPayload.place =  this.navParams.get('current_place')
             dataPayload.sentfrom = ""
-            dataPayload.name = passenger.first_name + ' ' + passenger.surname
+            dataPayload.name = swapPassenger.first_name + ' ' + swapPassenger.surname
             dataPayload.time = moment().format('HH:mm')
             dataPayload.wrong_point = this.wrong_point
             dataPayload.status = 'Boarded'
@@ -627,23 +631,25 @@ export class PassengerListPage {
       // console.log(_passenger)
       var isFirst = this.navParams.get('is_first')
       action = (isFirst) ? -1 : this.navParams.get('movement_id')
-      options.title = `Incorrect Drop Off Point`
-      options.icon = 'WRONG_ADDRESS'
-      options.shouldBeAddress = passenger.correctDestination
-      this.modal.close('passenger-item')
-      this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.processForceLogout.bind(this, passenger,action))
+      // options.title = `Incorrect Drop Off Point`
+      // options.icon = 'WRONG_ADDRESS'
+      // options.shouldBeAddress = passenger.correctDestination
+      // this.modal.close('passenger-item')
+      // this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.processForceLogout.bind(this, passenger,action))
+      this.processForceLogout(passenger,action)
     }else{
       action = passenger.point_id
-      this.modal.close('passenger-item')
+
       this.processForceLogout(passenger,action)
     }
+    this.modal.close('passenger-item')
   }
 
   processForceLogout(passenger: any, action:number){
     var loader = this.loading.create({
       content: 'Force logout...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, 1, passenger.point_id, 1, 0, action)
+    this.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action)
     .map((body) => body.json())
     .subscribe((data) => {
       loader.dismiss()
@@ -656,11 +662,14 @@ export class PassengerListPage {
           }
           return item
         })
-        this.modal.close('warning-popup')
+        // this.modal.close('warning-popup')
         for(let parent of passenger.parents){
           var dataPayload: NotiPayload = {}
-          if(this.navParams.get('current_place') != passenger.correctDestination) {
+          var swapPassenger = this.allPassenger.filter((item)=>item.pickup == 0  && item.passenger_id == passenger.passenger_id)[0]
+          if(!this.navParams.get('current_place').includes(swapPassenger.correctDestination)) {
             this.wrong_point = '1'
+          }else{
+            this.wrong_point = '0'
           }
           dataPayload.message = "Passenger update"
           dataPayload.title = "Passenger Update"
