@@ -442,4 +442,20 @@ export class DataStorage{
         // }
 
     }
+
+    public getLangPack(lang: string): Promise<any> {
+      return this.sqlstorage.get('lang_'+lang)
+    }
+
+    public setLangPack(lang: string, data: any) {
+      this.sqlstorage.set('lang_'+lang,data)
+    }
+
+    public getLangDefault(): Promise<any> {
+      return this.sqlstorage.get('lang_default')
+    }
+
+    public setLangDefault(lang: string) {
+      this.sqlstorage.set('lang_default' , lang)
+    }
 }

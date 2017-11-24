@@ -1,52 +1,47 @@
-<ion-menu side="right" [content]="content" class="ion-menu-custom">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title class="txt_center">
-        <div class="w100 h100 dis-t mg-top5percent mg-bottom5percent">
-          <div class="dis-tc ver-mid">  
-            <div class="">
-              <img src="assets/img/logo_app_white.png" alt="" class="logo-menu ver-sub"> 
-            </div>
-          </div>
-        </div>
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-menu side="right" [content]="content" class="ion-menu-custom" persistent="true">
+    <ion-header>
+        <ion-toolbar>
+            <button right ion-button menuToggle>
+                <ion-icon name="menu"></ion-icon>
+              </button>
+            <ion-title class="txt_center">
+                <div class="w100 h100 dis-t mg-top5percent mg-bottom5percent">
+                    <div class="dis-tc ver-mid">
+                        <div class="">
+                            <img src="assets/img/logo_app_white.png" alt="" class="logo-menu ver-sub">
+                        </div>
+                    </div>
+                </div>
+            </ion-title>
+        </ion-toolbar>
+    </ion-header>
 
-  <ion-content>
-    <ion-list>
-      <button menuClose ion-item 
-        *ngFor="let p of pages" 
-        (click)="openPage(p)" 
-        [style.display]="p.show ? '': 'none'" 
-        [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}" 
-        [disabled]="p.isCheckNTrack == true">
-          
-        {{p.title}}
+    <ion-content>
+        <ion-list>
+            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [style.display]="p.show ? '': 'none'" [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}" [disabled]="p.isCheckNTrack == true">
+        {{global.translate(p.title)}}
       </button>
-      
-    </ion-list>
-  </ion-content>
+        </ion-list>
+    </ion-content>
 
-  <ion-footer class="page-footer-custom">
-    <ion-toolbar>
-      <ion-title class="txt_center">
-        <div class="w100 h100 dis-t">
-          <div class="dis-tc ver-mid">  
-            <div class="color_white">
-              <img src="assets/img/logo_ecm_white.png" alt="" class="logo-footer ver-sub"> 
-              &nbsp;
-              <div class="txt_right ib page-footer-custom-title">
-                Build Number. 1.0.0
-              </div>
-            </div>
-          </div>
-        </div>
-      </ion-title>
-    </ion-toolbar>
-  </ion-footer>
+    <ion-footer class="page-footer-custom">
+        <ion-toolbar>
+            <ion-title class="txt_center">
+                <div class="w100 h100 dis-t">
+                    <div class="dis-tc ver-mid">
+                        <div class="color_white">
+                            <img src="assets/img/logo_ecm_white.png" alt="" class="logo-footer ver-sub"> &nbsp;
+                            <div class="txt_right ib page-footer-custom-title">
+                                Build Number. 1.0.0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-title>
+        </ion-toolbar>
+    </ion-footer>
 
 </ion-menu>
-
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+
 <ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

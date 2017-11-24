@@ -1,96 +1,126 @@
 page-home {
-    .scroll-content{
+    .scroll-content {
         padding: 0 !important;
     }
-    .menu_box{
+    .menu_box {
         font-weight: bold;
         font-size: 15px;
-
-        i{
+        i {
             font-size: 40px;
         }
-        .menu_title{
-            margin-top: 1em; 
+        .menu_title {
+            margin-top: 1em;
         }
     }
+    .item-radio {
+        & .item-inner {
+            border: 0px !important;
+        }
+    }
+    .item-inner {
+        border: 1px solid #dedede;
+    }
 }
-.pos-ab{
+
+.pos-ab {
     position: absolute;
 }
-.h100{
+
+.h100 {
     height: 100%;
 }
-.h35vh{
+
+.h35vh {
     height: 35vh;
 }
-.dis-tc{
+
+.dis-tc {
     display: table-cell;
 }
-.mg-left-10{
+
+.mg-left-10 {
     margin-left: 10px;
 }
-.pd2percent{
+
+.pd2percent {
     padding: 2%;
 }
-.pd4percent{
+
+.pd4percent {
     padding: 3.5%;
 }
-.f-size-15px{
+
+.f-size-15px {
     font-size: 1.5rem;
 }
-.f-size-13px{
+
+.f-size-13px {
     font-size: 1.3rem;
 }
-.f-size-10px{
+
+.f-size-10px {
     font-size: 10px;
 }
-@media (max-width: 320px){
-   .f-size-15px{
+
+@media (max-width: 320px) {
+    .f-size-15px {
         font-size: 1rem;
     }
-    .f-size-13px{
+    .f-size-13px {
         font-size: 1.3rem;
     }
 }
-@media (min-width: 768px){
-   .f-size-13px{
+
+@media (min-width: 768px) {
+    .f-size-13px {
         font-size: 2rem;
     }
 }
-.dis-t{
+
+.dis-t {
     display: table;
 }
-.ver-mid{
+
+.ver-mid {
     vertical-align: middle;
 }
-.ver-sup{
+
+.ver-sup {
     vertical-align: super;
 }
-.ver-sub{
+
+.ver-sub {
     vertical-align: sub;
 }
-.h25percent{
+
+.h25percent {
     height: 25%;
 }
-.h2percent{
+
+.h2percent {
     height: 2%;
 }
-.h5percent{
+
+.h5percent {
     height: 5%;
 }
-.h7percent{
+
+.h7percent {
     height: 7%;
 }
-.h10percent{
+
+.h10percent {
     height: 10%;
 }
-.h45percent{
+
+.h45percent {
     height: 45%;
 }
-.h50percent{
+
+.h50percent {
     height: 50%;
 }
-.h50percent-cal{
+
+.h50percent-cal {
     height: calc(98% / 2 - 2px);
 }
-

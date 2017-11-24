@@ -80,7 +80,10 @@ export class ViewJobPage {
         this.alreadyAccept = true
         this.journeyOther = []
         var mobileSettings = Global.getGlobal('mobile_settings')
-        this.showAllJob = mobileSettings.filter((item)=>item.key=='app_setting_show_only_allocated')[0].value
+        var appSetting = mobileSettings.filter((item)=>item.key=='app_setting_show_only_allocated')
+        this.showAllJob = (appSetting.length > 0)
+                          ? appSetting[0].value
+                          : 0
         this.getJob(this.job.quote_id)
         if(this.showAllJob) {
           this.getOtherJob(this.job.quote_id)
@@ -260,7 +263,7 @@ export class ViewJobPage {
           var countPass = data.results.acceptJob.filter((item)=>item).length
           var countMovementAssigned = 0
           this.journey.forEach((item)=>{
-            countMovementAssigned += item.movement.length
+            countMovementAssigned += (item.movement.length-1)
           })
           if(countPass == countMovementAssigned) {
             this.alreadyAccept = true

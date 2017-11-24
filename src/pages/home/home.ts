@@ -1,3 +1,6 @@
+import { ModalProvider } from './../../providers/modal/modal';
+import { DataStorage } from './../util/storage';
+import { GlobalProvider } from './../../providers/global/global';
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/interval'
 import 'rxjs/add/operator/timeInterval'
@@ -11,6 +14,7 @@ import { VehicleCheckPage } from '../vehiclecheck/vehiclecheck'
 import moment from 'moment'
 import { JobsViewPage } from "../job/job"
 import { Subscription } from "rxjs/Subscription"
+import { RequestProvider } from '../../providers/request/request';
 
 @Component({
   selector: 'page-home',
@@ -27,7 +31,10 @@ export class HomePage implements OnDestroy {
   isCheckNTrack: boolean = false
 
   timer:Subscription = null
-
+  lang: string
+  langSelected: string
+  langList: Array<string>
+  langSubscription: Subscription
   constructor(
     public homeService: HomeService,
     public navCtrl: NavController,
@@ -35,7 +42,12 @@ export class HomePage implements OnDestroy {
     public menuCtrl: MenuController,
     public events: Events,
     public _ngZone: NgZone,
-    public trackingService: TrackingService) {
+    public trackingService: TrackingService,
+    private global: GlobalProvider,
+    private dataStore: DataStorage,
+    private modal: ModalProvider,
+    private request: RequestProvider
+  ) {
 
     let dt = this.navParams.get('datetime')
 
@@ -58,24 +70,63 @@ export class HomePage implements OnDestroy {
     this.getMobileSetting()
     this.getCheckNTrack()
 
-    this.timer = this.startTracking()
+    // this.timer = this.startTracking()
+    this.trackingService.watchTracking()
+    // this.langSubscription = this.global.watchLang()
+    // .subscribe((data)=>{
+    //   this.lang = data
+    // })
+    this.langInit()
+    this.dataStore.getLogData('lang')
+    .subscribe((data)=>{
+      this.langList = data.rows
+    })
   }
 
-  private startTracking(){
-    return Observable
-    .interval(1000*60 /* ms */)
-    .timeInterval()
-    .subscribe(
-      (x)=>{
-          console.log('Next: ', x)
-          this.trackingService.sendTracking()
-      },
-      (err)=>{
-          console.log('Error: ' + err)
-      },
-      ()=>{
-          console.log('Completed')
-      })
+  closeModal(modal) {
+    this.modal.close(modal)
+  }
+
+  openModal(modal) {
+    this.modal.open(modal)
+  }
+
+  // private startTracking(){
+  //   return Observable
+  //   .interval(1000*60 /* ms */)
+  //   .timeInterval()
+  //   .subscribe(
+  //     (x)=>{
+  //         console.log('Next: ', x)
+  //         this.trackingService.sendTracking()
+  //     },
+  //     (err)=>{
+  //         console.log('Error: ' + err)
+  //     },
+  //     ()=>{
+  //         console.log('Completed')
+  //     })
+  // }
+
+  changeLang() {
+    // this.dataStore.get
+    this.dataStore.setLangDefault(this.langSelected)
+    this.global.setLang(this.langSelected)
+    this.lang = this.langSelected
+    this.request.getLangPack(this.langSelected)
+    .subscribe((langPackData)=>{
+      this.dataStore.setLangPack(this.langSelected, {read:false,words:langPackData.results})
+      this.global.setLangPack({read:false,words:langPackData.results})
+    })
+    this.modal.close('lang-dialog')
+  }
+
+  langInit() {
+    this.dataStore.getLangDefault()
+    .then((data)=>{
+      this.lang = data
+      this.langSelected = data
+    })
   }
 
   public unSubscribe(source:Subscription){
@@ -87,7 +138,7 @@ export class HomePage implements OnDestroy {
   ngOnDestroy() {
     console.log('Home ngOnDestroy')
     this.unSubscribe(this.timer)
-
+    // this.langSubscription.unsubscribe()
   }
 
   private getJobAmount(){

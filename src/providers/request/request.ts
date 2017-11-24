@@ -14,10 +14,11 @@ import 'rxjs/add/operator/toPromise';
 */
 @Injectable()
 export class RequestProvider {
-
+  connection: string
   constructor(public http: Http) {
     console.log('Hello RequestProvider Provider');
   }
+
 
   getAllPassengerInSystem()  {
     let headers = new Headers()
@@ -131,6 +132,28 @@ export class RequestProvider {
         options
       )
       .map((body) => body.json())
+  }
+
+  getLang() {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/lang',options)
+                    .map((body) => Object.assign({},{label:'lang'},body.json()))
+  }
+
+  getLangPromise(){
+    return this.getLang().toPromise()
+  }
+
+  getLangPack(lang) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/lang/'+lang,options)
+                    .map((body) => Object.assign({},{label:'lang_'+lang},body.json()))
   }
 
 }

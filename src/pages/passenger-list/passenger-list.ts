@@ -74,9 +74,17 @@ export class PassengerListPage {
   private wrong_point: string;
   private status_text: string;
   private lastPoint: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http,
-    private modal: ModalProvider, private loading: LoadingController,
-    @Inject(ElementRef) elementRef: ElementRef, private dataStorage: DataStorage, private request: RequestProvider) {
+  private connection: string;
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private http: Http,
+    private modal: ModalProvider,
+    private loading: LoadingController,
+    @Inject(ElementRef) elementRef: ElementRef,
+    private dataStorage: DataStorage,
+    private request: RequestProvider
+  ) {
     this.passengers = []
     this.passengerStore = []
     this.passengerItem = {}
@@ -108,6 +116,7 @@ export class PassengerListPage {
     this.wrong_point = '0'
     this.status_text = ''
     this.lastPoint = false
+    this.connection = Global.getGlobal('connection')
     Global.setGlobal('journey_id',this.navParams.get('j_id'))
     Global.setGlobal('movement_id',this.navParams.get('movement_id'))
     Global.setGlobal('job_status',this.navParams.get('progress'))
@@ -235,7 +244,6 @@ export class PassengerListPage {
         console.log('set status true')
         new_status = 1
         this.status_text = 'Boarded'
-
       }
       // console.log(passenger[0].status, passenger[0].pickup)
       else if (passenger[0].status == 0 && passenger[0].pickup == 0) {
@@ -746,7 +754,7 @@ export class PassengerListPage {
   openFailedModal(content: string, failedType: string, shouldBeAddress?: string, callback?: Function) {
     this.failedItem.title = content
     this.failedItem.callback = callback
-    if (failedType == 'ALEADY_BOARD') {
+    if (failedType == 'ALREADY_BOARD') {
       this.failedItem.icon = 'assets/img/icon-failed-board-2.png'
       this.failedItem.shouldBeAddress = ''
       this.failedItem.notAllow = false

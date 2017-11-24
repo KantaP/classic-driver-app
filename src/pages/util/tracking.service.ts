@@ -1,21 +1,31 @@
+import { Subscription } from 'rxjs/Subscription';
 import { Global } from './global'
 import { Injectable } from '@angular/core'
 import { Http, Headers } from '@angular/http'
 import { Util } from '../util/util'
 import { Geolocation } from '@ionic-native/geolocation'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/filter';
 
 
 @Injectable()
 export class TrackingService {
-
+    watchSubscription: Subscription
     constructor(
         public http: Http,
         public geolocation: Geolocation) {
-            this.sendTracking()
+
     }
 
-    sendTracking(){
+    watchTracking() {
+      this.watchSubscription = this.geolocation.watchPosition()
+            .filter((p) => p.coords !== undefined) //Filter Out Errors
+            .subscribe(position => {
+              this.sendTracking(position)
+            });
+    }
+
+    sendTracking(position){
 
         let quote_id    = (Global.getGlobal('quote_id') == void(0) ? 0 : Global.getGlobal('quote_id'))
         let journey_id  = (Global.getGlobal('journey_id') == void(0) ? 0 : Global.getGlobal('journey_id'))
@@ -35,21 +45,28 @@ export class TrackingService {
             speed: speed
         }
 
-        this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000}).then((pos) => {
+        body.lat = position.coords.latitude
+        body.lng = position.coords.longitude
+        body.speed = position.coords.speed
 
-            console.log('sendTracking succ:', 'lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude)
+        this.sent(body)
 
-            body.lat = pos.coords.latitude
-            body.lng = pos.coords.longitude
-            body.speed = pos.coords.speed
+        // this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000}).then((pos) => {
 
-            this.sent(body)
+        //     console.log('sendTracking succ:', 'lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude)
 
-        }).catch((error) => {
+        //     body.lat = pos.coords.latitude
+        //     body.lng = pos.coords.longitude
+        //     body.speed = pos.coords.speed
 
-            console.log('sendTracking err:', error)
-            this.sent(body)
-        })
+        //     this.sent(body)
+
+        // }).catch((error) => {
+
+        //     console.log('sendTracking err:', error)
+        //     this.sent(body)
+        // })
+
     }
 
     sent(body){

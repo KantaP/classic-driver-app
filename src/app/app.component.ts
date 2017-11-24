@@ -1,3 +1,4 @@
+import { Subscription } from 'rxjs/Subscription';
 import { Global } from './../pages/util/global';
 import { PassengerListPage } from './../pages/passenger-list/passenger-list';
 import { Network } from '@ionic-native/network';
@@ -22,6 +23,8 @@ import { VehicleCheckPage } from '../pages/vehiclecheck/vehiclecheck'
 import { QuestionPage } from '../pages/vehiclecheck/questionPage/questionpage'
 import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist"
 import { Push } from '@ionic-native/push';
+import { ToastController } from 'ionic-angular/components/toast/toast-controller';
+import { GlobalProvider } from '../providers/global/global';
 
 @Component({
   templateUrl: 'app.html',
@@ -31,9 +34,12 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav
 
   rootPage: any
-
+  pauseSubScribe: Subscription
+  resumeSubSribe: Subscription
+  connectSubscription: Subscription
+  disconnectSubscription: Subscription
   pages: Array<{title: string, component: any, show:boolean, isCheckNTrack: boolean}>
-
+  toast: any
   constructor(
     public platform: Platform,
     public statusBar: StatusBar,
@@ -43,11 +49,13 @@ export class MyApp {
     private homeService:HomeService,
     private dataStorage: DataStorage,
     private network: Network,
-    private push: Push
+    private push: Push,
+    private toastCtrl: ToastController,
+    private global: GlobalProvider
   ) {
 
     this.initializeApp()
-
+    this.toast = null
     this.pages = [
       { title: "START WORK", component:"start_work", show: true, isCheckNTrack:false },
       { title: "STOP WORK", component:"stop_work", show: false, isCheckNTrack:false },
@@ -60,7 +68,7 @@ export class MyApp {
       { title: "ADD COMPANY", component: "add_company", show: true, isCheckNTrack:false },
       { title: "LOGOUT", component: "logout", show: true, isCheckNTrack:false },
       { title: "LOGIN", component: LoginPage, show:false , isCheckNTrack: false},
-      { title: "HOME", component: HomePage, show:false , isCheckNTrack: false}
+      { title: "HOME", component: HomePage, show:false , isCheckNTrack: false},
     ]
 
     this.events.subscribe('isStartWork', (isStart)=>{
@@ -124,15 +132,56 @@ export class MyApp {
 
       // this.dataStorage = new DataStorage()
       if(this.platform.is('cordova')) {
-        let connectSubscription = this.network.onConnect().subscribe(() => {
-          // alert(this.network.type)
-        })
-        let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-          // alert('Please check your internet.')
-        })
+        Global.setGlobal('connection',this.network.type)
+        this.initNetworkWatch()
       }
-
     });
+
+    this.pauseSubScribe = this.platform.pause.subscribe(()=>{
+      this.unSubscribeNetwork()
+    })
+    this.resumeSubSribe = this.platform.resume.subscribe(()=>{
+      this.initNetworkWatch()
+    })
+  }
+
+  unSubscribeNetwork() {
+    this.connectSubscription.unsubscribe()
+    this.disconnectSubscription.unsubscribe()
+  }
+
+  initNetworkWatch() {
+    this.connectSubscription = this.network.onConnect().subscribe(() => {
+      // alert(this.network.type)3
+      Global.setGlobal('connection',this.network.type)
+      if(this.toast != null) {
+        this.toast.dismiss()
+        this.toast = null
+      }
+      this.toast = this.toastCtrl.create({
+        message: 'App is running on online mode',
+        position: 'bottom',
+        showCloseButton: true,
+        closeButtonText: 'Ok'
+      });
+      this.toast.present()
+    })
+    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      // alert('Please check your internet.')
+      Global.setGlobal('connection',this.network.type)
+      if(this.toast != null) {
+        this.toast.dismiss()
+        this.toast = null
+      }
+      this.toast = this.toastCtrl.create({
+        message: 'App is running on offline mode',
+        position: 'bottom',
+        showCloseButton: true,
+        closeButtonText: 'Ok'
+      });
+
+      this.toast.present()
+    })
   }
 
   openPage(page) {

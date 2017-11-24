@@ -67,8 +67,8 @@ ion-menu {
 }
 
 .logo-menu {
-    width: 25%;
-    height: 25%;
+    width: 50%;
+    height: 50%;
     //image-rendering: pixelated;
 }
 
@@ -608,6 +608,10 @@ ion-icon {
     background: #eebd31;
 }
 
+.bg_white {
+    background: #fff;
+}
+
 $margin-slug: margin;
 $padding-slug: padding;
 $top-slug: top;
@@ -842,4 +846,10 @@ body.modal-open {
 
 .h100 {
     height: 100%;
+}
+
+.langbtn {
+    background: transparent;
+    color: #000;
+    box-shadow: none;
 }

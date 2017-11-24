@@ -111,7 +111,7 @@ export class PassengerAddNotePage {
 
     Promise.all(funcs)
     .then((responses)=>{
-      this.popUpMessage = "Success!!!"
+      this.popUpMessage = "Success"
       // this.modal.open('alert-popup')
       let modal = this.modalCtrl.create(MessageModal, {txt:this.popUpMessage}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
       modal.present()

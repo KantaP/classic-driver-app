@@ -10,7 +10,8 @@ import { DataStorage } from '../util/storage'
 import { CompanyModel } from '../util/model/company'
 import { Global } from '../util/global'
 import { AddCompany } from '../addcompany/addcompany'
-
+import { Network } from '@ionic-native/network';
+import { GlobalProvider } from '../../providers/global/global';
 /**
  * Generated class for the LoginPage page.
  *
@@ -46,7 +47,9 @@ export class LoginPage {
     private dataStore: DataStorage,
     private platform: Platform,
     private push: Push,
-    private request: RequestProvider
+    private request: RequestProvider,
+    private network: Network,
+    private global: GlobalProvider
   ) {
 
     this.comp_list = [{
@@ -192,6 +195,12 @@ export class LoginPage {
   }
 
   private login(){
+    var connection = Global.getGlobal('connection')
+    // alert(connection)
+    if(connection == 'none') {
+      alert("Please check your internet")
+      return false
+    }
     //this.username = "nodev"
     //this.password = "123456"
     if(this.username == "" || this.password == ""){
@@ -251,26 +260,41 @@ export class LoginPage {
             console.log("getLastLogin err:", err)
             // this.navCtrl.setRoot(HomePage, datetimeLogin)
         })
-        this.dataStore.clearLogDB('AlreadyEnRoute')
+        // this.dataStore.clearLogDB('AlreadyEnRoute')
         var promiseData = []
-        promiseData.push(this.request.getAllPassengerInSystemPromise())
+
+        // promiseData.push(this.request.getAllPassengerInSystemPromise())
         promiseData.push(this.request.getPassengerQuestionsPromise())
+        promiseData.push(this.request.getLangPromise())
         Promise.all(promiseData)
         .then((items)=>{
           console.log(items)
           items.forEach((item,index)=>{
             var label = item.label || 'item#'+index
-            if(label == 'getAllPassengerInSystem') {
-              item.results = item.results.map((passenger) => {
-                if (passenger.photo == "") passenger.photo = normalizeURL("assets/img/nouser.png")
-                passenger.fromOtherRoute = true
-                return passenger
-              })
-            }
+            // if(label == 'getAllPassengerInSystem') {
+            //   item.results = item.results.map((passenger) => {
+            //     if (passenger.photo == "") passenger.photo = normalizeURL("assets/img/nouser.png")
+            //     passenger.fromOtherRoute = true
+            //     return passenger
+            //   })
+            // }
             this.dataStore.clearLogDB(label)
             this.dataStore.addLogData(label,item.results)
           })
-          this.navCtrl.setRoot(HomePage, datetimeLogin)
+          this.dataStore.getLangDefault()
+          .then((lang)=>{
+            if(lang == null) {
+              lang = 'TH'
+            }
+            this.dataStore.setLangDefault(lang)
+            this.global.setLang(lang)
+            this.request.getLangPack(lang)
+            .subscribe((data)=>{
+              this.dataStore.setLangPack(lang,{read:false,words:data.results})
+              this.global.setLangPack({read:false,words:data.results})
+              this.navCtrl.setRoot(HomePage, datetimeLogin)
+            })
+          })
         })
 
       }else{

@@ -47,6 +47,7 @@ import { PassengerListPage } from './../pages/passenger-list/passenger-list';
 import { RequestProvider } from '../providers/request/request';
 import { PassengerAddNotePage } from '../pages/passenger-add-note/passenger-add-note';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GlobalProvider } from '../providers/global/global';
 
 @NgModule({
   declarations: [
@@ -130,6 +131,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ModalProvider,
     Push,
     RequestProvider,
+    GlobalProvider,
   ]
 })
 export class AppModule {}

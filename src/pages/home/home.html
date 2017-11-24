@@ -1,107 +1,145 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub"> 
-            <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
-              DRIVER APP
+    <ion-navbar>
+        <button right ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+        <button left ion-button class="disable-hover langbtn" (click)="openModal('lang-dialog')">
+          {{lang}}
+        </button>
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub">
+                        <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
+                            DRIVER APP
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
+        </ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <div class="w100 h50percent-cal txt_center">
-    <div class="w100 h100 dis-t">
-      <div class="dis-tc ver-mid">
-        <div><img src="{{logo}}"/></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="w100 h7percent bg_blue_royal txt_white pd4percent f-size-15px">
-    <div class="w70 ib mg-left-5-percent">
-      <i class="icon icon-Agenda"></i> 
-      &nbsp; 
-      <span><strong>Last Login : </strong></span>
-      <span>{{ lastLoginDate }}</span>
-    </div>
-    <div class="w20 ib">
-      <span>{{ lastLoginTime }}</span>
-    </div>
-  </div>
-
-  <div class="w100 h45percent txt_center menu_box">
-
-    <div *ngIf="!isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStartWorkDialog()" >
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">
-          <div>
-            <i class="icon icon-Pointer color_green_forest"></i>
-            <br>
-            <div class="menu_title">START WORK</div>
-          </div>
+    <div class="w100 h50percent-cal txt_center">
+        <div class="w100 h100 dis-t">
+            <div class="dis-tc ver-mid">
+                <div><img src="{{logo}}" /></div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <div *ngIf="isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStopWorkDialog()">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">
-          <div>
-            <i class="icon icon-Pointer color_green_forest"></i>
-            <br>
-            <div class="menu_title txt_red">STOP WORK</div>
-          </div>
+    <!-- <div class="w100 h7percent bg_blue_royal txt_white pd4percent f-size-15px">
+        <div class="w70 ib mg-left-5-percent">
+            <i class="icon icon-Agenda"></i> &nbsp;
+            <span><strong>{{global.translate('Last Login')}} : </strong></span>
+            <span>{{ lastLoginDate }}</span>
         </div>
-      </div>
-    </div>
-
-    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" (click)="openPage('sign_in_vehicle')">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">
-          <div>
-            <i class="icon icon-Edit color_red"></i>
-            <br>
-            <div class="menu_title">SELECT THE VEHICLE</div>
-          </div>
+        <div class="w20 ib">
+            <span>{{ lastLoginTime }}</span>
         </div>
-      </div>
-    </div>
+    </div> -->
+    <ion-grid no-padding>
+        <ion-row class="bg_blue_royal txt_white pd4percent f-size-15px">
+            <ion-col>
+                <i class="icon icon-Agenda"></i>
+                <strong>{{global.translate('Last Login')}} : </strong>
+            </ion-col>
+            <ion-col>
+                {{ lastLoginDate }} {{ lastLoginTime }}
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 
-    <div class="block"></div>
+    <div class="w100 h45percent txt_center menu_box">
 
-    <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" [ngClass]="{ 'grayscale' : isCheckNTrack }" (click)="openPage('vehicle_check')">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">
-          <div>
-            <i class="icon icon-Tools" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_blue_darkslate':!isCheckNTrack }"></i>
-            <br>
-            <div class="menu_title">VEHICLE CHECK</div>
-          </div>
+        <div *ngIf="!isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStartWorkDialog()">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div>
+                        <i class="icon icon-Pointer color_green_forest"></i>
+                        <br>
+                        <div class="menu_title">{{global.translate('START WORK')}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="w50-cal h50percent-cal ib bg_grey_lavender" [ngClass]="{ 'grayscale':isCheckNTrack }"  (click)="openPage('view_jobs')">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">
-          <div>
-            <i class="icon icon-Search" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_gold':!isCheckNTrack }"></i>
-            <br>
-            <div class="menu_title">VIEW JOBS ({{jobsAmount}})</div>
-          </div>
+        <div *ngIf="isStartWork" class="w50-cal h50percent-cal ib bg_grey_lavender" (click)="hs.showStopWorkDialog()">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div>
+                        <i class="icon icon-Pointer color_green_forest"></i>
+                        <br>
+                        <div class="menu_title txt_red">{{global.translate('STOP WORK')}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" (click)="openPage('sign_in_vehicle')">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div>
+                        <i class="icon icon-Edit color_red"></i>
+                        <br>
+                        <div class="menu_title">{{global.translate('SELECT THE VEHICLE')}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="block"></div>
+
+        <div class="w50-cal h50percent-cal ib bg_grey_gainsboro" [ngClass]="{ 'grayscale' : isCheckNTrack }" (click)="openPage('vehicle_check')">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div>
+                        <i class="icon icon-Tools" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_blue_darkslate':!isCheckNTrack }"></i>
+                        <br>
+                        <div class="menu_title">{{global.translate('VEHICLE CHECK')}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w50-cal h50percent-cal ib bg_grey_lavender" [ngClass]="{ 'grayscale':isCheckNTrack }" (click)="openPage('view_jobs')">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div>
+                        <i class="icon icon-Search" [ngClass]="{ 'color_grey':isCheckNTrack, 'color_gold':!isCheckNTrack }"></i>
+                        <br>
+                        <div class="menu_title">{{global.translate('VIEW JOBS')}} ({{jobsAmount}})</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
 </ion-content>
+
+<modal id="lang-dialog">
+    <div class="modal">
+        <div class="modal-body">
+            <ion-grid no-padding>
+                <ion-row justify-content-between class="padding-3">
+                    <div>Change your langauge</div>
+                    <!-- <ion-icon ios="md-close" md="md-close" (click)="closeModal('lang-dialog')"></ion-icon> -->
+                </ion-row>
+                <ion-row *ngFor="let langItem of langList; let i = index;" radio-group [(ngModel)]="langSelected">
+                    <ion-item>
+                        <ion-radio [id]="langItem.lang" [value]="langItem.lang" item-start></ion-radio>
+                        <ion-label item-end>{{langItem.lang}}</ion-label>
+                    </ion-item>
+                </ion-row>
+                <ion-row class="margin-top-3 padding-3">
+                    <button ion-button block color="primary" (click)="changeLang()">
+                      OK
+                    </button>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
