@@ -11,17 +11,18 @@ import moment from 'moment'
 })
 export class StartWork {
 
-  thisTime: any 
+  thisTime: any
 
   constructor(
     public viewCtrl: ViewController,
     private startWorkService: StartWorkService,
     public loadingCtrl: LoadingController,
     public events: Events
-    ) {
+    ) {}
 
-      this.thisTime = moment().format('DD MMM YYYY   HH:mm')
 
+  ionViewDidLoad() {
+    this.thisTime = moment().format('DD MMM YYYY   HH:mm')
   }
 
   public closeStartWorkModal(){
@@ -30,14 +31,18 @@ export class StartWork {
 
   updateStartWork(){
     console.log("updateStartWork")
-
+    var signInVehicleId = Global.getGlobal("vehicle_signin_insert_id")
+    if(!signInVehicleId || signInVehicleId == null) {
+      alert('Please sign in to vehicle')
+      return false;
+    }
     let start = moment(this.thisTime).format("YYYY-MM-DD HH:mm")
 
     let loader = this.loadingCtrl.create({
       content: "Please wait..."
     })
     loader.present()
-    
+
     this.startWorkService.startWork(start)
       .subscribe((res)=>{
         console.log("startwork service succ:", res)
@@ -49,17 +54,17 @@ export class StartWork {
           this.events.publish('isStartWork', true)
 
           Global.setGlobal("start_work_id", res.result.insertId)
-          Global.setGlobal("start_work_time", res.result.workTime)
+          Global.setGlobal("start_work_time", this.thisTime)
 
-          alert(res.text)
+          alert('Work Start Time Set: ' + moment(this.thisTime).format('hh:mmA'))
 
           this.closeStartWorkModal()
-          
+
         }else{
           alert("Cannot update.")
         }
-        
-        
+
+
       },(err)=>{
         console.log("startwork service err:", err)
         alert("Cannot update.")

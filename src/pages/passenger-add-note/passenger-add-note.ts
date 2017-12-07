@@ -6,7 +6,7 @@ import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { FormGroup  , Validators , FormControl} from '@angular/forms';
 import { RequestProvider } from '../../providers/request/request';
 import { ModalProvider } from '../../providers/modal/modal';
-
+import * as moment from 'moment'
 /**
  * Generated class for the PassengerAddNotePage page.
  *
@@ -92,7 +92,7 @@ export class PassengerAddNotePage {
     var funcs = []
     // send note
     if(this.passengerNote != "") {
-      funcs.push(this.request.addPassengerNote(this.passenger.quote_id,this.passenger.passenger_id,this.passengerNote).toPromise())
+      funcs.push(this.request.addPassengerNote(this.passenger.quote_id,this.passenger.passenger_id,this.passengerNote,moment().utc().format('YYYY-MM-DD HH:mm:ss')).toPromise())
     }
 
     Object.keys(this.questionForm.controls).forEach((key)=>{

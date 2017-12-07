@@ -270,7 +270,7 @@ export class PassengerListPage {
         action = this.navParams.get('movement_id')
       }
 
-      this.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action)
+      this.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action , moment().format('YYYY-MM-DD HH:mm:ss'))
         .map((body) => body.json())
         .subscribe((data) => {
           if (data.status) {
@@ -502,12 +502,12 @@ export class PassengerListPage {
       .map((body) => body.json())
   }
 
-  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number) {
+  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number, timescan: any) {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
-    let body = { passenger_id, status_new ,force_login, pickup, action_point_id }
+    let body = { passenger_id, status_new ,force_login, pickup, action_point_id , timescan }
     return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options)
   }
 
@@ -592,7 +592,7 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force login...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action)
+    this.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action, moment().format('YYYY-MM-DD HH:mm:ss'))
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
@@ -657,7 +657,7 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force logout...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action)
+    this.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action , moment().format('YYYY-MM-DD HH:mm:ss'))
     .map((body) => body.json())
     .subscribe((data) => {
       loader.dismiss()
@@ -732,7 +732,7 @@ export class PassengerListPage {
       content: ''
     })
     loader.present()
-    this.request.updateToEndRoute(this.navParams.get('movement_order')-99,this.navParams.get('quote_id'))
+    this.request.updateToEndRoute(this.navParams.get('movement_order')-99,this.navParams.get('quote_id'),this.navParams.get('movement_id'))
       .subscribe(
         (res) => {
           loader.dismiss()

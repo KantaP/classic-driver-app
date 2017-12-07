@@ -1,54 +1,54 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <div class="ver-sup ib page-header-custom-title txt_bold">
-                VEHICLE CHECK HISTORY
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            VEHICLE CHECK HISTORY
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </ion-title>
+    </ion-navbar>
+
+    <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
         </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
 
-  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
-
-      <div class="txt_white ib ver-mid">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid">
+            Signed in : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 </ion-header>
 
 <ion-content>
 
-  <div class="w100 h40px txt_white txt_center bg_blue_royal gravity-center-vertical">
-    <div>
-      CHOOSES VEHICLE
-    </div>
-  </div>
-  <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
-    <div class="w100 h100 dis-t">
-        <div class="w100 dis-tc ver-mid f-size-15px">
-            Loading . . .
+    <div class="w100 h40px txt_white txt_center bg_blue_royal gravity-center-vertical">
+        <div>
+            CHOOSE VEHICLE
         </div>
     </div>
-  </div>
-  <div *ngIf="loading == false">
-    <div class="h40px border-bottom-grey gravity-center-vertical" *ngFor="let v of vehicleList; let indx = index" (click)="openChoosenVehicle(indx)">
-      <div class="w90 txt_left txt_bold color_grey pd-left-05-em">
-        {{ v.vehicle_reg }}
-        <ion-icon class="fr color_black" name='ios-arrow-forward'></ion-icon>
-      </div>
+    <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
+        <div class="w100 h100 dis-t">
+            <div class="w100 dis-tc ver-mid f-size-15px">
+                Loading . . .
+            </div>
+        </div>
     </div>
-  </div>
+    <div *ngIf="loading == false">
+        <div class="h40px border-bottom-grey gravity-center-vertical" *ngFor="let v of vehicleList; let indx = index" (click)="openChoosenVehicle(indx)">
+            <div class="w90 txt_left txt_bold color_grey pd-left-05-em">
+                {{ v.vehicle_reg }}
+                <ion-icon class="fr color_black" name='ios-arrow-forward'></ion-icon>
+            </div>
+        </div>
+    </div>
 
 </ion-content>

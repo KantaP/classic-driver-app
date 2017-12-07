@@ -3,6 +3,7 @@ import { ViewController, Events, NavParams } from 'ionic-angular'
 import { SignInVehicleService } from './signinvehicle.service'
 import { Global } from '../util/global'
 import moment from 'moment'
+import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 
 @Component({
   selector: 'modal-signinvehicle',
@@ -11,19 +12,20 @@ import moment from 'moment'
 })
 export class SignInVehicle {
 
-  vehicleName: any 
+  vehicleName: any
   vehicleId: any
 
   constructor(
     public viewCtrl: ViewController,
     private thisService: SignInVehicleService,
     public events: Events,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private loadingCtrl: LoadingController
     ) {
       console.log(this.navParams)
       this.vehicleName = this.navParams.get('vehicle_reg')
       this.vehicleId = this.navParams.get('vehicle_id')
-      
+
   }
 
   public closeSignInVehicleModal(){
@@ -31,6 +33,10 @@ export class SignInVehicle {
   }
 
   updateSignInVehicle(vehicle_id){
+    var loader = this.loadingCtrl.create({
+      content: ''
+    })
+    loader.present()
     console.log("updateSigInVehicle: "+vehicle_id)
     this.thisService.signInVehicle( vehicle_id )
       .subscribe((res)=>{
@@ -43,16 +49,16 @@ export class SignInVehicle {
           Global.setGlobal("signed_vehicle_name", this.vehicleName)
 
           this.events.publish('isVehicleSignIn', true)
-
+          loader.dismiss()
           alert(res.text)
 
           this.closeSignInVehicleModal()
-          
+
         }else{
           alert("Cannot update.")
         }
-        
-        
+
+
       },(err)=>{
         console.log("signinvehicle service err:", err)
         alert("Cannot update.")

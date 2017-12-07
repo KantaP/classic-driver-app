@@ -194,7 +194,7 @@ export class LoginPage {
     this.password = comp.driver_p
   }
 
-  private login(){
+  login(){
     var connection = Global.getGlobal('connection')
     // alert(connection)
     if(connection == 'none') {

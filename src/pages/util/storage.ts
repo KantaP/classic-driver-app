@@ -196,6 +196,36 @@ export class DataStorage{
         // }
     }
 
+    public addTrackingData(quote_id:number , trackingData: any) : Observable<any> {
+      return Observable.create((observer)=> {
+        this.sqlstorage.get('tracking_' + quote_id)
+        .then((data)=>{
+          var tracking = new ReplicaSQL(data)
+          tracking.rows.push(trackingData)
+          console.log('add tracking ' , tracking.rows)
+          this.sqlstorage.set('tracking_' + quote_id, tracking.rows)
+          .then(()=>{observer.next(true)})
+        })
+      })
+    }
+
+    public getTrackingData(quote_id:number) {
+      return Observable.create((observer)=>{
+        console.log('Get tracking '+quote_id)
+        this.sqlstorage.get('tracking_' + quote_id)
+        .then((data)=>{
+          var tracking = new ReplicaSQL(data)
+          console.log('get tracking data:' , tracking)
+          observer.next(tracking)
+        })
+        .catch((err)=>{
+          observer.error(err)
+        })
+
+      })
+    }
+
+
 
     // COMPANY DATA ------------------
 
@@ -360,7 +390,7 @@ export class DataStorage{
         //         }
         //     )
         //  }else{
-           this.sqlstorage.set('log_'+key,value)
+           return this.sqlstorage.set('log_'+key,value)
         //  }
 
     }

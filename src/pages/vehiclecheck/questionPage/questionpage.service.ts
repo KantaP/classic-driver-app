@@ -8,12 +8,13 @@ import { Http, Headers, Response } from '@angular/http'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
+import * as moment from 'moment'
 
 @Injectable()
 export class QuestionService {
     constructor(
         private http: Http,
-        private transfer: FileTransfer, 
+        private transfer: FileTransfer,
         private file: File) {
     }
 
@@ -22,12 +23,12 @@ export class QuestionService {
         let headers = new Headers({
             'x-access-key': Global.getGlobal('api_key'),
             'x-access-token': Global.getGlobal('api_token')
-        }) 
+        })
 
         return this.http.get(Util.getSystemURL() + '/api/ecmdriver/vehicle/check/sheet', { headers: headers })
                 .map( res => res.json())
     }
-    
+
     sendCheckSheet( answerList ){
         console.log(answerList)
         let headers = new Headers({
@@ -44,13 +45,14 @@ export class QuestionService {
             Util.getSystemURL() + '/api/ecmdriver/vehicle/check/sheet',
             {
                 checkedList: answerList,
-                quote_id: qid
+                quote_id: qid,
+                timecheck: moment().format('YYYY-MM-DD HH:mm:ss')
             },
-            { 
-                headers: headers 
+            {
+                headers: headers
             })
             .map( res => res.json())
-        
+
     }
 
     uploadPhoto(resKey, photolist){
@@ -86,7 +88,7 @@ export class QuestionService {
 
 
 
-        
+
     }
 
 
@@ -97,9 +99,9 @@ export class QuestionService {
         if (answer.critical) {
             cri_val = 0
         } else {
-            cri_val = 1 
+            cri_val = 1
         }
-        
+
         let headers = new Headers({
             'x-access-key': Global.getGlobal('api_key'),
             'x-access-token': Global.getGlobal('api_token')
@@ -117,8 +119,8 @@ export class QuestionService {
 				chk_critical_fail: cri_val,
 				chk_notes: answer.title
             },
-            { 
-                headers: headers 
+            {
+                headers: headers
             })
             .map( res => res.json())
 

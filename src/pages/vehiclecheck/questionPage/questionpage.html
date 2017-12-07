@@ -1,45 +1,45 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <div class="ver-sup ib page-header-custom-title txt_bold">
-                VEHICLE CHECK
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            VEHICLE CHECK
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
+        </ion-title>
+    </ion-navbar>
 
-  <div padding class="bg_white pd-no-bottom">
-    <div class="completion_box w100 f-size-13px">
-        <div class="ib txt_left completion_box_w_50">
-            COMPLETION
+    <div padding class="bg_white pd-no-bottom">
+        <div class="completion_box w100 f-size-13px">
+            <div class="ib txt_left completion_box_w_50">
+                COMPLETION
+            </div>
+            <div class="ib txt_right completion_box_w_50">
+                {{ successPercentage }}%
+            </div>
         </div>
-        <div class="ib txt_right completion_box_w_50">
-            {{ successPercentage }}%
-        </div>
-    </div>
-    <div class="completion_progress mg-top10">
-        <div class="w100 h1vh border-around">
-            <div class="bg_green_forest h1vh" id="progress_percent"></div>
-        </div>
-    </div>
-  </div>
-
-  <div padding class="bg_white f-size-13px">
-    <div class="fault_title_box w100">
-        <div class="txt_left color_red txt_bold">
-            FAULT 3 
+        <div class="completion_progress mg-top10">
+            <div class="w100 h1vh border-around">
+                <div class="bg_green_forest h1vh" id="progress_percent"></div>
+            </div>
         </div>
     </div>
 
-    <div class="w100 h9vh">
+    <div padding class="bg_white f-size-13px">
+        <!-- <div class="fault_title_box w100">
+            <div class="txt_left color_red txt_bold">
+                FAULT 3
+            </div>
+        </div> -->
+
+        <!-- <div class="w100 h9vh">
 
       <div class="w25 h9vh ib txt_white fl">
         <div class="w100 h100 dis-t bg_red_dark">
@@ -65,240 +65,240 @@
           </div>
       </div>
 
+    </div> -->
+
     </div>
-    
-  </div>
 
 </ion-header>
 
 <ion-content padding>
 
 
-  <div class="w100 h20vh f-size-13px question_desc_box bg_grey_lavender txt_center">
-    <div class="w100 h100 dis-t">
-      <div class="dis-tc ver-mid">
-        {{ questionDesc }}
-      </div>  
-    </div>
-  </div>
-
-  <ion-segment [(ngModel)]="type" hidden>
-    <ion-segment-button value="choice">
-      Choice
-    </ion-segment-button>
-    <ion-segment-button value="multi">
-      Multiple
-    </ion-segment-button>
-    <ion-segment-button value="radio">
-      Radio
-    </ion-segment-button>
-    <ion-segment-button value="number">
-      Number
-    </ion-segment-button>
-    <ion-segment-button value="photo">
-      Photo
-    </ion-segment-button>
-  </ion-segment>
-
-  <div [ngSwitch]="type">
-
-    <div *ngSwitchCase="'choice'">
-      <div class="btn_no_defect h7vh mg-top5percent f-size-13px txt_white" (click)="submit( currentIndexOfQuestionList, 'choice' )">
-        <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
-          <div class="w100 h100 dis-t">
+    <div class="w100 h20vh f-size-13px question_desc_box bg_grey_lavender txt_center">
+        <div class="w100 h100 dis-t">
             <div class="dis-tc ver-mid">
-              <img src="assets/img/check.png" class="w20px" alt="">
+                {{ questionDesc }}
             </div>
-          </div>
         </div>
-        <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
-          <div class="w100 h100 dis-t">
-            <div class="dis-tc ver-mid pd-right-20-percent">
-              NO DEFECT
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="btn_defect h7vh mg-top5percent f-size-13px txt_white" (click)="defect( currentIndexOfQuestionList )">
-        <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
-          <div class="w100 h100 dis-t">
-            <div class="dis-tc ver-mid">
-              <img src="assets/img/close.png" class="w20px" alt="">
-            </div>
-          </div>
-        </div>
-        <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
-          <div class="w100 h100 dis-t">
-            <div class="dis-tc ver-mid pd-right-20-percent">
-              DEFECT
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div *ngSwitchCase="'multi'">
+    <ion-segment [(ngModel)]="type" hidden>
+        <ion-segment-button value="choice">
+            Choice
+        </ion-segment-button>
+        <ion-segment-button value="multi">
+            Multiple
+        </ion-segment-button>
+        <ion-segment-button value="radio">
+            Radio
+        </ion-segment-button>
+        <ion-segment-button value="number">
+            Number
+        </ion-segment-button>
+        <ion-segment-button value="photo">
+            Photo
+        </ion-segment-button>
+    </ion-segment>
 
-      <ion-item *ngFor="let item of multiTypeAnswerList; let indx = index" >
-        <ion-label> {{ item.option[0].name }}</ion-label>
-        <ion-checkbox color="dark" checked="false" [(ngModel)]="item.option[0].check" (click)="updateMultiAnswerValue(indx, item)"></ion-checkbox>
-      </ion-item>
+    <div [ngSwitch]="type">
 
-      <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'multi'  )">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/check.png" class="w20px" alt="">
-              </div>
+        <div *ngSwitchCase="'choice'">
+            <div class="btn_no_defect h7vh mg-top5percent f-size-13px txt_white" (click)="submit( currentIndexOfQuestionList, 'choice' )">
+                <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
+                    <div class="w100 h100 dis-t">
+                        <div class="dis-tc ver-mid">
+                            <img src="assets/img/check.png" class="w20px" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
+                    <div class="w100 h100 dis-t">
+                        <div class="dis-tc ver-mid pd-right-20-percent">
+                            NO DEFECT
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                OK
-              </div>
+
+            <div class="btn_defect h7vh mg-top5percent f-size-13px txt_white" (click)="defect( currentIndexOfQuestionList )">
+                <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
+                    <div class="w100 h100 dis-t">
+                        <div class="dis-tc ver-mid">
+                            <img src="assets/img/close.png" class="w20px" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
+                    <div class="w100 h100 dis-t">
+                        <div class="dis-tc ver-mid pd-right-20-percent">
+                            DEFECT
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      <div class="w50-cal ib" (click)="cancelMulti()">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/close.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                Cancel
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
+        <div *ngSwitchCase="'multi'">
+
+            <ion-item *ngFor="let item of multiTypeAnswerList; let indx = index">
+                <ion-label> {{ item.option[0].name }}</ion-label>
+                <ion-checkbox color="dark" checked="false" [(ngModel)]="item.option[0].check" (click)="updateMultiAnswerValue(indx, item)"></ion-checkbox>
+            </ion-item>
+
+            <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'multi'  )">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/check.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                OK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w50-cal ib" (click)="cancelMulti()">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/close.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                Cancel
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div *ngSwitchCase="'radio'">
+
+            <ion-list radio-group [(ngModel)]="radioValue">
+                <ion-item *ngFor="let item of radioTypeAnswerList; let indx = index">
+                    <ion-label> {{ item.option[0].name }} </ion-label>
+                    <ion-radio value="{{indx}}" (click)="updateRadioAnswerValue( indx, item )"></ion-radio>
+                </ion-item>
+            </ion-list>
+
+            <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'radio' )">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/check.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                OK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w50-cal ib" (click)="cancelRadio()">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/close.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                Cancel
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div *ngSwitchCase="'number'">
+
+            <ion-input type="number" [value]="" (ionChange)="updateNumberValue"></ion-input>
+
+            <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'number' )">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/check.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                OK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div *ngSwitchCase="'photo'">
+            <ion-item class="txt_center">
+                <img [src]="base64Image" *ngIf="base64Image" id="img-canvas" />
+            </ion-item>
+
+            <div class="w50-cal ib" (click)="takePhoto()">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/check.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                Take Photo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w50-cal ib" (click)="back()">
+                <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
+                    <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid">
+                                <img src="assets/img/close.png" class="w20px" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
+                        <div class="w100 h100 dis-t">
+                            <div class="dis-tc ver-mid pd-right-20-percent">
+                                Done
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div *ngSwitchCase="'radio'">
-
-      <ion-list radio-group [(ngModel)]="radioValue">
-        <ion-item *ngFor="let item of radioTypeAnswerList; let indx = index" >
-          <ion-label> {{ item.option[0].name }} </ion-label>
-          <ion-radio value="{{indx}}" (click)="updateRadioAnswerValue( indx, item )"></ion-radio>
-        </ion-item>
-      </ion-list>
-
-      <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'radio' )">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/check.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                OK
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="w50-cal ib" (click)="cancelRadio()">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/close.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                Cancel
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div *ngSwitchCase="'number'">
-
-      <ion-input type="number" [value]="" (ionChange)="updateNumberValue"></ion-input>
-      
-      <div class="w50-cal ib" (click)="submit( currentIndexOfQuestionList, 'number' )">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/check.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                OK
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div *ngSwitchCase="'photo'">
-      <ion-item class="txt_center">
-        <img [src]="base64Image" *ngIf="base64Image" id="img-canvas" />
-      </ion-item>
-      
-      <div class="w50-cal ib" (click)="takePhoto()">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_green_forest txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/check.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_green_lime txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                Take Photo
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="w50-cal ib" (click)="back()">
-        <div class="btn_no_defect h5vh mg-top5percent f-size-13px txt_white">
-          <div class="btn_sign_w_20 h100 ib fl bg_red_dark txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid">
-                <img src="assets/img/close.png" class="w20px" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="btn_sign_w_80 h100 ib fl bg_red txt_center">
-            <div class="w100 h100 dis-t">
-              <div class="dis-tc ver-mid pd-right-20-percent">
-                Done
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 </ion-content>

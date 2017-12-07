@@ -54,7 +54,7 @@ export class QuestionPage{
 
         this.getQuestionSheet()
     }
-    
+
     /**
      * getQuestionSheet
      */
@@ -68,18 +68,18 @@ export class QuestionPage{
                     this.questionList = res.result
 
                     this.setQuestion(
-                        0, 
-                        this.questionList[0].chk_id, 
-                        this.questionList[0].chk_options.chk_type, 
-                        this.questionList[0].chk_desc, 
+                        0,
+                        this.questionList[0].chk_id,
+                        this.questionList[0].chk_options.chk_type,
+                        this.questionList[0].chk_desc,
                         this.questionList[0].chk_options.chk_options
                     )
                 })
-                
+
             },(err)=>{
                 console.log('getQuestionSheet err:', err)
             }
-        ) 
+        )
     }
 
     /**
@@ -88,7 +88,7 @@ export class QuestionPage{
     private setQuestion( index, question_check_id, chk_type, desc, optionList ) {
         this._ngZone.run(()=>{
             console.log("setQuestion:", index, chk_type, desc)
-            
+
             this.currentIndexOfQuestionList = index
             this.type = chk_type
             this.chk_id = question_check_id
@@ -134,19 +134,19 @@ export class QuestionPage{
      */
     public submit( questionIndex, fromType ) {
         this._ngZone.run(()=>{
-            
-            if( (fromType == 'multi' && !this.isMultiHasChecked()) || 
+
+            if( (fromType == 'multi' && !this.isMultiHasChecked()) ||
                 (fromType == 'radio' && this.radioIndex == null)){
                 alert('Please select answer.')
                 return
             }
-            
+
             this.saveAnswer(fromType)
-            
+
             let nextQuestionIndex = questionIndex+1
             console.log('questionIndex', questionIndex, "next:", nextQuestionIndex)
 
-            
+
             if(nextQuestionIndex > this.questionList.length-1){
 
                 this.percentageCalculate()
@@ -170,9 +170,9 @@ export class QuestionPage{
                 })
             }else{
                 this.setQuestion(
-                    nextQuestionIndex, 
+                    nextQuestionIndex,
                     this.questionList[nextQuestionIndex].chk_id,
-                    this.questionList[nextQuestionIndex].chk_options.chk_type, 
+                    this.questionList[nextQuestionIndex].chk_options.chk_type,
                     this.questionList[nextQuestionIndex].chk_desc,
                     this.questionList[nextQuestionIndex].chk_options.chk_options
                 )
@@ -234,7 +234,7 @@ export class QuestionPage{
         if(answerType == 'multi'){
             console.log("saveAnswer multi", this.multiTypeAnswerList)
 
-            for (var i in this.multiTypeAnswerList) {
+            for (var i = 0 ; i < this.multiTypeAnswerList.length; i++) {
 
                 let mItem = this.multiTypeAnswerList[i].option[0]
 
@@ -266,12 +266,12 @@ export class QuestionPage{
                 this.countFail(cri_fail, 1)
 
             }else{
-                if(radioItem.critical == 'pass' || radioItem.critical == 'true' || radioItem.critical == true){ 
-                    value = 1 
+                if(radioItem.critical == 'pass' || radioItem.critical == 'true' || radioItem.critical == true){
+                    value = 1
                     cri_fail = true
                 }
-                else{ 
-                    value = 0 
+                else{
+                    value = 0
                     this.countFail(false, 1)
                 }
             }
@@ -314,7 +314,7 @@ export class QuestionPage{
      * takePhoto
      */
     private takePhoto() {
-        
+
         const options: CameraOptions = {
             quality: 100,
             targetHeight: 300,
@@ -355,13 +355,13 @@ export class QuestionPage{
             let isTakePhoto = this.questionList[questionIndex].chk_options.chk_options[1].option[0].take_photo
             console.log('follow_up', follow_up)
 
-            if (follow_up != void(0) && 
+            if (follow_up != void(0) &&
                 follow_up.length > 0) {
 
                 this.isFollowUp = true
                 this.type = follow_up[0].chk_type
                 this.followUpOptions = follow_up[0].chk_options
-                
+                // console.log(follow_up[0])
                 if(this.type == 'multi'){
                     this.setMultiType( this.followUpOptions )
                 }
@@ -375,8 +375,6 @@ export class QuestionPage{
                     this.type = 'photo'
                 }
             }
-
-            
 
             if(this.type == 'choice'){
                 this.submit(questionIndex, 'choice')
@@ -396,12 +394,12 @@ export class QuestionPage{
     }
 
     private updateMultiAnswerValue( index, item ){
-        console.log('updateMultiAnswerValue', index, item)   
+        console.log('updateMultiAnswerValue', index, item)
     }
 
     private cancelMulti(){
         this._ngZone.run(()=>{
-            
+
             for(let i = 0; i < this.multiTypeAnswerList.length; i++){
                 this.multiTypeAnswerList[i].option[0].check = false
             }
@@ -424,11 +422,11 @@ export class QuestionPage{
             this.setQuestion(
                 prev,
                 this.questionList[prev].chk_id,
-                this.questionList[prev].chk_options.chk_type, 
+                this.questionList[prev].chk_options.chk_type,
                 this.questionList[prev].chk_desc,
                 this.questionList[prev].chk_options.chk_options
             )
-        
+
         })
     }
 
@@ -448,7 +446,7 @@ export class QuestionPage{
     private updateRadioAnswerValue( index, item ){
         console.log('updateRadioAnswerValue', index, item)
         this.radioIndex = index
-        
+
     }
 
     /**
@@ -465,9 +463,9 @@ export class QuestionPage{
             let prev = this.prevQuestionIndex()
 
             this.setQuestion(
-                prev, 
+                prev,
                 this.questionList[prev].chk_id,
-                this.questionList[prev].chk_options.chk_type, 
+                this.questionList[prev].chk_options.chk_type,
                 this.questionList[prev].chk_desc,
                 this.questionList[prev].chk_options.chk_options
             )

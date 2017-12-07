@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Http , Headers , RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import * as moment from 'moment'
 
 /*
   Generated class for the RequestProvider provider.
@@ -39,6 +40,47 @@ export class RequestProvider {
       data
     }
     return this.http.post(Util.getNotificationUrl(), body )
+      .map((body) => body.json())
+  }
+
+  getJourneyProgress(quote_id: number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/jobs/journeyProgress/'+quote_id, options)
+      .map((body) => Object.assign({},{label:'getJourneyProgress'},body.json()))
+  }
+
+  startJourney(j_order: number , quote_id : number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(
+      Util.getSystemURL() + '/api/ecmdriver/jobs/startJourney',
+        {
+          j_order: j_order,
+          quote_id: quote_id
+        },
+        options
+      )
+      .map((body) => body.json())
+  }
+
+  endJourney(j_order: number , quote_id : number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(
+      Util.getSystemURL() + '/api/ecmdriver/jobs/endJourney',
+        {
+          j_order: j_order,
+          quote_id: quote_id
+        },
+        options
+      )
       .map((body) => body.json())
   }
 
@@ -82,7 +124,7 @@ export class RequestProvider {
       .map((body) => body.json())
   }
 
-  updateToEndRoute(movement_order:number, quote_id:number)  {
+  updateToEndRoute(movement_order:number, quote_id:number, movement_id: number)  {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
@@ -91,14 +133,16 @@ export class RequestProvider {
       Util.getSystemURL() + '/api/ecmdriver/jobs/endroute',
         {
           movement_order: movement_order,
-          quote_id: quote_id
+          quote_id: quote_id,
+          movement_id,
+          datetime: moment().format('YYYY-MM-DD HH:mm:ss')
         },
         options
       )
       .map((body) => body.json())
   }
 
-  addPassengerNote(quote_id:number,passenger_id:number,note:string) {
+  addPassengerNote(quote_id:number,passenger_id:number,note:string,timeAdd: any) {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
@@ -108,7 +152,8 @@ export class RequestProvider {
         {
           quote_id,
           passenger_id,
-          note
+          note,
+          timeAdd
         },
         options
       )

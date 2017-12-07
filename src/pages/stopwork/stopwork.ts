@@ -27,12 +27,16 @@ export class StopWork {
     public events: Events
     ) {
 
-      this.thisDate = moment().format('DD MMM YYYY')
-      this.thisTime = moment().format('HH:mm')
 
-      this.startWorkDate = moment(Global.getGlobal("start_work_time")).format('DD MMM YYYY')
-      this.startWorkTime = moment(Global.getGlobal("start_work_time")).format('HH:mm')
-    
+
+  }
+
+  ionViewDidLoad(){
+    this.thisDate = moment().format('DD MMM YYYY')
+    this.thisTime = moment().format('HH:mm')
+
+    this.startWorkDate = moment(Global.getGlobal("start_work_time")).format('DD MMM YYYY')
+    this.startWorkTime = moment(Global.getGlobal("start_work_time")).format('HH:mm')
   }
 
   public closeStopWorkModal(){
@@ -54,7 +58,7 @@ export class StopWork {
       content: "Please wait..."
     })
     loader.present()
-  
+
 
     this.stopWorkService.stopWork(stopTime)
       .subscribe((res)=>{
@@ -66,17 +70,17 @@ export class StopWork {
         if(res.code === 2){
           Global.setGlobal("start_work_id", 0)
 
-          alert(res.text)
+          alert('Work Stop Time Set: ' + moment(stopTime).format('hh:mmA'))
 
           this.closeStopWorkModal()
 
           this.events.publish('isStartWork', false)
-          
+
         }else{
           alert("Cannot update.")
         }
-        
-        
+
+
       },(err)=>{
         console.log("stopWork service err:", err)
         alert("Cannot update.")
