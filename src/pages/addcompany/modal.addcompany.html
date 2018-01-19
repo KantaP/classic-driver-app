@@ -1,4 +1,3 @@
-
 <ion-header class="page-header-custom">
     <!-- Close Button -->
     <div class="w100 add_company_header">
@@ -8,21 +7,21 @@
     </div>
 </ion-header>
 
-<ion-content class="add_company">    
+<ion-content class="add_company">
     <!-- Code -->
     <div class="w100 pos-in h100" *ngIf="next != true">
 
         <div class="w100 pd_hang_center txt_center hinherit">
 
-            <ion-input *ngIf="found_company != true" type="text" class="w100 ib" placeholder="Code" [(ngModel)]="companyCode" ></ion-input>
+            <ion-input *ngIf="found_company != true" type="text" class="w100 ib" placeholder="Code" [(ngModel)]="companyCode"></ion-input>
             <div *ngIf="found_company != true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 pd1" (click)="findCompany(companyCode)">
-                SEARCH <i class="fr icon icon-Search" ></i>
+                {{global.translate('SEARCH')}} <i class="fr icon icon-Search"></i>
             </div>
-            
 
-            <ion-input *ngIf="found_company == true" type="text" disabled="true" class="w100 ib" placeholder="Code" value="{{company_name}}" ></ion-input>
+
+            <ion-input *ngIf="found_company == true" type="text" disabled="true" class="w100 ib" placeholder="Code" value="{{company_name}}"></ion-input>
             <div *ngIf="found_company == true" class="mg-top5percent txt_center w100 ib bg_darkblue txt_white fr w20 pd1" (click)="next = true; expandBox()">
-                NEXT
+                {{global.translate('NEXT')}}
             </div>
         </div>
     </div>
@@ -36,13 +35,13 @@
         <div padding class="w100 pd-no-bottom">
 
             <div class="w100 txt_center hinherit">
-                <ion-input type="text" class="w100 ib hinherit" placeholder="Username" [(ngModel)]="username"></ion-input>
-                <ion-input type="password" class="w100 mg-top10 ib hinherit" placeholder="Password" [(ngModel)]="password"></ion-input>
+                <ion-input type="text" class="w100 ib hinherit" [placeholder]="global.translate('Username')" [(ngModel)]="username"></ion-input>
+                <ion-input type="password" class="w100 mg-top10 ib hinherit" [placeholder]="global.translate('Password')" [(ngModel)]="password"></ion-input>
             </div>
 
             <!-- Apply Button -->
-            <button class="btn_blue" ion-button block (click)="apply(company_name, companyCode, 0, username, password)">LOGIN</button>
+            <button class="btn_blue" ion-button block (click)="apply(company_name, companyCode, 0, username, password)">{{global.translate('LOGIN')}}</button>
 
-        </div> 
+        </div>
     </div>
 </ion-content>

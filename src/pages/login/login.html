@@ -15,80 +15,80 @@
 
 <ion-content padding>
 
-  <div class="txt_center w100 pd10">
-    <img class="w45" src="assets/img/logo_app.png" alt="">
-  </div>
-
-  <div class="txt_center">
-    <div class="color_blue_midnight txt_bold txt_large">
-      DRIVER APP
-    </div>
-  </div>
-
-  <div *ngIf="add_comp_box" class="w100 btn_blue btn_add_company">
-
-    <div class="ib edit_box">
-      <div class="txt_center txt_white w100">
-        <i class="icon icon-Edit" ></i>
-      </div>
+    <div class="txt_center w100 pd10">
+        <img class="w45" src="assets/img/logo_app.png" alt="">
     </div>
 
-    <div class="w80 ib pd_hang_center txt_center" (click)="showModal()">
-      <div class="w100">
-        ADD COMPANY <br/>
-        <div id="txt_explain">
-          (See your job with the company below)
+    <div class="txt_center">
+        <div class="color_blue_midnight txt_bold txt_large">
+            STAFF APP
         </div>
-      </div>
     </div>
 
-  </div>
+    <div *ngIf="add_comp_box" class="w100 btn_blue btn_add_company">
 
-  <ion-select *ngIf="select_box" interface="popover" class="select_custom btn_blue txt_center w100 mw100" multiple="false" (ionChange)="fillLoginBox($event)">
-    <ion-option *ngFor="let c of comp_list" [selected]="c.index == 0" [value]="c.index">
-      {{c.comp_name}}
-    </ion-option>
-  </ion-select>
+        <div class="ib edit_box">
+            <div class="txt_center txt_white w100">
+                <i class="icon icon-Edit"></i>
+            </div>
+        </div>
 
-  <div *ngIf="login_box" class="login_box">
-    <ion-item> 
-      <ion-label>
-        <i class="icon icon-User" ></i>
-      </ion-label>
-      
-      <ion-input type="text" placeholder="Driver ID" [(ngModel)]="username" value="{{username}}"></ion-input>
+        <div class="w80 ib pd_hang_center txt_center" (click)="showModal()">
+            <div class="w100">
+                {{global.translate('ADD COMPANY')}} <br/>
+                <div id="txt_explain">
+                    ({{global.translate('See your job with the company below')}})
+                </div>
+            </div>
+        </div>
 
-    </ion-item>
+    </div>
 
-    <ion-item> 
-      <ion-label>
-        <i class="icon icon-OpenedLock" ></i>
-      </ion-label>
-      
-      <ion-input type="password" placeholder="Password" [(ngModel)]="password" value="{{password}}"></ion-input>
-    </ion-item>
+    <ion-select *ngIf="select_box" interface="popover" class="select_custom btn_blue txt_center w100 mw100" multiple="false" (ionChange)="fillLoginBox($event)">
+        <ion-option *ngFor="let c of comp_list" [selected]="c.index == 0" [value]="c.index">
+            {{c.comp_name}}
+        </ion-option>
+    </ion-select>
 
-    <button class="btn_blue" ion-button block (click)="login()" >LOGIN</button>
-  </div>
+    <div *ngIf="login_box" class="login_box">
+        <ion-item>
+            <ion-label>
+                <i class="icon icon-User"></i>
+            </ion-label>
+
+            <ion-input type="text" [placeholder]="global.translate('Driver ID')" [(ngModel)]="username" value="{{username}}"></ion-input>
+
+        </ion-item>
+
+        <ion-item>
+            <ion-label>
+                <i class="icon icon-OpenedLock"></i>
+            </ion-label>
+
+            <ion-input type="password" [placeholder]="global.translate('Password')" [(ngModel)]="password" value="{{password}}"></ion-input>
+        </ion-item>
+
+        <button class="btn_blue" ion-button block (click)="login()">{{global.translate('LOGIN')}}</button>
+    </div>
 
 
 
 </ion-content>
 
 <ion-footer class="page-footer-custom">
-  <ion-toolbar>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_royal">
-            <div class="txt_right ib page-footer-custom-title">
-              Powered<br>by
+    <ion-toolbar>
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_royal">
+                        <div class="txt_right ib page-footer-custom-title">
+                            Powered<br>by
+                        </div>
+                        &nbsp;
+                        <img src="assets/img/logo_ecm.png" alt="" class="logo-footer ver-sub">
+                    </div>
+                </div>
             </div>
-            &nbsp;
-            <img src="assets/img/logo_ecm.png" alt="" class="logo-footer ver-sub"> 
-          </div>
-        </div>
-      </div>
-    </ion-title>
-  </ion-toolbar>
+        </ion-title>
+    </ion-toolbar>
 </ion-footer>

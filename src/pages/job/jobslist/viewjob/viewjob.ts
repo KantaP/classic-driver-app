@@ -11,6 +11,7 @@ import { Global } from './../../../util/global'
 import { Component, NgZone , Inject , ElementRef } from '@angular/core'
 import { NavController, Events, ModalController, NavParams, LoadingController } from 'ionic-angular'
 import { ViewJobService } from './viewjob.service'
+import { GlobalProvider } from '../../../../providers/global/global';
 interface journeyItem {
   journeygroup?: number
   movement?: Array<any>
@@ -70,7 +71,8 @@ export class ViewJobPage {
         private loadingCtrl: LoadingController,
         private modal: ModalProvider,
         private request:RequestProvider,
-        private dataStore: DataStorage
+        private dataStore: DataStorage,
+        private global: GlobalProvider
     ) {
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
@@ -293,22 +295,35 @@ export class ViewJobPage {
       var shouldNextIndex = 0
       for(let i = 0 ; i < this.journey.length ; i++){
         var already = this.journey[i].movement.map((item2,index3)=>{
-          // console.log(index3 , this.journey[i].movement[index3].progress)
+          console.log(index3 , this.journey[i].movement[index3].progress)
           return {
             movement_order: item2.movement_order,
             status: (index3 == 0 && this.journey[i].movement[index3].progress == 6)
                     ? true
-                    : (index3 > 0 && (this.journey[i].movement[index3-1].progress == 8 || this.journey[i].movement[index3-1].progress == 10) && (this.journey[i].movement[index3].progress == 6 || this.journey[i].movement[index3].progress == 9))
+                    : (index3 > 0
+                      && (
+                          (
+                            (this.journey[i].movement[index3-1].progress == 8 || this.journey[i].movement[index3-1].progress == 10)
+                            && (this.journey[i].movement[index3].progress == 6 || this.journey[i].movement[index3].progress == 9)
+                          )
+                          ||
+                          (
+                            (this.journey[i].movement[index3-1].progress == 8 && (this.journey[i].movement[index3].movement_order - 99) > 0)
+                          )
+                        )
+                    )
                       ? true
                       : false
           }
         })
         this.alreadyEnList = this.alreadyEnList.concat(already)
       }
-      // console.log(this.alreadyEnList)
+      console.log(this.alreadyEnList)
       var nextMovementData = undefined
       for(let index = 0 ; index < this.journey.length; index++) {
-        shouldNextIndex = this.alreadyEnList.filter((item3)=>item3.status)[0].movement_order
+        shouldNextIndex = (this.alreadyEnList.filter((item3)=>item3.status).length > 0)
+                          ?this.alreadyEnList.filter((item3)=>item3.status)[0].movement_order
+                          : -1
         var nextMovement = this.journey[index].movement.filter((item2)=>item2.movement_order == shouldNextIndex)
         if(nextMovement.length > 0) {
           nextMovementData = nextMovement[0]
@@ -466,6 +481,19 @@ export class ViewJobPage {
       }else{
         return false
       }
+    }
+
+    rejectJob() {
+      var loader = this.loadingCtrl.create({
+        content: ''
+      })
+      loader.present()
+      this.request.rejectJob(Global.getGlobal("driver_id"),this.job.quote_id)
+      .subscribe((data)=>{
+        loader.dismiss()
+        this.callback(true)
+        this.navCtrl.pop()
+      })
     }
 
     endroute(journeyIndex) {

@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Http , Headers , RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/retry';
 import * as moment from 'moment'
 
 /*
@@ -20,6 +21,45 @@ export class RequestProvider {
     console.log('Hello RequestProvider Provider');
   }
 
+  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number, timescan: any) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    let body = { passenger_id, status_new ,force_login, pickup, action_point_id , timescan }
+    return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options).retry(5)
+  }
+
+  getAllPassengerInJob(quote_id: number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/allPassengerInJob/' + quote_id, options)
+      .retry(5)
+      .map((body) => body.json())
+  }
+
+  searchFromApi(query: string, quote_id: number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(
+      Util.getSystemURL() + '/api/ecmdriver/passengers/searchPassenger/' + quote_id + '/' + query, options)
+      .retry(5)
+      .map((body) => body.json())
+  }
+
+  getPassengerInRoute(movement_id: number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/passengersInRoute/' + movement_id, options)
+      .retry(5)
+      .map((body) => body.json())
+  }
 
   getAllPassengerInSystem()  {
     let headers = new Headers()
@@ -27,6 +67,7 @@ export class RequestProvider {
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
     return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/allPassengerInSystem', options)
+      .retry(5)
       .map((body) => Object.assign({},{label:'getAllPassengerInSystem'},body.json()))
   }
 
@@ -40,6 +81,7 @@ export class RequestProvider {
       data
     }
     return this.http.post(Util.getNotificationUrl(), body )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -49,6 +91,7 @@ export class RequestProvider {
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
     return this.http.get(Util.getSystemURL() + '/api/ecmdriver/jobs/journeyProgress/'+quote_id, options)
+      .retry(5)
       .map((body) => Object.assign({},{label:'getJourneyProgress'},body.json()))
   }
 
@@ -65,6 +108,7 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -81,7 +125,25 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
+  }
+
+  rejectJob(driver_id: number, quote_id : number) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(
+      Util.getSystemURL() + '/api/ecmdriver/jobs/reject',
+      {
+        driver_id,
+        quote_id
+      },
+      options
+    )
+    .retry(5)
+    .map((body) => body.json())
   }
 
   // getPassengerForFirstMovement(quote_id: number, journey_id:number) {
@@ -101,6 +163,7 @@ export class RequestProvider {
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
     return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerQuestions', options)
+      .retry(5)
       .map((body) => Object.assign({},{label:'passengerQuestions'},body.json()))
   }
 
@@ -121,6 +184,7 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -139,6 +203,7 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -157,6 +222,7 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -176,6 +242,7 @@ export class RequestProvider {
         },
         options
       )
+      .retry(5)
       .map((body) => body.json())
   }
 
@@ -185,6 +252,7 @@ export class RequestProvider {
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
     return this.http.get(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/lang',options)
+                    .retry(5)
                     .map((body) => Object.assign({},{label:'lang'},body.json()))
   }
 
@@ -198,6 +266,7 @@ export class RequestProvider {
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
     return this.http.get(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/lang/'+lang,options)
+                    .retry(5)
                     .map((body) => Object.assign({},{label:'lang_'+lang},body.json()))
   }
 

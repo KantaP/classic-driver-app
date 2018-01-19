@@ -1,3 +1,7 @@
+import { StopWorkService } from './../pages/stopwork/stopwork.service';
+import { SignOutVehicleService } from './../pages/signoutvehicle/signoutvehicle.service';
+import { DataStorage } from './../pages/util/storage';
+import { TrackingService } from './../pages/util/tracking.service';
 import { ViewNavigationPage } from './../pages/view-navigation/view-navigation';
 import { ViewRoutePage } from './../pages/view-route/view-route';
 import { ModalProvider } from './../providers/modal/modal';
@@ -132,6 +136,10 @@ import { GlobalProvider } from '../providers/global/global';
     Push,
     RequestProvider,
     GlobalProvider,
+    TrackingService,
+    DataStorage,
+    SignOutVehicleService,
+    StopWorkService
   ]
 })
 export class AppModule {}

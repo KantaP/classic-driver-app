@@ -1,3 +1,5 @@
+import { SignOutVehicleService } from './../pages/signoutvehicle/signoutvehicle.service';
+import { TrackingService } from './../pages/util/tracking.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Global } from './../pages/util/global';
 import { PassengerListPage } from './../pages/passenger-list/passenger-list';
@@ -25,6 +27,10 @@ import { VehicleCheckListPage } from "../pages/vehiclecheckhistory/history/viewc
 import { Push } from '@ionic-native/push';
 import { ToastController } from 'ionic-angular/components/toast/toast-controller';
 import { GlobalProvider } from '../providers/global/global';
+import { Util } from '../pages/util/util';
+import { toPromise } from 'rxjs/operator/toPromise';
+import { StopWorkService } from '../pages/stopwork/stopwork.service';
+import * as moment from 'moment'
 
 @Component({
   templateUrl: 'app.html',
@@ -51,7 +57,10 @@ export class MyApp {
     private network: Network,
     private push: Push,
     private toastCtrl: ToastController,
-    private global: GlobalProvider
+    private global: GlobalProvider,
+    private tracking: TrackingService,
+    private stopWorkService: StopWorkService,
+    private signOutVehicleService: SignOutVehicleService
   ) {
 
     this.initializeApp()
@@ -198,15 +207,40 @@ export class MyApp {
       modal.present()
 
     }else if(page.component == "logout"){
-      var pushObject = this.push.init({})
-      pushObject.unregister()
+      if(this.platform.is('cordova')) {
+        var pushObject = this.push.init({})
+        pushObject.unregister()
+      }
+
       this.dataStorage.getLogData('push_token')
       .subscribe((res)=>{
         let items = res.rows
         this.dataStorage.clearLogDB('push_token')
         this.dataStorage.clearLogDB('auth')
-        this.homeService.requestRemoveToken(items.item(0))
-        .subscribe((res)=>{this.nav.setRoot(LoginPage)})
+        var promiseObservable = []
+        promiseObservable.push(this.homeService.requestRemoveToken(items.item(0)).toPromise())
+        if(Global.getGlobal("start_work_id")) {
+          promiseObservable.push(this.stopWorkService.stopWorkNew(moment().format('YYYY-MM-DD HH:mm')))
+        }
+        if(Global.getGlobal("signed_vehicle_id")){
+          promiseObservable.push(this.signOutVehicleService.signOutVehicleNew(Global.getGlobal("signed_vehicle_id")))
+        }
+
+        Promise.all(promiseObservable)
+        .then((results)=>{
+          console.log('test',results)
+          Global.setGlobal("start_work_id", 0)
+          this.events.publish('isStartWork', false)
+          Global.setGlobal("vehicle_signin_insert_id", 0)
+          Global.setGlobal("signed_vehicle_id", 0)
+          Global.setGlobal("signed_vehicle_name", "-")
+          this.events.publish('isVehicleSignIn', false)
+          this.tracking.stopWatchTracking()
+          this.nav.setRoot(LoginPage)
+        })
+        .catch((err)=>{
+          console.log(err)
+        })
       })
 
     }else{

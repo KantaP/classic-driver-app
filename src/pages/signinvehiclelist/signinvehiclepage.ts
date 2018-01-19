@@ -5,6 +5,7 @@ import { SignInVehiclePageService } from './signinvehiclepage.service'
 import { ModalController, Events } from 'ionic-angular'
 import { SignInVehicle } from '../signinvehicle/signinvehicle'
 import { SignOutVehicle } from '../signoutvehicle/signoutvehicle'
+import { GlobalProvider } from '../../providers/global/global';
 
 @Component({
     selector: 'page-signinvehiclepage',
@@ -21,7 +22,8 @@ export class SignInVehiclePage{
         public thisService: SignInVehiclePageService,
         private _ngZone: NgZone,
         private modalCtrl: ModalController,
-        private events: Events
+        private events: Events,
+        private global: GlobalProvider
     ){
         this.vehicleList = []
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
@@ -50,8 +52,8 @@ export class SignInVehiclePage{
                 if(res.code == 2){
 
                     this.vehicleList = []
-                    
-                    this._ngZone.run( () => this.vehicleList = res.result )                 
+
+                    this._ngZone.run( () => this.vehicleList = res.result )
                 }
                 console.log(this.vehicleList)
             },

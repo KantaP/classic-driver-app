@@ -1,45 +1,45 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <div class="ver-sup ib page-header-custom-title txt_bold">
-                VEHICLE CHECK HISTORY
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            {{global.translate('VEHICLE CHECK HISTORY')}}
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </ion-title>
+    </ion-navbar>
+
+    <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
         </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
 
-  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
-
-      <div class="txt_white ib ver-mid">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid">
+            {{global.translate('Signed in')}} : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 </ion-header>
 
 <ion-content>
 
     <div class="w100 h40px txt_white txt_center bg_blue_royal gravity-center-vertical">
-      <div>
-        {{ veh_name }}
-      </div>
+        <div>
+            {{ veh_name }}
+        </div>
     </div>
 
     <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
         <div class="w100 h100 dis-t">
             <div class="w100 dis-tc ver-mid f-size-15px">
-                Loading . . .
+                {{global.translate('Loading')}} . . .
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
                 <div col-3 class="pd-left-10-px">
                     <div ion-row>
                         <div col-10>
-                            Date
+                            {{global.translate('Date')}}
                         </div>
                         <div col-2>
                             :
@@ -58,7 +58,7 @@
                     </div>
                     <div ion-row>
                         <div col-10>
-                            Driver
+                            {{global.translate('Driver')}}
                         </div>
                         <div col-2>
                             :
@@ -66,7 +66,7 @@
                     </div>
                     <div ion-row>
                         <div col-12 class="{{ (s.chk_pass ? 'color_green_forest':'color_red') }}">
-                            {{ (s.chk_pass ? 'Pass':'Fail') }}
+                            {{ (s.chk_pass) ? global.translate('Pass'):global.translate('Fail') }}
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                             {{ s.chk_time }}
                         </div>
                     </div>
-                        
+
                     <div ion-row>
                         <div col-12>
                             {{ s.first_name }} {{ s.surname }}
@@ -93,7 +93,7 @@
         </div>
     </div>
     <div *ngIf="isEmpty" class="w100 txt_bold txt_center">
-        Not found.
+        {{global.translate('Not found')}}.
     </div>
 
 </ion-content>

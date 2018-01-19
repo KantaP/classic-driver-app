@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../providers/global/global';
 import { FormBuilder , FormGroup , Validators} from '@angular/forms';
 import { MessageModal } from './modal/modal.sentmessage'
 import { SignOutVehicle } from './../signoutvehicle/signoutvehicle'
@@ -35,7 +36,8 @@ export class MessagePage {
         private modalCtrl: ModalController,
         private messageService: MessageService,
         public loadingCtrl: LoadingController,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private global: GlobalProvider
         ) {
 
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')

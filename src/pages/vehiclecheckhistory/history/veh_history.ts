@@ -4,6 +4,7 @@ import { Global } from './../../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController, NavParams } from 'ionic-angular'
 import { VehicleCheckListPage } from "./viewchecklist/viewchecklist"
+import { GlobalProvider } from '../../../providers/global/global';
 
 @Component({
   selector: 'page-vehhistory',
@@ -29,7 +30,7 @@ export class VehicleHistoryPage {
 
   veh_id:number = 0
   veh_name:string = ''
-  
+
   choosenId:number = null
 
   constructor(
@@ -38,7 +39,8 @@ export class VehicleHistoryPage {
     private modalCtrl:ModalController,
     private events:Events,
     private vehicleHistoryService:VehicleHistoryService,
-    private navParams:NavParams
+    private navParams:NavParams,
+    private global: GlobalProvider
   ) {
     this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
@@ -46,7 +48,7 @@ export class VehicleHistoryPage {
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
         this.isVehicleSignedIn = isSignedIn
     })
-    
+
     if(Global.getGlobal('vehicle_signin_insert_id') > 0){
         this.isVehicleSignedIn = true
     }
@@ -70,7 +72,7 @@ export class VehicleHistoryPage {
         if(this.storyList.length == 0){
           this.isEmpty = true
         }
-        
+
       },(err)=>{
         console.log('loadHistoryList err:', err)
         this.loading = false
@@ -85,9 +87,9 @@ export class VehicleHistoryPage {
     console.log('setChoosenStory', index, this.storyList[index])
     this.choosenId = this.storyList[index].chk_res_id
 
-    this.navCtrl.push(VehicleCheckListPage, 
+    this.navCtrl.push(VehicleCheckListPage,
       {
-        vehicle_id: this.storyList[index].vehicle_id, 
+        vehicle_id: this.storyList[index].vehicle_id,
         chk_id: this.choosenId
       })
   }

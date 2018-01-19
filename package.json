@@ -51,7 +51,8 @@
     "phonegap-plugin-push": "^2.0.0",
     "rxjs": "5.4.0",
     "sw-toolbox": "3.6.0",
-    "zone.js": "0.8.12"
+    "zone.js": "0.8.12",
+    "cordova-plugin-camera": "~3.0.0"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.0.0",
@@ -81,7 +82,8 @@
       },
       "cordova-plugin-geolocation": {
         "GEOLOCATION_USAGE_DESCRIPTION": "To locate you"
-      }
+      },
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "android"

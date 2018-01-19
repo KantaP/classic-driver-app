@@ -30,7 +30,7 @@ $RECYCLE.BIN/
 .sourcemaps
 .vscode
 platforms
-
+back_up_node_modules
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

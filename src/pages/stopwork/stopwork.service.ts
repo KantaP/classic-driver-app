@@ -5,6 +5,7 @@ import { Util } from '../util/util'
 import 'rxjs/add/operator/map'
 import { Global } from '../util/global'
 import { Observable } from "rxjs/Observable"
+import { toPromise } from 'rxjs/operator/toPromise';
 
 
 @Injectable()
@@ -16,7 +17,23 @@ export class StopWorkService {
     ) {
 
     }
-
+    async stopWorkNew(stopTime) {
+      let headers = new Headers({
+        'x-access-key': Global.getGlobal('api_key'),
+        'x-access-token': Global.getGlobal('api_token')
+      })
+      let position = await this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000})
+      let body = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          time: stopTime,
+          start_id: Global.getGlobal('start_work_id')
+      }
+      return this.http
+      .post( Util.getSystemURL() + '/api/ecmdriver/stopwork', body, { headers: headers })
+      .map(res => res.json())
+      .toPromise()
+    }
     stopWork(stopTime):Observable<any>{
 
         return Observable.create( observer =>{
@@ -32,7 +49,7 @@ export class StopWorkService {
                 time: stopTime,
                 start_id: Global.getGlobal('start_work_id')
             }
-            
+
             this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000}).then((pos) => {
 
                 console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude)

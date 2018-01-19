@@ -6,18 +6,31 @@ import { Util } from '../util/util'
 import { Geolocation } from '@ionic-native/geolocation'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/retry';
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment'
 import { DataStorage } from './storage';
 declare var google;
 @Injectable()
 export class TrackingService {
-    // watchSubscription: Subscription
+    watchSubscription: any
     constructor(
         public http: Http,
         public geolocation: Geolocation,
         public dataStorage: DataStorage) {
+          this.watchSubscription = null
+    }
 
+    forceTracking() {
+      var opts = {
+          enableHighAccuracy: true,
+          timeout: 8000,
+          maximumAge: 5000
+      };
+      this.geolocation.getCurrentPosition(opts)
+        .then((pos) => {
+          this.sendTracking(pos)
+        })
     }
 
     watchTracking() {
@@ -31,7 +44,7 @@ export class TrackingService {
         timeout: 8000,
         maximumAge: 5000
     };
-      Observable
+     this.watchSubscription = Observable
       .interval(60000)
       .subscribe(()=>{
         this.geolocation.getCurrentPosition(opts)
@@ -41,9 +54,9 @@ export class TrackingService {
       })
     }
 
-    // stopWatchTracking() {
-    //   this.watchSubscription.unsubscribe()
-    // }
+    stopWatchTracking() {
+      if(this.watchSubscription != null) this.watchSubscription.unsubscribe()
+    }
 
     sendTracking(position){
 
@@ -147,6 +160,7 @@ export class TrackingService {
                     body,
                     { headers: headers }
                 )
+                .retry(5)
                 .map(res => res.json())
                 .subscribe(
                 (x)=>{

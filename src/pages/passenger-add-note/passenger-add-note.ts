@@ -1,3 +1,4 @@
+import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import { MessageModal } from './../message/modal/modal.sentmessage';
 import { Passenger } from './../util/model/passenger';
 import { DataStorage } from './../util/storage';
@@ -7,6 +8,7 @@ import { FormGroup  , Validators , FormControl} from '@angular/forms';
 import { RequestProvider } from '../../providers/request/request';
 import { ModalProvider } from '../../providers/modal/modal';
 import * as moment from 'moment'
+import { GlobalProvider } from '../../providers/global/global';
 /**
  * Generated class for the PassengerAddNotePage page.
  *
@@ -32,9 +34,9 @@ export class PassengerAddNotePage {
   private expandItemLabel: Array<string>
   private passengerNote: string
   private popUpMessage: string
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController, public navParams: NavParams, private loadCtrl: LoadingController,
     private dataStore: DataStorage , private request: RequestProvider, private modal:ModalProvider,
-    private modalCtrl: ModalController) {
+    private modalCtrl: ModalController, private global: GlobalProvider) {
     this.passenger = this.navParams.get('passenger')
     this.questions = []
     this.questionForm = undefined
@@ -89,6 +91,7 @@ export class PassengerAddNotePage {
   }
 
   submitForm() {
+
     var funcs = []
     // send note
     if(this.passengerNote != "") {
@@ -108,15 +111,20 @@ export class PassengerAddNotePage {
         )
       }
     })
-
-    Promise.all(funcs)
-    .then((responses)=>{
-      this.popUpMessage = "Success"
-      // this.modal.open('alert-popup')
-      let modal = this.modalCtrl.create(MessageModal, {txt:this.popUpMessage}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
-      modal.present()
-    })
-
+    if(funcs.length > 0) {
+      var loader = this.loadCtrl.create({
+        content: ''
+      })
+      loader.present()
+      Promise.all(funcs)
+      .then((responses)=>{
+        loader.dismiss()
+        this.popUpMessage = "Success"
+        // this.modal.open('alert-popup')
+        let modal = this.modalCtrl.create(MessageModal, {txt:this.popUpMessage}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+        modal.present()
+      })
+    }
   }
 
   closePopup(){

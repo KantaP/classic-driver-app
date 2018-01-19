@@ -3,7 +3,8 @@ import { JobsSummaryService } from './jobssummary.service'
 import { Global } from './../../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController } from 'ionic-angular'
-
+import * as moment from 'moment'
+import { GlobalProvider } from '../../../providers/global/global';
 interface dateType {
   start?: string;
   end?: string;
@@ -31,10 +32,11 @@ export class JobsSummaryPage {
     private _ngZone: NgZone,
     private modalCtrl: ModalController,
     private events: Events,
-    private jobsSummaryService: JobsSummaryService
+    private jobsSummaryService: JobsSummaryService,
+    private global: GlobalProvider
   ) {
     this.date = {
-      start: '',
+      start: moment().format('MM/DD/YYYY'),
       end: ''
     }
   }
@@ -74,14 +76,14 @@ export class JobsSummaryPage {
                       let s: SummaryItemInterface = {
                         uid: this.uniqueId,
                         time_depart: item.time_departure,
-                        time_pickup: item.time_start_convert,
+                        time_pickup: item.mov_time_start,
                         time_arrival: item.time_departure,
                         time_finish: item.time_finish,
                         time_leave: '',
                         size: item.time_departure,
                         name_bus: (item.vehicle_reg == null ? '' : item.vehicle_reg),
-                        name_pickup: item.col_address,
-                        name_destination: item.des_address,
+                        name_pickup: item.mov_col_address,
+                        name_destination: item.mov_des_address,
                         note_pickup: item.mov_col_note,
                         note_des: item.mov_des_note
                       }

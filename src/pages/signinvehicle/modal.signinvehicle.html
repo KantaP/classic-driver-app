@@ -2,14 +2,14 @@
     <div padding class="w100 h100 dis-t txt_center">
         <div class="w100 ver-mid content-box">
             <div>
-                SIGN IN TO {{vehicleName}}
+                {{global.translate('SIGN IN TO')}} {{vehicleName}}
             </div>
             <div>
                 <button class="w45 h5vh mg-top5percent txt_white bg_red" (click)="closeSignInVehicleModal()">
-                    No
+                    {{global.translate('No')}}
                 </button>
                 <button class="w45 h5vh mg-top5percent txt_white bg_green_forest" (click)="updateSignInVehicle( vehicleId )">
-                    Yes
+                    {{global.translate('Yes')}}
                 </button>
             </div>
         </div>

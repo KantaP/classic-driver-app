@@ -2,17 +2,17 @@
     <div padding class="w100 h100 dis-t txt_center">
         <div class="w100 ver-mid content-box">
             <div>
-                START WORK
+                {{global.translate('START WORK')}}
             </div>
             <div>
                 {{thisTime}}
             </div>
             <div>
                 <button class="w45 h5vh mg-top5percent txt_white bg_red" (click)="closeStartWorkModal()">
-                    No
+                    {{global.translate('No')}}
                 </button>
                 <button class="w45 h5vh mg-top5percent txt_white bg_green_forest" (click)="updateStartWork()">
-                    Yes
+                    {{global.translate('Yes')}}
                 </button>
             </div>
         </div>

@@ -1,30 +1,30 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-      <div class="w100 h100 dis-t">
-        <div class="dis-tc ver-mid">  
-          <div class="color_blue_midnight">
-            <div class="ver-sup ib page-header-custom-title txt_bold">
-                VEHICLE CHECK HISTORY
+        <ion-title class="txt_center">
+            <div class="w100 h100 dis-t">
+                <div class="dis-tc ver-mid">
+                    <div class="color_blue_midnight">
+                        <div class="ver-sup ib page-header-custom-title txt_bold">
+                            {{global.translate('VEHICLE CHECK HISTORY')}}
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </ion-title>
+    </ion-navbar>
+
+    <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
+        <div class="ib ver-mid w25px">
+            <img src="assets/img/signin_spot.png" alt="">
         </div>
-      </div>
-    </ion-title>
-  </ion-navbar>
 
-  <div padding class="w100 h50px bg_blue_royal" *ngIf="isVehicleSignedIn == true" (click)="openSignOutDialog()">
-      <div class="ib ver-mid w25px">
-        <img src="assets/img/signin_spot.png" alt="">
-      </div>
-
-      <div class="txt_white ib ver-mid">
-        Signed in : {{ signedin_vehicle_name }}
-      </div>
-  </div>
+        <div class="txt_white ib ver-mid">
+            {{global.translate('Signed in')}} : {{ signedin_vehicle_name }}
+        </div>
+    </div>
 
 </ion-header>
 
@@ -32,88 +32,88 @@
     <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
         <div class="w100 h100 dis-t">
             <div class="w100 dis-tc ver-mid f-size-15px">
-                Loading . . .
+                {{global.translate('Loading')}} . . .
             </div>
         </div>
     </div>
     <div *ngIf="loading == false">
-      <div class="w100 h40px txt_center bg_blue_royal_light txt_white">
-        <div class="w100 h100 dis-t">
-            <div class="w100 dis-tc ver-mid f-size-15px">
-                CHECK LIST
+        <div class="w100 h40px txt_center bg_blue_royal_light txt_white">
+            <div class="w100 h100 dis-t">
+                <div class="w100 dis-tc ver-mid f-size-15px">
+                    {{global.translate('CHECK LIST')}}
+                </div>
             </div>
         </div>
-      </div>
 
-      <div class="gravity-center-vertical">
-        <div ion-row class="border-bottom-grey" *ngFor="let s of storyList">
-          <div col-3 class="txt_bold">
-            <div ion-row>
-              <div col-10>
-                  Date
-              </div>
-              <div col-2>
-                  :
-              </div>
-            </div>
-            <div ion-row>
-              <div col-10>
-                  Question
-              </div>
-              <div col-2>
-                  :
-              </div>
-            </div>
-            <div ion-row>
-              <div col-10>
-                  Result
-              </div>
-              <div col-2>
-                  :
-              </div>
-            </div>
-            <div ion-row>
-              <div col-10>
-                  Status
-              </div>
-              <div col-2>
-                  :
-              </div>
-            </div>
-          </div>
+        <div class="gravity-center-vertical">
+            <div ion-row class="border-bottom-grey" *ngFor="let s of storyList">
+                <div col-3 class="txt_bold">
+                    <div ion-row>
+                        <div col-10>
+                            {{global.translate('Date')}}
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-10>
+                            {{global.translate('Question')}}
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-10>
+                            {{global.translate('Result')}}
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-10>
+                            {{global.translate('Status')}}
+                        </div>
+                        <div col-2>
+                            :
+                        </div>
+                    </div>
+                </div>
 
-          <div col-9>
-            <div ion-row>
-              <div col-12>
-                  {{ s.chk_date_convert }}
-              </div>
+                <div col-9>
+                    <div ion-row>
+                        <div col-12>
+                            {{ s.chk_date_convert }}
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-12>
+                            {{ s.question }}
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-12 class="notes_color_{{s.chk_notes_bg_color}}">
+                            {{ s.chk_notes }}
+                        </div>
+                    </div>
+                    <div ion-row>
+                        <div col-3 class="txt_center txt_white txt_bold status_{{s.status_bg}}">
+                            {{ s.status }}
+                        </div>
+                    </div>
+                </div>
+                <div col-12>
+                    <div col-3 class="ib" *ngFor="let img of s.chk_img">
+                        <img src="{{img}}" alt="">
+                    </div>
+                </div>
             </div>
-            <div ion-row>
-              <div col-12>
-                  {{ s.question }}
-              </div>
-            </div>
-            <div ion-row>
-              <div col-12 class="notes_color_{{s.chk_notes_bg_color}}">
-                  {{ s.chk_notes }}
-              </div>
-            </div>
-            <div ion-row>
-              <div col-3 class="txt_center txt_white txt_bold status_{{s.status_bg}}">
-                  {{ s.status }}
-              </div>
-            </div>
-          </div>
-          <div col-12>
-            <div col-3 class="ib" *ngFor="let img of s.chk_img" >
-              <img src="{{img}}" alt="">
-            </div>
-          </div>
         </div>
-      </div>
 
     </div>
     <div *ngIf="isEmpty" class="w100 txt_bold txt_center">
-        Not found.
+        {{global.translate('Not found')}}.
     </div>
 </ion-content>

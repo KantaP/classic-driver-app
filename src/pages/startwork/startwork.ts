@@ -3,6 +3,7 @@ import { ViewController, Events, LoadingController } from 'ionic-angular'
 import { StartWorkService } from './startwork.service'
 import { Global } from '../util/global'
 import moment from 'moment'
+import { GlobalProvider } from '../../providers/global/global';
 
 @Component({
   selector: 'modal-startwork',
@@ -17,7 +18,8 @@ export class StartWork {
     public viewCtrl: ViewController,
     private startWorkService: StartWorkService,
     public loadingCtrl: LoadingController,
-    public events: Events
+    public events: Events,
+    private global: GlobalProvider
     ) {}
 
 

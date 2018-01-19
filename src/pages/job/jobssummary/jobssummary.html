@@ -4,7 +4,7 @@
             <ion-label>
                 <i class="icon icon-Agenda"></i>
             </ion-label>
-            <ion-datetime displayFormat="MM/DD/YYYY" placeholder="Date Start" [(ngModel)]="date.start" (ionChange)="dateStartChange()"></ion-datetime>
+            <ion-datetime displayFormat="MM/DD/YYYY" [placeholder]="global.translate('Date Start')" [(ngModel)]="date.start" (ionChange)="dateStartChange()"></ion-datetime>
         </ion-item>
     </div>
     <div col-6 class="pd-left-no">
@@ -12,7 +12,7 @@
             <ion-label>
                 <i class="icon icon-Agenda"></i>
             </ion-label>
-            <ion-datetime [disabled]="ifStartEmtpy()" displayFormat="MM/DD/YYYY " placeholder="Date End " [(ngModel)]="date.end " [min]="date.start " (ionChange)="dateEndChange() "></ion-datetime>
+            <ion-datetime [disabled]="ifStartEmtpy()" displayFormat="MM/DD/YYYY " [placeholder]="global.translate('Date End')" [(ngModel)]="date.end " [min]="date.start " (ionChange)="dateEndChange() "></ion-datetime>
         </ion-item>
     </div>
 </div>
@@ -20,7 +20,7 @@
 <div *ngIf="loading== true " class="w100 h40px txt_center bg_blue_royal_light txt_white ">
     <div class="w100 h100 dis-t ">
         <div class="w100 dis-tc ver-mid f-size-15px ">
-            Loading . . .
+            {{global.translate('Loading')}} . . .
         </div>
     </div>
 </div>
@@ -29,7 +29,7 @@
     <div *ngIf="itemsGroup.length==0 " class="w100 h40px txt_center bg_blue_royal_light txt_white ">
         <div class="w100 h100 dis-t ">
             <div class="w100 dis-tc ver-mid f-size-15px ">
-                No result.
+                {{global.translate('No result')}}.
             </div>
         </div>
     </div>
@@ -71,7 +71,7 @@
                     <div ion-row>
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Depart
+                                {{global.translate('Depart')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -82,7 +82,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Pick-up
+                                {{global.translate('Pick-up')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -93,7 +93,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Pick-up
+                                {{global.translate('Pick-up')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -104,7 +104,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Note Pick-up
+                                {{global.translate('Note Pick-up')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -115,7 +115,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Dest
+                                {{global.translate('Dest')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -126,7 +126,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Note Dest
+                                {{global.translate('Note Dest')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -137,7 +137,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Arrival
+                                {{global.translate('Arrival')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -148,7 +148,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Leave
+                                {{global.translate('Leave')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -159,7 +159,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Finish
+                                {{global.translate('Finish')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -170,7 +170,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Size
+                                {{global.translate('Size')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">
@@ -181,7 +181,7 @@
 
                         <div col-3 class="txt_center bg_grey_gainsboro border-bottom-white gravity-center-vertical ">
                             <div>
-                                Bus
+                                {{global.translate('Bus')}}
                             </div>
                         </div>
                         <div col-9 class="pd-left-10-px border-around gravity-center-vertical ">

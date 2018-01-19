@@ -4,6 +4,7 @@ import { VehicleCheckService } from './vehiclecheck.service'
 import { Global } from './../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController } from 'ionic-angular'
+import { GlobalProvider } from '../../providers/global/global';
 
 @Component({
   selector: 'page-vehiclecheck',
@@ -24,7 +25,8 @@ export class VehicleCheckPage {
     private _ngZone: NgZone,
     private thisService: VehicleCheckService,
     private modalCtrl: ModalController,
-    private events: Events
+    private events: Events,
+    private global: GlobalProvider
   ) {
     this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
@@ -32,7 +34,7 @@ export class VehicleCheckPage {
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
         this.isVehicleSignedIn = isSignedIn
     })
-    
+
     if(Global.getGlobal('vehicle_signin_insert_id') > 0){
         this.isVehicleSignedIn = true
     }
@@ -57,13 +59,13 @@ export class VehicleCheckPage {
 
               for (var i = 0; i < res.result.length; i++) {
                 this.vehicleList.push({
-                  index:i+1, 
-                  vehicle_id: res.result[i].vehicle_id, 
+                  index:i+1,
+                  vehicle_id: res.result[i].vehicle_id,
                   vehicle_reg: res.result[i].vehicle_reg
                 })
               }
 
-            })                 
+            })
           }
           console.log(this.vehicleList)
         },
@@ -99,8 +101,8 @@ export class VehicleCheckPage {
    */
   public openCheckQuestionPage() {
 
-    if(this.choosenVehicle != void(0) && 
-      this.choosenVehicle.vehicle_id != void(0) && 
+    if(this.choosenVehicle != void(0) &&
+      this.choosenVehicle.vehicle_id != void(0) &&
       this.choosenVehicle.vehicle_id > 0){
 
       this.navCtrl.push(QuestionPage, this.choosenVehicle)

@@ -2,6 +2,7 @@ import { Component } from '@angular/core'
 import { ViewController, Events } from 'ionic-angular'
 import { SignOutVehicleService } from './signoutvehicle.service'
 import { Global } from '../util/global'
+import { GlobalProvider } from '../../providers/global/global';
 // import moment from 'moment'
 
 @Component({
@@ -18,6 +19,7 @@ export class SignOutVehicle {
     public viewCtrl: ViewController,
     private thisService: SignOutVehicleService,
     public events: Events,
+    private global: GlobalProvider
     ) {
       this.vehicleName = Global.getGlobal('signed_vehicle_name')
       this.vehicleId = Global.getGlobal('signed_vehicle_id')

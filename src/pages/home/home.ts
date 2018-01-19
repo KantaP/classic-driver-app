@@ -108,16 +108,22 @@ export class HomePage implements OnDestroy {
   //     })
   // }
 
-  changeLang() {
+  async changeLang() {
     // this.dataStore.get
     this.dataStore.setLangDefault(this.langSelected)
     this.global.setLang(this.langSelected)
     this.lang = this.langSelected
-    this.request.getLangPack(this.langSelected)
-    .subscribe((langPackData)=>{
-      this.dataStore.setLangPack(this.langSelected, {read:false,words:langPackData.results})
-      this.global.setLangPack({read:false,words:langPackData.results})
-    })
+    // var langPack = await this.dataStore.getLangPack(this.langSelected)
+    // if(langPack == null) {
+      this.request.getLangPack(this.langSelected)
+      .subscribe((langPackData)=>{
+        this.dataStore.setLangPack(this.langSelected, {read:false,words:langPackData.results})
+        this.global.setLangPack({read:false,words:langPackData.results})
+      })
+    // }else{
+      // this.global.setLangPack(langPack)
+    // }
+
     this.modal.close('lang-dialog')
   }
 

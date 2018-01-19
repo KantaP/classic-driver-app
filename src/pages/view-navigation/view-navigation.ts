@@ -2,6 +2,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
+import { GlobalProvider } from '../../providers/global/global';
 
 declare var google;
 /**
@@ -20,7 +21,7 @@ export class ViewNavigationPage {
   private userMarker: any
   private userRadius: any
   private watchPosition: Subscription
-  constructor(public navCtrl: NavController, public navParams: NavParams, private geo: Geolocation) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private geo: Geolocation, private global:GlobalProvider) {
     this.markers = null
     this.userMarker = null
     this.userRadius = null
@@ -49,11 +50,11 @@ export class ViewNavigationPage {
   }
 
   ionViewDidLeave(){
-    this.clearEverything()
+    this.clearEverythings()
     this.watchPosition.unsubscribe()
   }
 
-  clearEverything(){
+  clearEverythings(){
     this.markers.setMap(null)
     this.userMarker.setMap(null)
     this.userRadius = null
@@ -62,8 +63,8 @@ export class ViewNavigationPage {
 
   initMap(resp: Geoposition){
     var routeDetil = this.navParams.get('routeDetil')
-    console.log(routeDetil)
-    console.log(resp)
+    // console.log(routeDetil)
+    // console.log(resp)
     var directionsService = new google.maps.DirectionsService;
     this.map = new google.maps.Map(document.querySelector('#map'),{
       center: new google.maps.LatLng(resp.coords.latitude,resp.coords.longitude),

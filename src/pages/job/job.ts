@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../providers/global/global';
 import { HomeService } from './../home/home.service'
 import { SignOutVehicle } from './../signoutvehicle/signoutvehicle'
 import { Global } from './../util/global'
@@ -22,7 +23,8 @@ export class JobsViewPage {
         public navCtrl: NavController,
         private _ngZone: NgZone,
         private modalCtrl: ModalController,
-        private events: Events
+        private events: Events,
+        private global: GlobalProvider
     ) {
         this.tabs = 'jobs_list'
 
@@ -32,7 +34,7 @@ export class JobsViewPage {
             this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
             this.isVehicleSignedIn = isSignedIn
         })
-        
+
         if(Global.getGlobal('vehicle_signin_insert_id') > 0){
             this.isVehicleSignedIn = true
         }
@@ -69,7 +71,7 @@ export class JobsViewPage {
             this.tabs = tab
             console.log(this.tabs)
         })
-        
+
     }
 
 }

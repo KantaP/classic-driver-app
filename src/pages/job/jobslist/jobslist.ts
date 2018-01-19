@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../../providers/global/global';
 import { ViewJobPage } from './viewjob/viewjob'
 import { JobsListInterface } from './../../util/model/jobList.interface'
 import { JobsListService } from './jobslist.service'
@@ -21,7 +22,8 @@ export class JobsListPage {
         private _ngZone: NgZone,
         private modalCtrl: ModalController,
         private events: Events,
-        private jobsListService: JobsListService
+        private jobsListService: JobsListService,
+        private global: GlobalProvider
     ) {
         this.getJobs()
     }
@@ -56,7 +58,7 @@ export class JobsListPage {
 
     callbackForUpdate(needUpdate: boolean, _param?: any) {
       return new Promise((resolve, reject) => {
-        console.log("callbackForUpdate")
+        if(needUpdate) this.getJobs()
       })
 
     }

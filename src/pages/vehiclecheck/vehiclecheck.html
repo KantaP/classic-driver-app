@@ -21,7 +21,7 @@
             <div class="color_blue_midnight">
                 <img src="assets/img/logo_app.png" alt="" class="logo-header ver-sub">
                 <div class="ver-sup ib mg-left-10 page-header-custom-title txt_bold">
-                    DRIVER APP
+                    STAFF APP
                 </div>
             </div>
         </ion-title>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="txt_white ib ver-mid">
-            Signed in : {{ signedin_vehicle_name }}
+            {{global.translate('Signed in')}} : {{ signedin_vehicle_name }}
         </div>
     </div>
 
@@ -42,7 +42,7 @@
             <i class="icon icon-Search"></i>
         </ion-label>
 
-        <ion-input type="text" class="" placeholder="Search Vehicle" [(ngModel)]="search" value="{{search}}" (ionChange)="sendSearch(search)"></ion-input>
+        <ion-input type="text" class="" [placeholder]="global.translate('Search Vehicle')" [(ngModel)]="search" value="{{search}}" (ionChange)="sendSearch(search)"></ion-input>
     </ion-item>
 
 </ion-header>

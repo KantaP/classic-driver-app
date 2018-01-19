@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../providers/global/global';
 
 import { Global } from './../util/global'
 
@@ -26,7 +27,8 @@ export class AddCompany{
     private loginService: LoginService,
     public events: Events,
     private _ngZone: NgZone,
-    private dataStore: DataStorage
+    private dataStore: DataStorage,
+    private global: GlobalProvider
     ){
       // this.dataStore = new DataStorage()
   }

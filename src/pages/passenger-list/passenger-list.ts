@@ -1,3 +1,5 @@
+import { TrackingService } from './../util/tracking.service';
+import { GlobalProvider } from './../../providers/global/global';
 import { Passenger } from './../util/model/passenger';
 import { RequestProvider } from './../../providers/request/request';
 import { DataStorage } from './../util/storage';
@@ -9,6 +11,9 @@ import { Component, HostListener, Inject, ElementRef } from '@angular/core';
 import { NavController, NavParams, normalizeURL, LoadingController } from 'ionic-angular';
 import * as moment from 'moment'
 import { PassengerAddNotePage } from '../passenger-add-note/passenger-add-note';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
+import { Button } from 'ionic-angular/components/button/button';
+
 
 /**
  * Generated class for the PassengerListPage page.
@@ -75,6 +80,7 @@ export class PassengerListPage {
   private status_text: string;
   private lastPoint: boolean;
   private connection: string;
+  private tracking: TrackingService;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -83,7 +89,9 @@ export class PassengerListPage {
     private loading: LoadingController,
     @Inject(ElementRef) elementRef: ElementRef,
     private dataStorage: DataStorage,
-    private request: RequestProvider
+    private request: RequestProvider,
+    private alertCtrl: AlertController,
+    private global: GlobalProvider
   ) {
     this.passengers = []
     this.passengerStore = []
@@ -120,6 +128,7 @@ export class PassengerListPage {
     Global.setGlobal('journey_id',this.navParams.get('j_id'))
     Global.setGlobal('movement_id',this.navParams.get('movement_id'))
     Global.setGlobal('job_status',this.navParams.get('progress'))
+    this.tracking.forceTracking()
   }
 
   //for read rfid
@@ -249,7 +258,7 @@ export class PassengerListPage {
       else if (passenger[0].status == 0 && passenger[0].pickup == 0) {
         console.log('set status true 2')
         new_status = 1
-        this.status_text = 'Aligted'
+        this.status_text = 'Alighted'
       }
 
 
@@ -263,14 +272,14 @@ export class PassengerListPage {
 
       // if (new_status > 0) {
       var action = 0
-      if(this.status_text == 'Aligted'){
+      if(this.status_text == 'Alighted'){
         var isFirst = this.navParams.get('is_first')
         action = (isFirst) ? -1 : this.navParams.get('movement_id')
       }else{
         action = this.navParams.get('movement_id')
       }
 
-      this.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action , moment().format('YYYY-MM-DD HH:mm:ss'))
+      this.request.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action , moment().format('YYYY-MM-DD HH:mm:ss'))
         .map((body) => body.json())
         .subscribe((data) => {
           if (data.status) {
@@ -336,7 +345,7 @@ export class PassengerListPage {
   }
 
   loadAllPassengers() {
-    this.getAllPassengerInJob()
+    this.request.getAllPassengerInJob(this.navParams.get('quote_id'))
     .subscribe((data) => {
       data.results = data.results.map((item) => {
         if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
@@ -385,7 +394,7 @@ export class PassengerListPage {
       passengerWaitAlign = this.allPassenger
       .filter((item)=>item.movement_order == (movement_order-1) && item.pickup == 0)
       passengerFailed = this.allPassenger
-      .filter((item2)=>item2.movement_order == (movement_order-1) && item2.pickup == 1 && item2.status == -1)
+      .filter((item2)=>item2.pickup == 1 && item2.status == -1)
       passengerWaitAlign = passengerWaitAlign.map((item)=>{
         var index = passengerFailed.findIndex((item2)=>item2.passenger_id == item.passenger_id)
         if(index > -1) {
@@ -399,23 +408,7 @@ export class PassengerListPage {
     this.calculateTodo()
   }
 
-  getAllPassengerInJob() {
-    let headers = new Headers()
-    headers.append('x-access-key', Global.getGlobal('api_key'));
-    headers.append('x-access-token', Global.getGlobal('api_token'));
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/allPassengerInJob/' + this.navParams.get('quote_id'), options)
-      .map((body) => body.json())
-  }
 
-  getPassengerInRoute() {
-    let headers = new Headers()
-    headers.append('x-access-key', Global.getGlobal('api_key'));
-    headers.append('x-access-token', Global.getGlobal('api_token'));
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get(Util.getSystemURL() + '/api/ecmdriver/passengers/passengersInRoute/' + this.navParams.get('movement_id'), options)
-      .map((body) => body.json())
-  }
 
   calculateTodo() {
     var movement_id = this.navParams.get('movement_id')
@@ -447,7 +440,7 @@ export class PassengerListPage {
           .filter((passenger) => (passenger.first_name.includes(this.searchInput) || passenger.first_name.includes(this.searchInput)))
         this.passengers = filterPassengers
         if (this.passengers.length == 0) {
-          this.searchFromApi(this.searchInput)
+          this.request.searchFromApi(this.searchInput,this.navParams.get('quote_id'))
             .subscribe(
             (res) => {
               loader.dismiss()
@@ -491,25 +484,9 @@ export class PassengerListPage {
     }, 1000)
   }
 
-  searchFromApi(query: string) {
-    let headers = new Headers()
-    headers.append('x-access-key', Global.getGlobal('api_key'));
-    headers.append('x-access-token', Global.getGlobal('api_token'));
-    let options = new RequestOptions({ headers: headers });
-    var quote_id = this.navParams.get('quote_id')
-    return this.http.get(
-      Util.getSystemURL() + '/api/ecmdriver/passengers/searchPassenger/' + quote_id + '/' + query, options)
-      .map((body) => body.json())
-  }
 
-  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number, timescan: any) {
-    let headers = new Headers()
-    headers.append('x-access-key', Global.getGlobal('api_key'));
-    headers.append('x-access-token', Global.getGlobal('api_token'));
-    let options = new RequestOptions({ headers: headers });
-    let body = { passenger_id, status_new ,force_login, pickup, action_point_id , timescan }
-    return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options)
-  }
+
+
 
   generateStatusColor(status, pickup) {
     if (status == 0 && pickup == 1) return 'txt_center passenger-list-primary'
@@ -552,16 +529,16 @@ export class PassengerListPage {
     var pickUpUpdate = 0
     var newStatus = 0
     if(passenger.pickup != 1 && passenger.movement_order != movement_order) {
-      // options.title = `Incorrect Pickup Point`
-      // options.icon = 'WRONG_ADDRESS'
-      // options.shouldBeAddress = passenger.correctPickUp
-      // this.modal.close('passenger-item')
-      // this.openFailedModal(
-      //   options.title,
-      //   options.icon,
-      //   options.shouldBeAddress,
-      //   this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
-      this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
+      options.title = `Incorrect Pickup Point`
+      options.icon = 'WRONG_ADDRESS'
+      options.shouldBeAddress = passenger.correctPickUp
+      this.modal.close('passenger-item')
+      this.openFailedModal(
+        options.title,
+        options.icon,
+        options.shouldBeAddress,
+        this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+      // this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }else if(passenger.pickup != 1 && passenger.movement_order == movement_order) {
       this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }else if(passenger.pickup == 1 && passenger.point_id != action) {
@@ -569,16 +546,16 @@ export class PassengerListPage {
       // passenger from search
       pickUpUpdate = 1
       newStatus = 1
-    //   options.title = `Incorrect Pickup Point`
-    //   options.icon = 'WRONG_ADDRESS'
-    //   options.shouldBeAddress = passenger.correctPickUp
-    //   this.modal.close('passenger-item')
-    //   this.openFailedModal(
-    //     options.title,
-    //     options.icon,
-    //     options.shouldBeAddress,
-    //     this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
-      this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
+      options.title = `Incorrect Pickup Point`
+      options.icon = 'WRONG_ADDRESS'
+      options.shouldBeAddress = passenger.correctPickUp
+      this.modal.close('passenger-item')
+      this.openFailedModal(
+        options.title,
+        options.icon,
+        options.shouldBeAddress,
+        this.processForceLogin.bind(this, passenger,action,pickUpUpdate,newStatus))
+      // this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
     }
     else{
       pickUpUpdate = 1
@@ -592,7 +569,7 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force login...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action, moment().format('YYYY-MM-DD HH:mm:ss'))
+    this.request.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action, moment().format('YYYY-MM-DD HH:mm:ss'))
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
@@ -611,8 +588,10 @@ export class PassengerListPage {
             var dataPayload: NotiPayload = {}
             if(!this.navParams.get('current_place').includes(swapPassenger.correctPickUp)) {
               this.wrong_point = '1'
+              dataPayload.note = 'This is not passengers registered stop'
             }else{
               this.wrong_point = '0'
+              dataPayload.note = ''
             }
             dataPayload.message = "Passenger update"
             dataPayload.title = "Passenger Update"
@@ -627,37 +606,47 @@ export class PassengerListPage {
           }
           this.initPassengers()
         }
+      },
+      (err)=>{
+        loader.dismiss()
+        alert('Please check your internet and try again')
+        console.log(err)
       })
   }
 
   forceLogout(passenger: any) {
 
-    var action = 0
+    var action = this.navParams.get('movement_id')
     var options: any = {}
-    if(passenger.pickup != 0) {
+    var isLast = this.navParams.get('is_last')
+    var movement_order = this.navParams.get('movement_order')
+    var pickUpUpdate = 0
+    var newStatus = 0
+    if(isLast) movement_order = movement_order - 99
+    // console.log(passenger.movement_order , this.navParams.get('movement_order'))
+    if(passenger.pickup == 0 && passenger.movement_order != movement_order) {
       // _passenger = this.allPassenger.filter((item)=>item.passenger_id == passenger.passenger_id && item.pickup == 0 && item.j_id == passenger.j_id)[0]
       // console.log(_passenger)
       var isFirst = this.navParams.get('is_first')
       action = (isFirst) ? -1 : this.navParams.get('movement_id')
-      // options.title = `Incorrect Drop Off Point`
-      // options.icon = 'WRONG_ADDRESS'
-      // options.shouldBeAddress = passenger.correctDestination
-      // this.modal.close('passenger-item')
-      // this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.processForceLogout.bind(this, passenger,action))
-      this.processForceLogout(passenger,action)
+      options.title = `Incorrect Drop Off Point`
+      options.icon = 'WRONG_ADDRESS'
+      options.shouldBeAddress = passenger.correctDestination
+      this.modal.close('passenger-item')
+      this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.processForceLogout.bind(this, passenger,action,pickUpUpdate,newStatus))
+      // this.processForceLogout(passenger,action)
     }else{
       action = passenger.point_id
-
-      this.processForceLogout(passenger,action)
+      this.processForceLogout(passenger,action,pickUpUpdate,newStatus)
     }
     this.modal.close('passenger-item')
   }
 
-  processForceLogout(passenger: any, action:number){
+  processForceLogout(passenger: any, action:number , pickUp: number  , status: number){
     var loader = this.loading.create({
       content: 'Force logout...'
     })
-    this.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action , moment().format('YYYY-MM-DD HH:mm:ss'))
+    this.request.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action , moment().format('YYYY-MM-DD HH:mm:ss'))
     .map((body) => body.json())
     .subscribe((data) => {
       loader.dismiss()
@@ -676,8 +665,10 @@ export class PassengerListPage {
           var swapPassenger = this.allPassenger.filter((item)=>item.pickup == 0  && item.passenger_id == passenger.passenger_id)[0]
           if(!this.navParams.get('current_place').includes(swapPassenger.correctDestination)) {
             this.wrong_point = '1'
+            dataPayload.note = 'This is not passengers registered stop'
           }else{
             this.wrong_point = '0'
+            dataPayload.note = ''
           }
           dataPayload.message = "Passenger update"
           dataPayload.title = "Passenger Update"
@@ -687,11 +678,16 @@ export class PassengerListPage {
           dataPayload.name = passenger.first_name + ' ' + passenger.surname
           dataPayload.time = moment().format('HH:mm')
           dataPayload.wrong_point = this.wrong_point
-          dataPayload.status = 'Aligted'
+          dataPayload.status = 'Alighted'
           this.sendNotification(parent.email, dataPayload)
         }
         this.initPassengers()
       }
+    },
+    (err)=>{
+      loader.dismiss()
+      alert('Please check your internet and try again')
+      console.log(err)
     })
   }
 
@@ -711,14 +707,71 @@ export class PassengerListPage {
       .subscribe(
         (res) => {
           loader.dismiss()
-          this.callback({
-            movement_id: this.navParams.get('movement_id')  ,
-            movement_order: this.navParams.get('movement_order'),
-            quote_id: this.navParams.get('quote_id')
-          })
-            .then(() => {
-              this.navCtrl.pop()
+          if(res.results.update) {
+            if(res.results['force_passenger_fail_to_board'] > 0){
+              this.allPassenger = this.allPassenger.map((item)=>{
+                if(res.results['failedBoardPassenger'].findIndex((item2)=>item2.job_passengers_id == item.job_passengers_id) > -1) {
+                  item.status = -1
+                }
+                return item
+              })
+              var dataPayload: NotiPayload = {}
+              var failedBoardPassenger = this.allPassenger.filter((item)=>item.pickup == 1  && item.movement_order == this.navParams.get('movement_order') && item.status == -1)
+              for(let i = 0; i < failedBoardPassenger.length; i++) {
+                this.wrong_point = '1'
+                dataPayload.note = 'Did not board'
+                dataPayload.message = "Passenger update"
+                dataPayload.title = "Passenger Update"
+                dataPayload.route = failedBoardPassenger[i].jobPattern[0].job_name || ""
+                dataPayload.place = this.navParams.get('current_place')
+                dataPayload.sentfrom = ""
+                dataPayload.name = failedBoardPassenger[i].first_name + ' ' + failedBoardPassenger[i].surname
+                dataPayload.time = moment().format('HH:mm')
+                dataPayload.wrong_point = this.wrong_point
+                dataPayload.status = 'Failed Board'
+                for(let parent of failedBoardPassenger[i].parents) {
+                  this.sendNotification(parent.email, dataPayload)
+                }
+              }
+              var failedAlignPassenger = this.allPassenger
+              .filter((item)=>{
+                console.log('has failed board ? ' , this.allPassenger.findIndex((item2)=>item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1))
+                return item.pickup == 0
+                        && item.status == 0
+                        && item.movement_order == (this.navParams.get('movement_order')-1)
+                        && this.allPassenger.findIndex((item2)=>item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1) < 0
+              })
+              for(let i = 0; i < failedAlignPassenger.length; i++) {
+                this.wrong_point = '1'
+                dataPayload.note = 'Did not alight'
+                dataPayload.message = "Passenger update"
+                dataPayload.title = "Passenger Update"
+                dataPayload.route = failedAlignPassenger[i].jobPattern[0].job_name || ""
+                dataPayload.place = this.navParams.get('current_place')
+                dataPayload.sentfrom = ""
+                dataPayload.name = failedAlignPassenger[i].first_name + ' ' + failedAlignPassenger[i].surname
+                dataPayload.time = moment().format('HH:mm')
+                dataPayload.wrong_point = this.wrong_point
+                dataPayload.status = 'Failed alight'
+                for(let parent of failedAlignPassenger[i].parents) {
+                  this.sendNotification(parent.email, dataPayload)
+                }
+              }
+            }
+            // for(let parent of passenger.parents){
+            // }
+            this.callback({
+              movement_id: this.navParams.get('movement_id')  ,
+              movement_order: this.navParams.get('movement_order'),
+              quote_id: this.navParams.get('quote_id')
             })
+              .then(() => {
+                this.navCtrl.pop()
+              })
+          }else{
+            alert('Cannot en-route. please try again')
+          }
+
         },
         (err) => {
           alert('Cannot enter this route')
@@ -727,7 +780,55 @@ export class PassengerListPage {
   }
 
   endroute() {
+    var alertItem = this.alertCtrl.create({
+      title:'End Job',
+      message: 'Are you sure you want to End job?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Ok',
+          handler: data => {
+            var boardPassenger = this.allPassenger.filter((item2)=>item2.pickup == 1 && item2.status == 1)
+            var notAlignPassenger = this.allPassenger.filter((item3)=>{
+              return boardPassenger.findIndex((item4)=>item4.passenger_id == item3.passenger_id) >= 0 && item3.pickup == 0 && item3.status == 0
+            })
+            console.log('count passenger not align:' + notAlignPassenger.length)
+            if(notAlignPassenger.length > 0) {
+              var alertItem2 = this.alertCtrl.create({
+                title:'End Job',
+                message:notAlignPassenger.length+ ' passenger(s) not alighted. Please check your vehicle and press confirm to force log off remaining passengers and end job',
+                buttons: [
+                  {
+                    text: 'Cancel',
+                    handler: data => {
+                      console.log('Cancel clicked');
+                    }
+                  },
+                  {
+                    text: 'Ok',
+                    handler: data => {
+                      this.processEndRoute()
+                    }
+                  }
+                ]
+              })
+              alertItem2.present()
+            }else{
+              this.processEndRoute()
+            }
+          }
+        }
+      ]
+    })
+    alertItem.present()
+  }
 
+  processEndRoute() {
     var loader = this.loading.create({
       content: ''
     })

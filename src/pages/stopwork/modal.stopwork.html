@@ -2,15 +2,15 @@
     <div padding class="w100 h100 dis-t txt_center">
         <div class="w100 ver-mid content-box">
             <div class="txt_bold">
-                START WORK
+                {{global.translate('START WORK')}}
             </div>
             <div>
                 {{ startWorkDate }} &nbsp;&nbsp; {{ startWorkTime }}
             </div>
             <div class="txt_bold">
-                STOP WORK
+                {{global.translate('STOP WORK')}}
             </div>
-            <div *ngIf="!isEdit" class="h5vh" >
+            <div *ngIf="!isEdit" class="h5vh">
                 {{ thisDate }} &nbsp;&nbsp; {{ thisTime }}
             </div>
             <div *ngIf="isEdit" ion-row class="">
@@ -37,14 +37,14 @@
             <div>
                 <button class="w45 h5vh mg-top5percent txt_white bg_red" (click)="isEdit == true ? (isEdit = false) : (isEdit = true)">
                     <div *ngIf="!isEdit" (click)="updateMinDate()">
-                        Edit
+                        {{global.translate('Edit')}}
                     </div>
                     <div *ngIf="isEdit" (click)="clearStopDate()">
-                        Cancle
+                        {{global.translate('Cancle')}}
                     </div>
                 </button>
                 <button class="w45 h5vh mg-top5percent txt_white bg_green_forest" (click)="updateStopWork()">
-                    OK
+                    {{global.translate('OK')}}
                 </button>
             </div>
         </div>

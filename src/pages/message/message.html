@@ -22,7 +22,7 @@
         </div>
 
         <div class="txt_white ib ver-mid mg-left-10">
-            Signed in : {{ signedin_vehicle_name }}
+            {{global.translate('Signed in')}} : {{ signedin_vehicle_name }}
         </div>
     </div>
 
@@ -32,7 +32,7 @@
     <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
         <div class="w100 h100 dis-t">
             <div class="w100 dis-tc ver-mid f-size-15px">
-                Loading . . .
+                {{global.translate('Loading')}} . . .
             </div>
         </div>
     </div>
@@ -84,16 +84,16 @@
             <form [formGroup]="messageForm" novalidate>
                 <ion-row class="margin-top-3">
                     <ion-item>
-                        <ion-input formControlName="title" type="text" placeholder="Subject"></ion-input>
+                        <ion-input formControlName="title" type="text" [placeholder]="global.translate('Subject')"></ion-input>
                     </ion-item>
                 </ion-row>
                 <ion-row class="margin-top-3">
                     <ion-item>
-                        <ion-input formControlName="body" type="text" placeholder="Message"></ion-input>
+                        <ion-input formControlName="body" type="text" [placeholder]="global.translate('Message')"></ion-input>
                     </ion-item>
                 </ion-row>
                 <ion-row class="margin-top-20" style="padding-right:16px;padding-left:16px;">
-                    <button ion-button block class="btn_blue" (click)="sendMessage()">SEND</button>
+                    <button ion-button block class="btn_blue" (click)="sendMessage()">{{global.translate('SEND')}}</button>
                 </ion-row>
             </form>
         </ion-grid>

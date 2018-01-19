@@ -4,6 +4,7 @@ import { VehicleCheckService } from './../vehiclecheck/vehiclecheck.service'
 import { Global } from './../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController } from 'ionic-angular'
+import { GlobalProvider } from '../../providers/global/global';
 
 @Component({
   selector: 'page-vehiclecheckhistory',
@@ -26,7 +27,8 @@ export class VehiclecheckHistoryPage {
     private _ngZone: NgZone,
     private thisService: VehicleCheckService,
     private modalCtrl: ModalController,
-    private events: Events
+    private events: Events,
+    private global: GlobalProvider
   ) {
     this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
@@ -34,7 +36,7 @@ export class VehiclecheckHistoryPage {
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
         this.isVehicleSignedIn = isSignedIn
     })
-    
+
     if(Global.getGlobal('vehicle_signin_insert_id') > 0){
         this.isVehicleSignedIn = true
     }
@@ -52,18 +54,18 @@ export class VehiclecheckHistoryPage {
         (res)=>{
           console.log('Veh History loadVehicleList succ:', res)
           if(res.code == 2){
-            
+
             this._ngZone.run( () => {
 
               for (var i = 0; i < res.result.length; i++) {
                 this.vehicleList.push({
-                  index:i+1, 
-                  vehicle_id: res.result[i].vehicle_id, 
+                  index:i+1,
+                  vehicle_id: res.result[i].vehicle_id,
                   vehicle_reg: res.result[i].vehicle_reg
                 })
               }
               this.loading = false
-            })                 
+            })
           }
           console.log(this.vehicleList)
         },

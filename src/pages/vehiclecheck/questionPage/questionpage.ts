@@ -5,6 +5,7 @@ import { NavController, NavParams, LoadingController } from 'ionic-angular'
 import { QuestionService } from './questionpage.service'
 import { Component, NgZone } from '@angular/core'
 import { Camera, CameraOptions } from '@ionic-native/camera'
+import { GlobalProvider } from '../../../providers/global/global';
 
 @Component({
     selector: 'page-question',
@@ -46,7 +47,8 @@ export class QuestionPage{
         private navCtrl: NavController,
         private _ngZone: NgZone,
         private camera: Camera,
-        public loadingCtrl: LoadingController
+        public loadingCtrl: LoadingController,
+        private global: GlobalProvider
     ) {
         console.log('QuestionPage', this.navParams)
 
@@ -398,23 +400,28 @@ export class QuestionPage{
     }
 
     private cancelMulti(){
-        this._ngZone.run(()=>{
+        // this._ngZone.run(()=>{
 
             for(let i = 0; i < this.multiTypeAnswerList.length; i++){
                 this.multiTypeAnswerList[i].option[0].check = false
             }
 
             let prev = this.prevQuestionIndex()
-            let savedAnswerSize = this.savedAnswerList.length
+            // let savedAnswerSize = this.savedAnswerList.length
+            // if(savedAnswerSize > 0) {
+            //   for (let i = savedAnswerSize-1; i >= 0; i--) {
+            //       console.log(i , prev)
+            //       if (this.savedAnswerList[i].chk_id == this.questionList[prev].chk_id) {
+            //           // COUNT FAIL
+            //           console.log('before cancel' , this.savedAnswerList)
+            //           this.countFail(this.savedAnswerList[i].critical, -1)
+            //           this.savedAnswerList.pop()
+            //           console.log('after cancel' , this.savedAnswerList)
+            //       }
+            //   }
+            // }
 
-            for (let i = savedAnswerSize-1; i > 0; i--) {
-                if (this.savedAnswerList[i].chk_id == this.questionList[prev].chk_id) {
-                    // COUNT FAIL
-                    this.countFail(this.savedAnswerList[i].critical, -1)
-                    this.savedAnswerList.pop()
-                }
-            }
-            console.log('cancel multi this.savedAnswerList', this.savedAnswerList)
+            // console.log('cancel multi this.savedAnswerList', this.savedAnswerList)
 
             this.isFollowUp = false
             this.isDefect = false
@@ -426,8 +433,9 @@ export class QuestionPage{
                 this.questionList[prev].chk_desc,
                 this.questionList[prev].chk_options.chk_options
             )
+            // this.percentageCalculate()
 
-        })
+        // })
     }
 
     /**
@@ -453,14 +461,18 @@ export class QuestionPage{
      * cancelRadio
      */
     private cancelRadio() {
-        this._ngZone.run(()=>{
+        // this._ngZone.run(()=>{
             this.radioValue = ""
             this.radioTypeAnswerList = []
 
              // COUNT FAIL
-            this.countFail(this.savedAnswerList[this.savedAnswerList.length-1].critical, -1)
-            this.savedAnswerList.pop()
-            let prev = this.prevQuestionIndex()
+            //  if(this.savedAnswerList.length > 0) {
+            //   this.countFail(this.savedAnswerList[this.savedAnswerList.length-1].critical, -1)
+            //   this.savedAnswerList.pop()
+            //  }
+
+            console.log('save answer' , this.savedAnswerList)
+            let prev = this.prevQuestionIndex() || 0
 
             this.setQuestion(
                 prev,
@@ -469,8 +481,8 @@ export class QuestionPage{
                 this.questionList[prev].chk_desc,
                 this.questionList[prev].chk_options.chk_options
             )
-
-        })
+            // this.percentageCalculate()
+        // })
     }
 
     private isMultiHasChecked(){
@@ -485,7 +497,8 @@ export class QuestionPage{
     }
 
     private prevQuestionIndex() {
-        return this.currentIndexOfQuestionList-1
+        var prev = this.currentIndexOfQuestionList
+        return (prev < 0) ? 0 :  prev
     }
 
     private countFail( failType, amount ){

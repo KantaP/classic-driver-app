@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../providers/global/global';
 import { Component } from '@angular/core'
 import { ViewController, Events, NavParams } from 'ionic-angular'
 import { SignInVehicleService } from './signinvehicle.service'
@@ -20,7 +21,8 @@ export class SignInVehicle {
     private thisService: SignInVehicleService,
     public events: Events,
     public navParams: NavParams,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private global: GlobalProvider
     ) {
       console.log(this.navParams)
       this.vehicleName = this.navParams.get('vehicle_reg')

@@ -1,6 +1,7 @@
 
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { GlobalProvider } from '../../providers/global/global';
 declare var google;
 /**
  * Generated class for the ViewRoutePage page.
@@ -15,7 +16,7 @@ declare var google;
 export class ViewRoutePage {
   private map: any
   private markers: Array<any>
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private global: GlobalProvider) {
     this.markers = []
   }
 

@@ -70,12 +70,25 @@ export class LoginPage {
       console.log('Welcome')
       this.getCompany()
     })
+
+    this.dataStore.getLangDefault()
+    .then((data)=>{
+      if(data != null) {
+        this.dataStore.getLangPack(data)
+        .then((data)=>{
+          if(data != null) {
+            this.global.setLangPack(data)
+          }
+        })
+      }
+    })
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage')
     this.getApiKey()
     this.getCompany()
+
   }
 
   registerFCMToken() {

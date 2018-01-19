@@ -4,6 +4,7 @@ import { Global } from './../../../util/global'
 import { Component, NgZone } from '@angular/core'
 import { NavController, Events, ModalController, NavParams } from 'ionic-angular'
 import { ViewCheckListService } from "./viewchecklist.service"
+import { GlobalProvider } from '../../../../providers/global/global';
 
 @Component({
   selector: 'page-viewchecklist',
@@ -40,14 +41,15 @@ export class VehicleCheckListPage {
 
   chk_id:number = 0
   veh_id:number = 0
-  
+
   constructor(
     public navCtrl:NavController,
     private _ngZone:NgZone,
     private modalCtrl:ModalController,
     private events:Events,
     private viewCheckListService:ViewCheckListService,
-    private navParams:NavParams
+    private navParams:NavParams,
+    private global: GlobalProvider
   ) {
     this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
 
@@ -55,7 +57,7 @@ export class VehicleCheckListPage {
         this.signedin_vehicle_name = Global.getGlobal('signed_vehicle_name')
         this.isVehicleSignedIn = isSignedIn
     })
-    
+
     if(Global.getGlobal('vehicle_signin_insert_id') > 0){
         this.isVehicleSignedIn = true
     }

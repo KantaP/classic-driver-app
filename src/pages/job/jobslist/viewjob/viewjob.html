@@ -23,7 +23,7 @@
         </div>
 
         <div class="txt_white ib ver-mid mg-left-10">
-            Signed in : {{ signedin_vehicle_name }}
+            {{global.translate('Signed in')}} : {{ signedin_vehicle_name }}
         </div>
     </div>
 
@@ -45,16 +45,16 @@
         <div ion-row class="border-around">
             <div col-6>
                 <div>
-                    <strong> JOB ID:</strong> {{job.quote_id}}
+                    <strong> {{global.translate('JOB ID')}}:</strong> {{job.quote_id}}
                 </div>
                 <div class="txt_bold">
-                    Departure time {{job.time_departure}}
+                    {{global.translate('Departure time')}} {{job.time_departure}}
                 </div>
                 <div class="txt_bold">
-                    Passenger Name :
+                    {{global.translate('Passenger Name')}} :
                 </div>
                 <div class="txt_bold">
-                    Passenger Phone :
+                    {{global.translate('Passenger Phone')}} :
                 </div>
             </div>
             <div col-6>
@@ -62,7 +62,7 @@
                     <i class="icon icon-Agenda color_gold"></i> {{job.date_departure}}
                 </div>
                 <div class="txt_bold">
-                    On site before {{job.onsite_before}}
+                    {{global.translate('On site before')}} {{job.onsite_before}}
                 </div>
                 <div>
                     {{job.passenger_name}}
@@ -74,10 +74,10 @@
             <div col-12>
                 <div col-8 class="mg-auto border-around txt_center">
                     <div col-5 class="ib color_green_forest">
-                        <i class="icon icon-Dollars"></i> $ {{job.driver_pay}}
+                        <i class="icon icon-Dollars"></i> {{global.translate('$')}} {{job.driver_pay}}
                     </div>
                     <div col-5 class="ib color_green_forest">
-                        $ {{job.price}}
+                        {{global.translate('$')}} {{job.price}}
                     </div>
                 </div>
             </div>
@@ -85,12 +85,12 @@
 
                 <div col-6 class="h40px fl bg_red txt_white txt_bold gravity-center-vertical">
                     <div>
-                        REJECT
+                        {{global.translate('REJECT')}}
                     </div>
                 </div>
                 <div col-6 class="h40px fl bg_blue_royal txt_white txt_bold gravity-center-vertical" (click)="acceptJob()">
                     <div>
-                        ACCEPT
+                        {{global.translate('ACCEPT')}}
                     </div>
                 </div>
             </div>
@@ -99,24 +99,24 @@
     <div *ngIf="noResult == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
         <div class="w100 h100 dis-t">
             <div class="w100 dis-tc ver-mid f-size-15px">
-                No Result
+                {{global.translate('No Result')}}
             </div>
         </div>
     </div>
     <div *ngIf="loading == true" class="w100 h40px txt_center bg_blue_royal_light txt_white">
         <div class="w100 h100 dis-t">
             <div class="w100 dis-tc ver-mid f-size-15px">
-                Loading . . .
+                {{global.translate('Loading')}} . . .
             </div>
         </div>
     </div>
     <div *ngIf="loading == false && arrowIcons.length > 0">
         <div class="" *ngFor="let j of journey;let ji = index">
-            <div class="h40px gravity-center-vertical txt_white txt_bold bg_blue_royal" *ngIf="arrowIcons.length > 0">
+            <div class="h10vh gravity-center-vertical txt_white txt_bold bg_blue_royal" *ngIf="arrowIcons.length > 0">
                 <div (click)="toggleShowJourney(ji)">
                     <ion-grid class="padding-5">
                         <ion-row justify-content-between align-items-center>
-                            <span>Journey {{ j.journey_group }}</span>
+                            <span>{{global.translate('Journey')}} {{ j.journey_group }}</span>
                             <ion-icon [ios]="arrowIcons[ji].icon" [md]="arrowIcons[ji].icon"></ion-icon>
                         </ion-row>
                     </ion-grid>
@@ -125,10 +125,11 @@
             <!--(click)="openPassenger(m.movement_id,m.collection_address,m.destination_address,m.progress)"-->
             <div class="" *ngIf="arrowIcons[ji].show && arrowIcons.length > 0">
                 <div ion-row class="padding-left-3 padding-right-3 margin-bottom-3 margin-top-3" *ngIf="alreadyAccept">
-                    <button ion-button block color="primary" (click)="startJob(ji)" *ngIf="startJourney[ji].progress == 0">EN-ROUTE</button>
-                    <button ion-button block color="dark" (click)="endroute(ji)" *ngIf="showEndButtonofJourney(ji)">END</button>
+                    <button ion-button block color="primary" (click)="startJob(ji)" *ngIf="startJourney[ji].progress == 0">{{global.translate('EN-ROUTE')}}</button>
+                    <button ion-button block color="dark" (click)="endroute(ji)" *ngIf="showEndButtonofJourney(ji)">{{global.translate('END')}}</button>
                 </div>
-                <div ion-row [ngClass]="{
+                <div ion-row style="border-bottom:1px solid #ccc" [ngClass]="{
+                  'padding-top-5 padding-bottom-5': true,
                   'disable-row': !alreadyAccept,
                   'bg_grey':m.progress == 10 || m.progress == 8,
                   'bg_green_lime': isCurrentPoint(m.movement_order)
@@ -157,14 +158,14 @@
                             {{ m.date }}
                         </div>
                     </div>
-                    <div class="w100">
+                    <!-- <div class="w100">
                         <div style="
                             height: 1px;
                             width: 95%;
                             background: #e1e1e1;
                             margin: auto;
                         "></div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -172,7 +173,7 @@
             <div class="" *ngFor="let j of journeyOther">
                 <div class="disable-row-header h40px gravity-center-vertical txt_white txt_bold bg_blue_royal">
                     <div padding>
-                        Journey {{ j.journey_group }}
+                        {{global.translate('Journey')}} {{ j.journey_group }}
                     </div>
                 </div>
                 <div class="">
@@ -220,7 +221,7 @@
             <div class="modal-body">
                 <ion-grid no-padding>
                     <ion-row justify-content-between class="modal-title">
-                        <div>ROUTE INFO</div>
+                        <div>{{global.translate('ROUTE INFO')}}</div>
                         <ion-icon ios="md-close" md="md-close" (click)="closeViewRoute()"></ion-icon>
                     </ion-row>
                     <ion-row>
@@ -238,13 +239,13 @@
                     <ion-row style="margin-top:5px;">
                         <ion-grid style="padding:10px;">
                             <ion-row>
-                                <div><b>Next Stop</b>: {{onSiteDetail.next_place}}</div>
+                                <div><b>{{global.translate('Next Stop')}}</b>: {{onSiteDetail.next_place}}</div>
                             </ion-row>
                             <ion-row class="margin-top-3">
-                                <button ion-button color="primary" block (click)="openWholeRoute()">View Route</button>
+                                <button ion-button color="primary" block (click)="openWholeRoute()">{{global.translate('View Route')}}</button>
                             </ion-row>
                             <ion-row class="margin-top-1">
-                                <button ion-button color="danger" block (click)="openPassenger(onSiteDetail.movement,onSiteDetail.isLast,onSiteDetail.isFirst)">On Site</button>
+                                <button ion-button color="danger" block (click)="openPassenger(onSiteDetail.movement,onSiteDetail.isLast,onSiteDetail.isFirst)">{{global.translate('On Site')}}</button>
                             </ion-row>
                         </ion-grid>
                     </ion-row>

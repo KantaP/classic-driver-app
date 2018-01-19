@@ -1,3 +1,4 @@
+import { toPromise } from 'rxjs/operator/toPromise';
 import { Injectable } from '@angular/core'
 import { Http, Headers } from '@angular/http'
 import { Geolocation } from '@ionic-native/geolocation'
@@ -5,7 +6,6 @@ import { Util } from '../util/util'
 import 'rxjs/add/operator/map'
 import { Global } from '../util/global'
 import { Observable } from "rxjs/Observable"
-
 
 @Injectable()
 export class SignOutVehicleService {
@@ -15,6 +15,25 @@ export class SignOutVehicleService {
     public geolocation: Geolocation
     ) {
 
+    }
+
+    async signOutVehicleNew(vehicle_id) {
+      let headers = new Headers({
+          'x-access-key': Global.getGlobal('api_key'),
+          'x-access-token': Global.getGlobal('api_token')
+      })
+      var pos = await this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000})
+      let body = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          vehicle_id: vehicle_id,
+          start_id: Global.getGlobal('vehicle_signin_insert_id')
+      }
+
+      return this.http
+      .post( Util.getSystemURL() + '/api/ecmdriver/vehicle/signout', body, { headers: headers })
+      .map(res => res.json())
+      .toPromise()
     }
 
     signOutVehicle( vehicle_id ):Observable<any>{
@@ -32,7 +51,7 @@ export class SignOutVehicleService {
                 vehicle_id: vehicle_id,
                 start_id: Global.getGlobal('vehicle_signin_insert_id')
             }
-            
+
             this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout:3000}).then((pos) => {
 
                 console.log('lat: ' + pos.coords.latitude + ', lon: ' + pos.coords.longitude)
