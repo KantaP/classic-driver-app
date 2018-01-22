@@ -172,7 +172,11 @@ export class TrackingService {
 
                 },
                 (err)=>{
-                    console.log('Error: ', err)
+                    this.dataStorage.saveTodoAgain('sentTracking', body)
+                    .subscribe((res)=>{
+                      console.log('Error: ', err)
+                    })
+
                 },
                 ()=>{
                     console.log('Completed')

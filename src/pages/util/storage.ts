@@ -1,3 +1,4 @@
+import { toPromise } from 'rxjs/operator/toPromise';
 import { Platform } from 'ionic-angular';
 import { SQLite, SQLiteObject  } from '@ionic-native/sqlite'
 import { CompanyModel  } from './model/company'
@@ -471,6 +472,27 @@ export class DataStorage{
           this.sqlstorage.remove('log_'+key)
         // }
 
+    }
+
+    public saveTodoAgain(key, data): Observable<any> {
+      return Observable.create((observer)=> {
+        this.sqlstorage.get('todo_'+key)
+        .then((data)=>{
+          var todos = new ReplicaSQL(data)
+          todos.rows.push(data)
+          console.log('add todo ' + key , todos.rows)
+          this.sqlstorage.set('todo_'+ key, todos.rows)
+          .then(()=>{observer.next(true)})
+        })
+      })
+    }
+
+    public getTodoAgain(key): Promise<any> {
+      return this.sqlstorage.get('todo_' + key)
+    }
+
+    public clearTodo(key) {
+      this.sqlstorage.remove('todo_'+key)
     }
 
     public getLangPack(lang: string): Promise<any> {

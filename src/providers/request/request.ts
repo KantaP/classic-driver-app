@@ -8,6 +8,15 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/retry';
 import * as moment from 'moment'
 
+interface passengerUpdate {
+  passenger_id?: number;
+  status_new?: number;
+  force_login?: number;
+  pickup?: number;
+  action_point_id?: number;
+  timescan?: any;
+}
+
 /*
   Generated class for the RequestProvider provider.
 
@@ -17,16 +26,16 @@ import * as moment from 'moment'
 @Injectable()
 export class RequestProvider {
   connection: string
-  constructor(public http: Http) {
+  constructor(public http: Http ) {
     console.log('Hello RequestProvider Provider');
   }
 
-  updatePassengerStatus(passenger_id: number, status_new: number,  force_login: number, pickup: number, action_point_id: number, timescan: any) {
+  updatePassengerStatus(params:passengerUpdate) {
     let headers = new Headers()
     headers.append('x-access-key', Global.getGlobal('api_key'));
     headers.append('x-access-token', Global.getGlobal('api_token'));
     let options = new RequestOptions({ headers: headers });
-    let body = { passenger_id, status_new ,force_login, pickup, action_point_id , timescan }
+    let body = params
     return this.http.post(Util.getSystemURL() + '/api/ecmdriver/passengers/passengerUpdateStatus', body, options).retry(5)
   }
 

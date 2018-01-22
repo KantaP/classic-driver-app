@@ -1,3 +1,4 @@
+import { RequestProvider } from './../providers/request/request';
 import { SignOutVehicleService } from './../pages/signoutvehicle/signoutvehicle.service';
 import { TrackingService } from './../pages/util/tracking.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -32,6 +33,16 @@ import { toPromise } from 'rxjs/operator/toPromise';
 import { StopWorkService } from '../pages/stopwork/stopwork.service';
 import * as moment from 'moment'
 
+interface passengerUpdate {
+  passenger_id?: number;
+  status_new?: number;
+  force_login?: number;
+  pickup?: number;
+  action_point_id?: number;
+  timescan?: any;
+}
+
+
 @Component({
   templateUrl: 'app.html',
   providers:[HomeService, DataStorage]
@@ -60,7 +71,8 @@ export class MyApp {
     private global: GlobalProvider,
     private tracking: TrackingService,
     private stopWorkService: StopWorkService,
-    private signOutVehicleService: SignOutVehicleService
+    private signOutVehicleService: SignOutVehicleService,
+    private request: RequestProvider
   ) {
 
     this.initializeApp()
@@ -174,6 +186,7 @@ export class MyApp {
         closeButtonText: 'Ok'
       });
       this.toast.present()
+      this.toDoLoad()
     })
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       // alert('Please check your internet.')
@@ -190,6 +203,23 @@ export class MyApp {
       });
 
       this.toast.present()
+    })
+  }
+
+  toDoLoad() {
+    this.dataStorage.getTodoAgain('sentTracking')
+    .then((todos)=>{
+      todos.map((item)=>{
+        this.tracking.sent(item)
+      })
+      this.dataStorage.clearTodo('sentTracking')
+    })
+    this.dataStorage.getTodoAgain('updatePassengerStatus')
+    .then((todos)=>{
+      todos.map((item:passengerUpdate)=>{
+        this.request.updatePassengerStatus(item)
+      })
+      this.dataStorage.clearTodo('updatePassengerStatus')
     })
   }
 

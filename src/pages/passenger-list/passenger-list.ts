@@ -128,7 +128,7 @@ export class PassengerListPage {
     Global.setGlobal('journey_id',this.navParams.get('j_id'))
     Global.setGlobal('movement_id',this.navParams.get('movement_id'))
     Global.setGlobal('job_status',this.navParams.get('progress'))
-    this.tracking.forceTracking()
+
   }
 
   //for read rfid
@@ -278,10 +278,21 @@ export class PassengerListPage {
       }else{
         action = this.navParams.get('movement_id')
       }
-
-      this.request.updatePassengerStatus(passenger[0].passenger_id, new_status, 0, passenger[0].pickup, action , moment().format('YYYY-MM-DD HH:mm:ss'))
+      var loader = this.loading.create({
+        content: ''
+      })
+      loader.present()
+      this.request.updatePassengerStatus({
+        passenger_id: passenger[0].passenger_id,
+        status_new: new_status,
+        force_login: 0,
+        pickup: passenger[0].pickup,
+        action_point_id: action ,
+        timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+      })
         .map((body) => body.json())
         .subscribe((data) => {
+          loader.dismiss()
           if (data.status) {
             var movement_id = action
             this.allPassenger = this.allPassenger.map((item) => {
@@ -331,6 +342,15 @@ export class PassengerListPage {
           }
         },
         (err) => {
+          loader.dismiss()
+          this.dataStorage.saveTodoAgain('updatePassengerStatus' , {
+            passenger_id: passenger[0].passenger_id,
+            status_new : new_status,
+            force_login: 0,
+            pickup: passenger[0].pickup,
+            action_point_id : action,
+            timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+          })
           resolve()
         })
       // }else{
@@ -342,6 +362,7 @@ export class PassengerListPage {
 
   ionViewDidLoad() {
     this.loadAllPassengers()
+    this.tracking.forceTracking()
   }
 
   loadAllPassengers() {
@@ -569,7 +590,14 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force login...'
     })
-    this.request.updatePassengerStatus(passenger.passenger_id, status, 1, pickUp, action, moment().format('YYYY-MM-DD HH:mm:ss'))
+    this.request.updatePassengerStatus({
+      passenger_id: passenger.passenger_id,
+      status_new: status,
+      force_login: 1,
+      pickup: pickUp,
+      action_point_id: action,
+      timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+    })
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
@@ -609,8 +637,16 @@ export class PassengerListPage {
       },
       (err)=>{
         loader.dismiss()
-        alert('Please check your internet and try again')
-        console.log(err)
+        this.dataStorage.saveTodoAgain('updatePassengerStatus' , {
+          passenger_id: passenger[0].passenger_id,
+          status_new :status,
+          force_login: 1,
+          pickup: pickUp,
+          action_point_id : action,
+          timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+        }).subscribe(()=>{
+          console.log(err)
+        })
       })
   }
 
@@ -646,7 +682,14 @@ export class PassengerListPage {
     var loader = this.loading.create({
       content: 'Force logout...'
     })
-    this.request.updatePassengerStatus(passenger.passenger_id, 1, 1, 0, action , moment().format('YYYY-MM-DD HH:mm:ss'))
+    this.request.updatePassengerStatus({
+      passenger_id: passenger.passenger_id,
+      status_new:1,
+      force_login: 1,
+      pickup: 0,
+      action_point_id :action ,
+      timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+    })
     .map((body) => body.json())
     .subscribe((data) => {
       loader.dismiss()
@@ -686,8 +729,16 @@ export class PassengerListPage {
     },
     (err)=>{
       loader.dismiss()
-      alert('Please check your internet and try again')
-      console.log(err)
+      this.dataStorage.saveTodoAgain('updatePassengerStatus' , {
+        passenger_id: passenger.passenger_id,
+        status_new: 1,
+        force_login: 1,
+        pickup: 0,
+        action_point_id : action,
+        timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+      }).subscribe(()=>{
+        console.log(err)
+      })
     })
   }
 
