@@ -25,12 +25,18 @@ export class JobsListPage {
         private jobsListService: JobsListService,
         private global: GlobalProvider
     ) {
-        this.getJobs()
+
+    }
+
+    ngAfterViewInit() {
+      this.getJobs()
     }
 
     getJobs(){
+        console.log('test')
         this.jobsListService.requestJobs()
-        .subscribe((res)=>{
+        .toPromise()
+        .then((res)=>{
             console.log('getJobs res:', res)
             this._ngZone.run(()=>{
                 let re:Array<JobsListInterface> = res.result
@@ -47,13 +53,13 @@ export class JobsListPage {
                 // console.log(this.jobs)
                 this.loading = false
             })
-        },
-        (err)=>{
-            console.log('getJobs err:', err)
-             this._ngZone.run(()=>{
-                 this.loading = false
-             })
         })
+        .catch((err)=>{
+          console.log('getJobs err:', err)
+           this._ngZone.run(()=>{
+               this.loading = false
+           })
+      })
     }
 
     callbackForUpdate(needUpdate: boolean, _param?: any) {

@@ -491,6 +491,7 @@ export class DataStorage{
       return this.sqlstorage.get('todo_' + key)
     }
 
+
     public clearTodo(key) {
       this.sqlstorage.remove('todo_'+key)
     }

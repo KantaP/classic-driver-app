@@ -158,7 +158,10 @@ export class PassengerListPage {
               this.rfValue = ""
               this.initPassengers()
               var showPassenger = this.passengerStore.filter((item)=>item.passenger_id == passenger[0].passenger_id)
-              this.openModal(showPassenger[0])
+              this.openModal(
+                showPassenger[0],
+                (showPassenger[0].pickup ==1 && this.navParams.get('is_last')) ? false : true
+              )
             })
             .catch((err) => {
               console.log(err)
@@ -276,83 +279,92 @@ export class PassengerListPage {
         var isFirst = this.navParams.get('is_first')
         action = (isFirst) ? -1 : this.navParams.get('movement_id')
       }else{
+        if(this.navParams.get('is_last'))  {
+          resolve()
+        }
         action = this.navParams.get('movement_id')
       }
       var loader = this.loading.create({
         content: ''
       })
-      loader.present()
-      this.request.updatePassengerStatus({
-        passenger_id: passenger[0].passenger_id,
-        status_new: new_status,
-        force_login: 0,
-        pickup: passenger[0].pickup,
-        action_point_id: action ,
-        timescan: moment().format('YYYY-MM-DD HH:mm:ss')
-      })
-        .map((body) => body.json())
-        .subscribe((data) => {
-          loader.dismiss()
-          if (data.status) {
-            var movement_id = action
-            this.allPassenger = this.allPassenger.map((item) => {
-              if (item.passenger_id == passenger[0].passenger_id && item.pickup == passenger[0].pickup) {
-                item.status = new_status
-                item.action_point_id = action
-              }
-              return item
-            })
-            this.modal.close('warning-popup')
-
-            // check where is the right place
-            // if(this.wrong_point == '1') {
-
-            // }
-            var dataPayload: NotiPayload = {}
-            if(swapPassenger.length > 0) {
-              for(let parent of swapPassenger[0].parents){
-                dataPayload.message = "Passenger update"
-                dataPayload.title = "Passenger Update"
-                dataPayload.route = swapPassenger[0].jobPattern[0].job_name || ""
-                dataPayload.place = (swapPassenger[0].pickup) ? this.navParams.get('current_place') : this.navParams.get('current_place')
-                dataPayload.sentfrom = ""
-                dataPayload.name = swapPassenger[0].first_name + ' ' + swapPassenger[0].surname
-                dataPayload.time = moment().format('HH:mm')
-                dataPayload.wrong_point = this.wrong_point
-                dataPayload.status = this.status_text
-                this.sendNotification(parent.email, dataPayload)
-              }
-            }else{
-              for(let parent of passenger[0].parents){
-                dataPayload.message = "Passenger update"
-                dataPayload.title = "Passenger Update"
-                dataPayload.route = passenger[0].jobPattern[0].job_name || ""
-                dataPayload.place = (passenger[0].pickup == 1) ? this.navParams.get('current_place') : this.navParams.get('current_place')
-                dataPayload.sentfrom = ""
-                dataPayload.name = passenger[0].first_name + ' ' + passenger[0].surname
-                dataPayload.time = moment().format('HH:mm')
-                dataPayload.wrong_point = this.wrong_point
-                dataPayload.status = this.status_text
-                this.sendNotification(parent.email, dataPayload)
-              }
-            }
-
-            // this.passengers = this.passengerStore
-            resolve()
-          }
-        },
-        (err) => {
-          loader.dismiss()
-          this.dataStorage.saveTodoAgain('updatePassengerStatus' , {
-            passenger_id: passenger[0].passenger_id,
-            status_new : new_status,
-            force_login: 0,
-            pickup: passenger[0].pickup,
-            action_point_id : action,
-            timescan: moment().format('YYYY-MM-DD HH:mm:ss')
-          })
-          resolve()
+      // loader.present()
+      if(this.navParams.get('is_last') && passenger[0].pickup == 1) {
+        resolve()
+      }else{
+        this.request.updatePassengerStatus({
+          passenger_id: passenger[0].passenger_id,
+          status_new: new_status,
+          force_login: 0,
+          pickup: passenger[0].pickup,
+          action_point_id: action ,
+          timescan: moment().format('YYYY-MM-DD HH:mm:ss')
         })
+          .map((body) => body.json())
+          .toPromise()
+          .then((data) => {
+            // loader.dismiss()
+            if (data.status) {
+              var movement_id = action
+              this.allPassenger = this.allPassenger.map((item) => {
+                if (item.passenger_id == passenger[0].passenger_id && item.pickup == passenger[0].pickup) {
+                  item.status = new_status
+                  item.action_point_id = action
+                }
+                return item
+              })
+
+
+              // check where is the right place
+              // if(this.wrong_point == '1') {
+
+              // }
+              var dataPayload: NotiPayload = {}
+              if(swapPassenger.length > 0) {
+                for(let parent of swapPassenger[0].parents){
+                  dataPayload.message = "Passenger update"
+                  dataPayload.title = "Passenger Update"
+                  dataPayload.route = swapPassenger[0].jobPattern[0].job_name || ""
+                  dataPayload.place = (swapPassenger[0].pickup) ? this.navParams.get('current_place') : this.navParams.get('current_place')
+                  dataPayload.sentfrom = ""
+                  dataPayload.name = swapPassenger[0].first_name + ' ' + swapPassenger[0].surname
+                  dataPayload.time = moment().format('HH:mm')
+                  dataPayload.wrong_point = this.wrong_point
+                  dataPayload.status = this.status_text
+                  this.sendNotification(parent.email, dataPayload)
+                }
+              }else{
+                for(let parent of passenger[0].parents){
+                  dataPayload.message = "Passenger update"
+                  dataPayload.title = "Passenger Update"
+                  dataPayload.route = passenger[0].jobPattern[0].job_name || ""
+                  dataPayload.place = (passenger[0].pickup == 1) ? this.navParams.get('current_place') : this.navParams.get('current_place')
+                  dataPayload.sentfrom = ""
+                  dataPayload.name = passenger[0].first_name + ' ' + passenger[0].surname
+                  dataPayload.time = moment().format('HH:mm')
+                  dataPayload.wrong_point = this.wrong_point
+                  dataPayload.status = this.status_text
+                  this.sendNotification(parent.email, dataPayload)
+                }
+              }
+
+              // this.passengers = this.passengerStore
+              resolve()
+            }
+          })
+          .catch((err) => {
+            loader.dismiss()
+            this.dataStorage.saveTodoAgain('updatePassengerStatus' , {
+              passenger_id: passenger[0].passenger_id,
+              status_new : new_status,
+              force_login: 0,
+              pickup: passenger[0].pickup,
+              action_point_id : action,
+              timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+            })
+            resolve()
+          })
+      }
+
       // }else{
       // resolve()
       // }
@@ -528,11 +540,11 @@ export class PassengerListPage {
   openModal(passenger: Passenger, allow_force_login: boolean = true, allow_view_instructors: boolean = true) {
     this.passengerItem = passenger
     this.viewForceLogin = allow_force_login
-    this.viewinstructors = allow_view_instructors
+    // this.viewinstructors = allow_view_instructors
     if (!allow_force_login) this.colorViewForceLogin = "primary"
     else this.colorViewForceLogin = "disable"
-    if (!allow_view_instructors) this.colorViewInstructors = "primary"
-    else this.colorViewInstructors = "disable"
+    // if (!allow_view_instructors) this.colorViewInstructors = "primary"
+    // else this.colorViewInstructors = "disable"
     this.modal.open('passenger-item')
   }
 
@@ -545,7 +557,7 @@ export class PassengerListPage {
     var action = this.navParams.get('movement_id')
     var movement_order = this.navParams.get('movement_order')
     var isLast = this.navParams.get('is_last')
-    if(isLast) movement_order = movement_order - 99
+    if(isLast) return false
     var options: any = {}
     var pickUpUpdate = 0
     var newStatus = 0

@@ -3,7 +3,7 @@ export class Util{
 
     // private static UK_SITE      = "sv.ecoachmanager.com:3000"
     // private static AU_SITE      = "svau.ecoachmanager.com:3000"
-    // private static CLOUD_SITE   = "http://192.168.1.21:8080"
+    private static CLOUD_SITE   = "http://192.168.1.21:8080"
     private static ASIA_SITE = "http://montriwebservice.ecoachmanager.com/driver"
     private static NOTIFICATION_SITE   = "http://montriwebservice.ecoachmanager.com/parent/passOnDevices"
 

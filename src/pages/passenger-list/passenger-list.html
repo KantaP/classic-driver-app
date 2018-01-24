@@ -142,7 +142,7 @@
                             <div><b>{{global.translate('Should Be')}} : {{failedItem.shouldBeAddress}}?</b></div>
                         </ion-row>
                         <ion-row class="margin-top-3" *ngIf="!failedItem.notAllow">
-                            <button ion-button block color="secondary" (click)="failedItem.callback()">{{global.translate('AOLLOW')}}</button>
+                            <button ion-button block color="secondary" (click)="failedItem.callback()">{{global.translate('ALLOW')}}</button>
                         </ion-row>
                         <ion-row class="margin-top-1" *ngIf="!failedItem.notAllow">
                             <button ion-button block color="danger" (click)="closeModal('warning-popup')">{{global.translate('CANCEL')}}</button>

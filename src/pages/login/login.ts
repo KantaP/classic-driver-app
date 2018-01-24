@@ -239,6 +239,7 @@ export class LoginPage {
         Global.setGlobal("company_logo", res.company_logo)
         Global.setGlobal('api_site', res.apisite)
         Global.setGlobal('web_site', res.website)
+        Global.setGlobal('site_id', res.site_id)
 
         let datetimeLogin = {
           datetime: ''

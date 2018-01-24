@@ -105,11 +105,25 @@ export class ViewJobPage {
         this.showAllJob = (appSetting.length > 0)
                           ? appSetting[0].value
                           : 0
-        this.getJob(this.job.quote_id)
-        if(this.showAllJob) {
-          this.getOtherJob(this.job.quote_id)
-        }
 
+
+    }
+
+    ionViewDidLoad() {
+      var loader = this.loadingCtrl.create({
+        content: ''
+      })
+      loader.present()
+      var todos = []
+      todos.push( this.getJob(this.job.quote_id))
+
+      if(this.showAllJob) {
+        todos.push(this.getOtherJob(this.job.quote_id))
+      }
+      Promise.all(todos)
+      .then(()=>{
+        loader.dismiss()
+      })
     }
 
     toggleShowJourney(journeyIndex) {
@@ -252,39 +266,42 @@ export class ViewJobPage {
     }
 
     getJob(quote_id){
-        this.viewJobService.requestJobs(quote_id)
-        .subscribe((res)=>{
-            console.log('getJob res:', res)
-            // this._ngZone.run(()=>{
-                this.loading = false
-                if(res.code == 2){
-                  this.journey = res.result
-                    this.request.getJourneyProgress(this.job.quote_id)
-                    .subscribe((data)=>{
-                      this.startJourney = data.results
-                      this.journey.forEach((item,index)=>{
-                        this.arrowIcons.push({icon:'ios-arrow-back',show:false})
-                        item.movement.forEach((item2,index2)=>{
-                          if(!item2.driver_confirm) this.alreadyAccept = false
+        return new Promise((resolve ,reject)=>{
+          this.viewJobService.requestJobs(quote_id)
+          .toPromise()
+          .then((res)=>{
+              console.log('getJob res:', res)
+              // this._ngZone.run(()=>{
+                  this.loading = false
+                  if(res.code == 2){
+                    this.journey = res.result
+                      this.request.getJourneyProgress(this.job.quote_id)
+                      .toPromise()
+                      .then((data)=>{
+                        this.startJourney = data.results
+                        this.journey.forEach((item,index)=>{
+                          this.arrowIcons.push({icon:'ios-arrow-back',show:false})
+                          item.movement.forEach((item2,index2)=>{
+                            if(!item2.driver_confirm) this.alreadyAccept = false
+                          })
+                          const [last] = [...item.movement].reverse()
+                          var newLast = Object.assign({},last)
+                          item.movement.push(newLast)
+                          item.movement[item.movement.length-1].movement_order += 99
                         })
-                        const [last] = [...item.movement].reverse()
-                        var newLast = Object.assign({},last)
-                        item.movement.push(newLast)
-                        item.movement[item.movement.length-1].movement_order += 99
+                        this.setCurrentPoint()
+                        resolve()
                       })
-                      this.setCurrentPoint()
-                    })
-                }else{
-                    this.noResult = true
-                }
-            // })
-        },
-        (err)=>{
-            console.log('getJob err:', err)
-            this._ngZone.run(()=>{
-                this.loading = false
-                this.noResult = true
-            })
+                  }else{
+                      this.noResult = true
+                      resolve()
+                  }
+
+              // })
+          })
+          .catch(()=>{
+            resolve()
+          })
         })
     }
 
@@ -295,10 +312,11 @@ export class ViewJobPage {
       var shouldNextIndex = 0
       for(let i = 0 ; i < this.journey.length ; i++){
         var already = this.journey[i].movement.map((item2,index3)=>{
-          console.log(index3 , this.journey[i].movement[index3].progress)
+          // console.log('index3', index3 , this.journey[i].movement[index3].progress)
+          // console.log('index' , this.journey[i].movement[index3-1])
           return {
             movement_order: item2.movement_order,
-            status: (index3 == 0 && this.journey[i].movement[index3].progress == 6)
+            status: (index3 == 0 && this.journey[i].movement[index3].progress == 6 && i == 0 && this.startJourney[i].progress > 0)
                     ? true
                     : (index3 > 0
                       && (
@@ -308,7 +326,7 @@ export class ViewJobPage {
                           )
                           ||
                           (
-                            (this.journey[i].movement[index3-1].progress == 8 && (this.journey[i].movement[index3].movement_order - 99) > 0)
+                            (this.journey[i].movement[index3-1].progress == 8 && (this.journey[i].movement[index3].movement_order - 99) > 0 && this.startJourney[i].progress > 0)
                           )
                         )
                     )
@@ -318,7 +336,7 @@ export class ViewJobPage {
         })
         this.alreadyEnList = this.alreadyEnList.concat(already)
       }
-      console.log(this.alreadyEnList)
+      // console.log(this.alreadyEnList)
       var nextMovementData = undefined
       for(let index = 0 ; index < this.journey.length; index++) {
         shouldNextIndex = (this.alreadyEnList.filter((item3)=>item3.status).length > 0)
@@ -330,7 +348,7 @@ export class ViewJobPage {
           Global.setGlobal('journey_id', nextMovementData.j_id)
         }
       }
-      console.log('set next order:' , nextMovementData)
+      // console.log('set next order:' , nextMovementData)
 
       Global.setGlobal('next_movement',nextMovementData)
       this.dataStore.addLogData('alreadyEnList_'+this.job.quote_id, shouldNextIndex)
@@ -338,22 +356,29 @@ export class ViewJobPage {
     }
 
     getOtherJob(quote_id:number) {
-      this.viewJobService.requestOtherJob(quote_id)
-      .subscribe(
-        (res)=>{
-          console.log('get other driver job res:', res)
-          // this._ngZone.run(()=>{
-            // this.loading = false
-            if(res.code == 2){
-                this.journeyOther = res.result
-                this.journeyOther.forEach((item,index)=>{
-                  const [last] = [...item.movement].reverse()
-                  item.movement.push(last)
-                })
-            }
-        // })
-        }
-      )
+      return new Promise((resolve, reject)=>{
+        this.viewJobService.requestOtherJob(quote_id)
+        .toPromise()
+        .then(
+          (res)=>{
+            // console.log('get other driver job res:', res)
+            // this._ngZone.run(()=>{
+              // this.loading = false
+              if(res.code == 2){
+                  this.journeyOther = res.result
+                  this.journeyOther.forEach((item,index)=>{
+                    const [last] = [...item.movement].reverse()
+                    item.movement.push(last)
+                  })
+              }
+          // })
+          resolve()
+          }
+        )
+        .catch(()=>{
+          resolve()
+        })
+      })
     }
 
     acceptJob() {
@@ -454,6 +479,7 @@ export class ViewJobPage {
     }
 
     isCurrentPoint(movement_order) {
+      console.log(this.alreadyEnList)
       if(this.alreadyEnList.length == 0) return false
       else  {
         var filterMovement = this.alreadyEnList.filter((item)=>item.movement_order == movement_order)

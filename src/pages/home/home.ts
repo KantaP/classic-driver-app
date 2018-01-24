@@ -83,6 +83,7 @@ export class HomePage implements OnDestroy {
     })
   }
 
+
   closeModal(modal) {
     this.modal.close(modal)
   }
@@ -147,27 +148,30 @@ export class HomePage implements OnDestroy {
     // this.langSubscription.unsubscribe()
   }
 
+  ionViewWillEnter() {
+    this.getJobAmount()
+  }
+
   private getJobAmount(){
     this.homeService.requestJobsAmount()
-    .subscribe((res)=>{
+    .toPromise()
+    .then((res)=>{
       console.log('requestJobsAmount succ:', res)
-      this._ngZone.run(()=>{
-        this.jobsAmount = res.result.length
-        this.logo = Global.getGlobal('company_logo')
-      })
+      this.jobsAmount = res.result.length
+      this.logo = Global.getGlobal('company_logo')
 
-    },(err)=>{
-      console.log('requestJobsAmount err:', err)
+    })
+    .catch((err)=>{
+        console.log('requestJobsAmount err:', err)
     })
   }
 
   private getMobileSetting() {
     this.homeService.requestMobileSetting()
-    .subscribe(
+    .toPromise()
+    .then(
       (res)=>{
-        this._ngZone.run(()=>{
-          Global.setGlobal('mobile_settings',res.result)
-        })
+        Global.setGlobal('mobile_settings',res.result)
       }
     )
   }
