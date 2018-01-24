@@ -95,6 +95,12 @@ export class MessagePage {
           subject: this.messageForm.controls['title'].value,
           body: this.messageForm.controls['body'].value,
         }
+        if(this.message.body == '' || this.message.subject == '') {
+          loader.dismiss()
+          let modal = this.modalCtrl.create(MessageModal, {txt: 'Subject or Message should not empty'}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+          modal.present()
+          return false
+        }
         this.messageService.sendMessageToServer(this.message)
         .subscribe((x)=>{
             console.log('sendMessage succ:', x)

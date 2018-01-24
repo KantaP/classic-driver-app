@@ -299,7 +299,8 @@ export class ViewJobPage {
 
               // })
           })
-          .catch(()=>{
+          .catch((err)=>{
+
             resolve()
           })
         })
@@ -312,21 +313,33 @@ export class ViewJobPage {
       var shouldNextIndex = 0
       for(let i = 0 ; i < this.journey.length ; i++){
         var already = this.journey[i].movement.map((item2,index3)=>{
-          // console.log('index3', index3 , this.journey[i].movement[index3].progress)
-          // console.log('index' , this.journey[i].movement[index3-1])
+
+          var currentMovement = this.journey[i].movement[index3]
+          var prevMovement
+          if((index3-1) < 0 && i > 0) {
+            const [last] = [...this.journey[i-1].movement].reverse()
+            prevMovement = last
+          }else {
+            prevMovement = this.journey[i].movement[index3-1]
+          }
+          console.log('index3', currentMovement)
+          console.log('index' , prevMovement)
           return {
             movement_order: item2.movement_order,
-            status: (index3 == 0 && this.journey[i].movement[index3].progress == 6 && i == 0 && this.startJourney[i].progress > 0)
+            status: (index3 == 0 && (currentMovement.progress == 6 || currentMovement.progress == 9) && i == 0 && this.startJourney[i].progress > 0)
+                    ? true
+                    : (index3 == 0 && currentMovement.progress == 6 && i > 0 &&  (prevMovement.progress == 8 || prevMovement.progress == 10) && this.startJourney[i].progress > 0)
                     ? true
                     : (index3 > 0
                       && (
                           (
-                            (this.journey[i].movement[index3-1].progress == 8 || this.journey[i].movement[index3-1].progress == 10)
-                            && (this.journey[i].movement[index3].progress == 6 || this.journey[i].movement[index3].progress == 9)
+                            (prevMovement.progress == 8 || prevMovement.progress == 10)
+                            && (currentMovement.progress == 6 || currentMovement.progress == 9)
+                            && this.startJourney[i].progress > 0
                           )
                           ||
                           (
-                            (this.journey[i].movement[index3-1].progress == 8 && (this.journey[i].movement[index3].movement_order - 99) > 0 && this.startJourney[i].progress > 0)
+                            (prevMovement.progress == 8 && (currentMovement.movement_order - 99) > 0 && this.startJourney[i].progress > 0)
                           )
                         )
                     )
@@ -416,8 +429,13 @@ export class ViewJobPage {
       this.modal.close('route-item')
       if(movement.progress != 10 && this.alreadyAccept) {
         if(!is_last) {
+          var loader = this.loadingCtrl.create({
+            content: ''
+          })
+          loader.present()
           this.request.updateToOnsite(movement.movement_order,this.job.quote_id)
                       .subscribe((data)=>{
+                        loader.dismiss()
                         movement.progress = 9
                         Global.setGlobal('next_movement',movement)
                         this.navCtrl.push(PassengerListPage, {
@@ -479,7 +497,6 @@ export class ViewJobPage {
     }
 
     isCurrentPoint(movement_order) {
-      console.log(this.alreadyEnList)
       if(this.alreadyEnList.length == 0) return false
       else  {
         var filterMovement = this.alreadyEnList.filter((item)=>item.movement_order == movement_order)

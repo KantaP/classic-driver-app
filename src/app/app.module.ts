@@ -53,6 +53,8 @@ import { PassengerAddNotePage } from '../pages/passenger-add-note/passenger-add-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobalProvider } from '../providers/global/global';
 
+import { NFC, Ndef } from '@ionic-native/nfc';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -139,7 +141,8 @@ import { GlobalProvider } from '../providers/global/global';
     TrackingService,
     DataStorage,
     SignOutVehicleService,
-    StopWorkService
+    StopWorkService,
+    NFC
   ]
 })
 export class AppModule {}

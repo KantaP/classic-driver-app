@@ -1,20 +1,20 @@
 <ion-header class="page-header-custom bg_blue_alice">
-  <ion-navbar>
-    <button right ion-button menuToggle>
+    <ion-navbar>
+        <button right ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title class="txt_center">
-        <div class="gravity-center-vertical color_blue_midnight">
-          <div class="page-header-custom-title txt_bold">
-            SETTING
-          </div>
-        </div>
-    </ion-title>
-  </ion-navbar>
+        <ion-title class="txt_center">
+            <div class="gravity-center-vertical color_blue_midnight">
+                <div class="page-header-custom-title txt_bold">
+                    SETTING
+                </div>
+            </div>
+        </ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <div class="w100 txt_bold txt_head pd-bottom-05em pd-top-1em">
+    <!-- <div class="w100 txt_bold txt_head pd-bottom-05em pd-top-1em">
     NOTIFICATION
   </div>
 
@@ -33,9 +33,18 @@
       <ion-input type="text" placeholder="" class=""></ion-input>
     </div>
     <div class="ib pd-left-05-em txt_center">Day (s)</div>
-  </div>
-
-  <button class="w100 btn_blue mg-top10percent">
+  </div> -->
+    <ion-list radio-group [(ngModel)]="reader">
+        <ion-item>
+            <ion-radio value="rfid" item-start></ion-radio>
+            <ion-label item-end>RF reader</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-radio value="nfc" item-start></ion-radio>
+            <ion-label item-end>NFC tags</ion-label>
+        </ion-item>
+    </ion-list>
+    <button class="w100 btn_blue mg-top10percent">
     SAVE
   </button>
 </ion-content>

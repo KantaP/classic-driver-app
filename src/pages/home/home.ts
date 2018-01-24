@@ -81,6 +81,8 @@ export class HomePage implements OnDestroy {
     .subscribe((data)=>{
       this.langList = data.rows
     })
+
+    this.dataStore.addLogData('reader', 'rfid')
   }
 
 

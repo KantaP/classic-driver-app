@@ -226,7 +226,8 @@ export class LoginPage {
     })
     loader.present()
 
-    this.loginService.authen(this.username, this.password, this.company_select)
+    // this.loginService.authen(this.username, this.password, this.company_select)
+    this.loginService.authen("Jdriver","123456", this.company_select)
     .subscribe((res)=>{
 
       loader.dismiss()

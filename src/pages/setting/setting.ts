@@ -6,7 +6,8 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'setting.html'
 })
 export class SettingPage {
+  reader: string
   constructor(public navCtrl: NavController) {
-
+    this.reader = 'rfid'
   }
 }
