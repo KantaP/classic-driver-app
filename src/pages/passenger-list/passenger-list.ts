@@ -389,23 +389,24 @@ export class PassengerListPage {
   }
 
   cekNFC() {
-    alert('checking... nfc')
+    // alert('checking... nfc')
     this.nfc.enabled()
       .then(() => {
-        alert('nfc available')
+        // alert('nfc available')
         this.addListenNFC();
       })
       .catch(err => {
-        let alert = this.alertCtrl.create({
-          subTitle: 'NFC_DISABLED_ON_NFC',
-          buttons: [{ text: 'OK' }, {
-            text: 'GO_SETTING',
-            handler: () => {
-              this.nfc.showSettings();
-            }
-          }]
-        });
-        alert.present();
+        // let alert = this.alertCtrl.create({
+        //   subTitle: 'NFC_DISABLED_ON_NFC',
+        //   buttons: [{ text: 'OK' }, {
+        //     text: 'GO_SETTING',
+        //     handler: () => {
+        //       this.nfc.showSettings();
+        //     }
+        //   }]
+        // });
+        // alert.present();
+        console.log('Your device not support NFC')
       });
   }
 
@@ -415,7 +416,68 @@ export class PassengerListPage {
       if (data && data.tag && data.tag.id) {
         let tagId = this.nfc.bytesToHexString(data.tag.id.reverse());
         if (tagId) {
-          console.log('received ndef message. the tag contains: ', tagId);
+          this.rfValue = parseInt(tagId,16).toString()
+          var passenger = this.passengerStore.filter((item) => item.RFID == this.rfValue)
+          this.closeModal('passenger-item')
+          this.closeModal('warning-popup')
+          if (passenger.length > 0) {
+            var loader = this.loading.create({
+              content: 'Scanning...'
+            })
+            loader.present()
+            this.scanUpdate(passenger)
+              .then(() => {
+                loader.dismiss()
+                this.rfValue = ""
+                this.initPassengers()
+                var showPassenger = this.passengerStore.filter((item) => item.passenger_id == passenger[0].passenger_id)
+                this.openModal(
+                  showPassenger[0],
+                  (showPassenger[0].pickup == 1 && this.navParams.get('is_last')) ? false : true
+                )
+              })
+              .catch((err) => {
+                console.log(err)
+                loader.dismiss()
+                this.rfValue = ""
+                this.initPassengers()
+              })
+          } else {
+            // not found passenger with RFID scan
+            // swap find in allPassenger
+            passenger = this.allPassenger.filter((item) => item.RFID == this.rfValue)
+            // it should found more than 1 row
+            // then check if already board or not
+            var options: FailedItem = {}
+            if (passenger.length > 1) {
+              // found in other route
+              passenger = passenger.filter((item) => {
+                var failBoard = passenger.filter((item3) => item3.pickup == 1 && item3.status == -1)
+                var waitBoard = passenger.filter((item3) => item3.pickup == 1 && item3.status == 0)
+                if (failBoard.length > 0) return (item.pickup == 1 && item.status == -1)
+                else if (waitBoard.length > 0) return (item.pickup == 1 && item.status == 0)
+                else return (item.pickup == 0 && item.status == 0)
+              })
+              if (passenger[0].pickup == 1 && passenger[0].status == 0) {
+                options.title = `Incorrect Pickup Point`
+                options.icon = 'WRONG_ADDRESS'
+                options.shouldBeAddress = passenger[0].correctPickUp
+              } else if (passenger[0].pickup == 0 && passenger[0].status == 0) {
+                options.title = `Incorrect Drop Off Point`
+                options.icon = 'WRONG_ADDRESS'
+                options.shouldBeAddress = passenger[0].correctDestination
+              }
+              this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.allowOtherScan.bind(this, passenger))
+              this.rfValue = ""
+              this.wrong_point = '1'
+            } else {
+              // find this RFID with all passenger in system
+              options.title = "passenger not found"
+              options.icon = 'PASSENGER_NOT_FOUND'
+              this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.allowOtherScan.bind(this, passenger))
+              this.rfValue = ""
+            }
+          }
         } else {
           console.log('NFC_NOT_DETECTED')
         }
@@ -424,11 +486,13 @@ export class PassengerListPage {
   }
 
   sesReadNFC(data): void {
-    alert('NFC_WORKING')
+    // alert('NFC_WORKING')
+    console.log('NFC_WORKING')
   }
 
   failNFC(err) {
-    alert('NFC Failed :' + JSON.stringify(err))
+    // alert('NFC Failed :' + JSON.stringify(err))
+    console.log('NFC Failed :' + JSON.stringify(err))
   }
 
   initReader() {
@@ -906,16 +970,16 @@ export class PassengerListPage {
   endroute() {
     var alertItem = this.alertCtrl.create({
       title: 'End Job',
-      message: 'Are you sure you want to End job?',
+      message: this.global.translate('Are you sure you want to End job?'),
       buttons: [
         {
-          text: 'Cancel',
+          text: this.global.translate('Cancel'),
           handler: data => {
             console.log('Cancel clicked');
           }
         },
         {
-          text: 'Ok',
+          text: this.global.translate('Ok'),
           handler: data => {
             var boardPassenger = this.allPassenger.filter((item2) => item2.pickup == 1 && item2.status == 1)
             var notAlignPassenger = this.allPassenger.filter((item3) => {
@@ -925,16 +989,16 @@ export class PassengerListPage {
             if (notAlignPassenger.length > 0) {
               var alertItem2 = this.alertCtrl.create({
                 title: 'End Job',
-                message: notAlignPassenger.length + ' passenger(s) not alighted. Please check your vehicle and press confirm to force log off remaining passengers and end job',
+                message: notAlignPassenger.length + this.global.translate(' passenger(s) not alighted. Please check your vehicle and press confirm to force log off remaining passengers and end job'),
                 buttons: [
                   {
-                    text: 'Cancel',
+                    text: this.global.translate('Cancel'),
                     handler: data => {
                       console.log('Cancel clicked');
                     }
                   },
                   {
-                    text: 'Ok',
+                    text: this.global.translate('Ok'),
                     handler: data => {
                       this.processEndRoute()
                     }

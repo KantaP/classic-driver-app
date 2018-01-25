@@ -1,3 +1,4 @@
+import { GlobalProvider } from './../../../providers/global/global';
 import { Component } from '@angular/core'
 import { ViewController, NavParams } from "ionic-angular"
 
@@ -10,7 +11,8 @@ export class MessageModal {
     txt:string = ''
     constructor(
         public viewCtrl: ViewController,
-        public navParams: NavParams
+        public navParams: NavParams,
+        private global: GlobalProvider
         ) {
             this.txt = this.navParams.get('txt')
     }

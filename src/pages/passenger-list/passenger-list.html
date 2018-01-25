@@ -136,10 +136,10 @@
                 <ion-row>
                     <ion-grid style="padding:10px;">
                         <ion-row class="margin-top-3">
-                            <div><b>{{failedItem.title}}</b></div>
+                            <div><b>{{global.translate(failedItem.title)}}</b></div>
                         </ion-row>
                         <ion-row class="margin-top-3" *ngIf="failedItem.shouldBeAddress">
-                            <div><b>{{global.translate('Should Be')}} : {{failedItem.shouldBeAddress}}?</b></div>
+                            <div><b>{{global.translate('Should Be:')}}  {{failedItem.shouldBeAddress}}?</b></div>
                         </ion-row>
                         <ion-row class="margin-top-3" *ngIf="!failedItem.notAllow">
                             <button ion-button block color="secondary" (click)="failedItem.callback()">{{global.translate('ALLOW')}}</button>

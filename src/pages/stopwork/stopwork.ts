@@ -86,7 +86,7 @@ export class StopWork {
               }
               Global.setGlobal("start_work_id", 0)
               this.closeStopWorkModal()
-              alert('Work Stop Time Set: ' + moment(stopTime).format('hh:mmA'))
+              alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
               this.events.publish('isStartWork', false)
             },(err)=>{
               console.log("signOutVehicle service err:", err)
@@ -94,7 +94,7 @@ export class StopWork {
           }else {
             Global.setGlobal("start_work_id", 0)
             this.closeStopWorkModal()
-            alert('Work Stop Time Set: ' + moment(stopTime).format('hh:mmA'))
+            alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
             this.events.publish('isStartWork', false)
 
           }

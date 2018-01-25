@@ -35,7 +35,7 @@ export class StartWork {
     console.log("updateStartWork")
     var signInVehicleId = Global.getGlobal("vehicle_signin_insert_id")
     if(!signInVehicleId || signInVehicleId == null) {
-      alert('Please sign in to vehicle')
+      alert(this.global.translate('Please sign into vehicle'))
       return false;
     }
     let start = moment(this.thisTime).format("YYYY-MM-DD HH:mm")
@@ -58,7 +58,7 @@ export class StartWork {
           Global.setGlobal("start_work_id", res.result.insertId)
           Global.setGlobal("start_work_time", this.thisTime)
 
-          alert('Work Start Time Set: ' + moment(this.thisTime).format('hh:mmA'))
+          alert(this.global.translate('Work Start Time Set:') + moment(this.thisTime).format('hh:mmA'))
 
           this.closeStartWorkModal()
 

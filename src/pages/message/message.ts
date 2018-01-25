@@ -97,7 +97,7 @@ export class MessagePage {
         }
         if(this.message.body == '' || this.message.subject == '') {
           loader.dismiss()
-          let modal = this.modalCtrl.create(MessageModal, {txt: 'Subject or Message should not empty'}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+          let modal = this.modalCtrl.create(MessageModal, {txt: this.global.translate('Subject or Message should not empty')}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
           modal.present()
           return false
         }
@@ -105,7 +105,7 @@ export class MessagePage {
         .subscribe((x)=>{
             console.log('sendMessage succ:', x)
             loader.dismiss()
-            let modal = this.modalCtrl.create(MessageModal, {txt: x.text}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+            let modal = this.modalCtrl.create(MessageModal, {txt: this.global.translate(x.text)}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
             modal.present()
         },(err)=>{
             loader.dismiss()

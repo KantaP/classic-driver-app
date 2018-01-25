@@ -52,7 +52,7 @@ export class SignInVehicle {
 
           this.events.publish('isVehicleSignIn', true)
           loader.dismiss()
-          alert(res.text)
+          alert(this.global.translate(res.text))
 
           this.closeSignInVehicleModal()
 
