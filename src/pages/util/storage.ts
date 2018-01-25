@@ -197,6 +197,28 @@ export class DataStorage{
         // }
     }
 
+    getLastLoginPromise(driver_id) : Promise<any> {
+      return new Promise((resolve, reject)=>{
+        this.sqlstorage.get('lastLogin')
+        .then((data)=>{
+          var loginLogs = new ReplicaSQL(data)
+          console.log('get login log:' , loginLogs)
+          if(!driver_id){
+            resolve(loginLogs)
+          }else{
+            loginLogs.rows = loginLogs.rows.filter((item)=>item.driver_id == driver_id)
+            if(loginLogs.rows.length > 0) {
+              loginLogs.rows = loginLogs.rows.reverse()
+            }
+            resolve(loginLogs)
+          }
+        })
+        .catch((err)=>{
+          reject(err)
+        })
+      })
+    }
+
     public addTrackingData(quote_id:number , trackingData: any) : Observable<any> {
       return Observable.create((observer)=> {
         this.sqlstorage.get('tracking_' + quote_id)
@@ -444,6 +466,10 @@ export class DataStorage{
             })
           })
         // }
+    }
+
+    public getLogDataPromise(key?: string): Promise<any>{
+      return this.sqlstorage.get('log_'+key)
     }
 
 

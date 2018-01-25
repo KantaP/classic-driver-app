@@ -1,3 +1,4 @@
+import { toPromise } from 'rxjs/operator/toPromise';
 
 import { RequestProvider } from './../../providers/request/request';
 import { LoginService } from './login.service'
@@ -92,32 +93,38 @@ export class LoginPage {
   }
 
   registerFCMToken() {
-    const options: PushOptions = {
-      android: {},
-      ios: {
-        alert: 'true',
-        badge: false,
-        sound: 'true'
-      },
-      windows: {}
-    };
-    const pushObject: PushObject = this.push.init(options);
+    return new Promise((resolve,reject)=>{
+      const options: PushOptions = {
+        android: {},
+        ios: {
+          alert: 'true',
+          badge: false,
+          sound: 'true'
+        },
+        windows: {}
+      };
+      const pushObject: PushObject = this.push.init(options);
 
-    pushObject.on('registration').subscribe((data: any) => {
-      console.log('device token -> ' + data.registrationId);
-      this.savePushToken(data.registrationId)
-      this.dataStore.addLogData("push_token", data.registrationId)
-      //TODO - send device token to server
-    });
+      pushObject.on('registration').subscribe((data: any) => {
+        console.log('device token -> ' + data.registrationId);
+        this.savePushToken(data.registrationId)
+        .then((res)=>{
+          this.dataStore.addLogData("push_token", data.registrationId)
+          resolve()
+        })
+        .catch((err)=>{
+          console.log('save token' , err)
+          resolve()
+        })
+        //TODO - send device token to server
+      });
+    })
+
   }
 
   savePushToken(token: string) {
-    this.loginService.saveToken(token)
-    .subscribe(
-      (res)=>{
-        console.log('save token result: ' , res)
-      }
-    )
+    return this.loginService.saveToken(token)
+    .toPromise()
   }
 
   private getApiKey(){
@@ -207,7 +214,7 @@ export class LoginPage {
     this.password = comp.driver_p
   }
 
-  login(){
+  async login(){
     var connection = Global.getGlobal('connection')
     // alert(connection)
     if(connection == 'none') {
@@ -226,100 +233,100 @@ export class LoginPage {
     })
     loader.present()
 
-    this.loginService.authen(this.username, this.password, this.company_select)
+    var loginResult = await this.loginService.authen(this.username, this.password, this.company_select).toPromise()
     // this.loginService.authen("Jdriver","123456", this.company_select)
-    .subscribe((res)=>{
+    // .subscribe(async (res)=>{
 
-      loader.dismiss()
 
-      console.log("loginService", res)
-      if(res.code == 2){
 
-        Global.setGlobal("api_token", res.result)
-        Global.setGlobal("driver_id", res.driver_id)
-        Global.setGlobal("company_logo", res.company_logo)
-        Global.setGlobal('api_site', res.apisite)
-        Global.setGlobal('web_site', res.website)
-        Global.setGlobal('site_id', res.site_id)
+    console.log("loginService", loginResult)
+    if(loginResult.code == 2){
 
-        let datetimeLogin = {
-          datetime: ''
-        }
-        this.dataStore.addLogData('auth',true)
-        console.log('logged in on platform : ' + this.platform._platforms)
-        if(this.platform.is('cordova')) {
-          this.dataStore.getLogData('push_token')
-          .subscribe((data)=>{
-            if(data.rows.length == 0) {
-              this.registerFCMToken()
-            }
-          })
-        }
+      Global.setGlobal("api_token", loginResult.result)
+      Global.setGlobal("driver_id", loginResult.driver_id)
+      Global.setGlobal("company_logo", loginResult.company_logo)
+      Global.setGlobal('api_site', loginResult.apisite)
+      Global.setGlobal('web_site', loginResult.website)
+      Global.setGlobal('site_id', loginResult.site_id)
 
-        this.dataStore.getLastLogin(res.driver_id)
-          .subscribe((res)=>{
-            console.log("getLastLogin succ:", res)
-            let re = res.rows
-
-            this.dataStore.addLastLogin()
-              .subscribe(
-                (res)=>{ console.log("addLastLogin succ:",res) },
-                (err)=>{ console.log("addLastLogin err:",err) }
-              )
-
-            datetimeLogin.datetime = (re.item(0) == void(0) ? '':re.item(0).datetime)
-
-            console.log('datetimeLogin', datetimeLogin)
-
-          },(err)=>{
-            console.log("getLastLogin err:", err)
-            // this.navCtrl.setRoot(HomePage, datetimeLogin)
-        })
-        // this.dataStore.clearLogDB('AlreadyEnRoute')
-        var promiseData = []
-
-        // promiseData.push(this.request.getAllPassengerInSystemPromise())
-        promiseData.push(this.request.getPassengerQuestionsPromise())
-        promiseData.push(this.request.getLangPromise())
-        Promise.all(promiseData)
-        .then((items)=>{
-          console.log(items)
-          items.forEach((item,index)=>{
-            var label = item.label || 'item#'+index
-            // if(label == 'getAllPassengerInSystem') {
-            //   item.results = item.results.map((passenger) => {
-            //     if (passenger.photo == "") passenger.photo = normalizeURL("assets/img/nouser.png")
-            //     passenger.fromOtherRoute = true
-            //     return passenger
-            //   })
-            // }
-            this.dataStore.clearLogDB(label)
-            this.dataStore.addLogData(label,item.results)
-          })
-          this.dataStore.getLangDefault()
-          .then((lang)=>{
-            if(lang == null) {
-              lang = 'TH'
-            }
-            this.dataStore.setLangDefault(lang)
-            this.global.setLang(lang)
-            this.request.getLangPack(lang)
-            .subscribe((data)=>{
-              this.dataStore.setLangPack(lang,{read:false,words:data.results})
-              this.global.setLangPack({read:false,words:data.results})
-              this.navCtrl.setRoot(HomePage, datetimeLogin)
-            })
-          })
-        })
-
-      }else{
-        alert("Invalid Username or Password")
-        return
+      let datetimeLogin = {
+        datetime: ''
       }
-    },(err)=>{
-      loader.dismiss()
-      console.log("err: ",err)
-    })
+      this.dataStore.addLogData('auth',true)
+      console.log('logged in on platform : ' + this.platform._platforms)
+      if(this.platform.is('cordova')) {
+        var token = await this.dataStore.getLogDataPromise('push_token')
+        console.log(token)
+        if(token == null) {
+          var registerResult = await this.registerFCMToken()
+        }
+      }
+
+      var lastLogin = await this.dataStore.getLastLoginPromise(loginResult.driver_id)
+        // .subscribe((res)=>{
+      console.log("getLastLogin succ:", lastLogin)
+      let re = lastLogin.rows
+
+      this.dataStore.addLastLogin()
+      .subscribe(
+        (res)=>{ console.log("addLastLogin succ:",res) },
+        (err)=>{ console.log("addLastLogin err:",err) }
+      )
+
+      datetimeLogin.datetime = (re.item(0) == void(0) ? '':re.item(0).datetime)
+
+      console.log('datetimeLogin', datetimeLogin)
+
+        // },(err)=>{
+          // console.log("getLastLogin err:", err)
+          // this.navCtrl.setRoot(HomePage, datetimeLogin)
+      // })
+      // this.dataStore.clearLogDB('AlreadyEnRoute')
+      var promiseData = []
+
+      // promiseData.push(this.request.getAllPassengerInSystemPromise())
+      promiseData.push(this.request.getPassengerQuestionsPromise())
+      promiseData.push(this.request.getLangPromise())
+      Promise.all(promiseData)
+      .then((items)=>{
+        console.log(items)
+        items.forEach((item,index)=>{
+          var label = item.label || 'item#'+index
+          // if(label == 'getAllPassengerInSystem') {
+          //   item.results = item.results.map((passenger) => {
+          //     if (passenger.photo == "") passenger.photo = normalizeURL("assets/img/nouser.png")
+          //     passenger.fromOtherRoute = true
+          //     return passenger
+          //   })
+          // }
+          this.dataStore.clearLogDB(label)
+          this.dataStore.addLogData(label,item.results)
+        })
+        this.dataStore.getLangDefault()
+        .then((lang)=>{
+          if(lang == null) {
+            lang = 'TH'
+          }
+          this.dataStore.setLangDefault(lang)
+          this.global.setLang(lang)
+          this.request.getLangPack(lang)
+          .subscribe((data)=>{
+            loader.dismiss()
+            this.dataStore.setLangPack(lang,{read:false,words:data.results})
+            this.global.setLangPack({read:false,words:data.results})
+            this.navCtrl.setRoot(HomePage, datetimeLogin)
+          })
+        })
+      })
+
+    }else{
+      alert(this.global.translate("Invalid Username or Password"))
+      return
+    }
+    // },(err)=>{
+    //   loader.dismiss()
+    //   console.log("err: ",err)
+    // })
   }
 
 }

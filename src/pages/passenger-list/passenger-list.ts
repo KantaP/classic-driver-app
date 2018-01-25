@@ -81,7 +81,7 @@ export class PassengerListPage {
   private status_text: string;
   private lastPoint: boolean;
   private connection: string;
-  private tracking: TrackingService;
+
   private readerProvider: string;
   constructor(
     public navCtrl: NavController,
@@ -94,7 +94,8 @@ export class PassengerListPage {
     private request: RequestProvider,
     private alertCtrl: AlertController,
     private global: GlobalProvider,
-    private nfc: NFC
+    private nfc: NFC,
+    private tracking: TrackingService
   ) {
     this.passengers = []
     this.passengerStore = []

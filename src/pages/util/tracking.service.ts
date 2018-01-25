@@ -21,7 +21,7 @@ export class TrackingService {
           this.watchSubscription = null
     }
 
-    forceTracking() {
+    public forceTracking() {
       var opts = {
           enableHighAccuracy: true,
           timeout: 8000,
@@ -33,7 +33,7 @@ export class TrackingService {
         })
     }
 
-    watchTracking() {
+    public watchTracking() {
       // this.watchSubscription = this.geolocation.watchPosition()
       //                           .filter((p) => p.coords !== undefined) //Filter Out Errors
       //                           .subscribe(position => {
@@ -54,11 +54,11 @@ export class TrackingService {
       })
     }
 
-    stopWatchTracking() {
+    public stopWatchTracking() {
       if(this.watchSubscription != null) this.watchSubscription.unsubscribe()
     }
 
-    sendTracking(position){
+    public sendTracking(position){
 
         let quote_id    = (Global.getGlobal('quote_id') == void(0) ? 0 : Global.getGlobal('quote_id'))
         let journey_id  = (Global.getGlobal('journey_id') == void(0) ? 0 : Global.getGlobal('journey_id'))
@@ -148,7 +148,7 @@ export class TrackingService {
 
     }
 
-    sent(body){
+    public sent(body){
 
         let headers = new Headers({
             'x-access-key': Global.getGlobal('api_key'),
