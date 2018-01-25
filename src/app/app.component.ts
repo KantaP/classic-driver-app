@@ -42,6 +42,7 @@ interface passengerUpdate {
   timescan?: any;
 }
 
+declare var cordova: any;
 
 @Component({
   templateUrl: 'app.html',
@@ -156,6 +157,14 @@ export class MyApp {
         Global.setGlobal('connection',this.network.type)
         this.initNetworkWatch()
       }
+
+    
+      //push to talk init ios
+      if (this.platform.is('ios')) {
+        console.log('IOS registerGlobals...');
+        cordova.plugins.iosrtc.registerGlobals();
+      }
+
     });
 
     this.pauseSubScribe = this.platform.pause.subscribe(()=>{
