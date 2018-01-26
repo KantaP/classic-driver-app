@@ -15,6 +15,7 @@ interface passengerUpdate {
   pickup?: number;
   action_point_id?: number;
   timescan?: any;
+  quote_id?: number;
 }
 
 /*
