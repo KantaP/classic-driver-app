@@ -56,6 +56,7 @@ import { GlobalProvider } from '../providers/global/global';
 import { NativeAudio } from '@ionic-native/native-audio';
 import { MusicControls } from '@ionic-native/music-controls';
 import { PushToTalkService } from '../providers/pushToTalk/pushToTalk';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 import { NFC, Ndef } from '@ionic-native/nfc';
 
@@ -141,6 +142,7 @@ import { NFC, Ndef } from '@ionic-native/nfc';
     File,
     NativeAudio,
     MusicControls,
+    AndroidPermissions,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Network,
     SQLite,

@@ -1,10 +1,12 @@
 <ion-menu side="right" [content]="content" class="ion-menu-custom" persistent="true">
     <ion-header>
         <ion-toolbar>
-            <button left ion-button round clear padding-left (click)="setStatePushToTalk()">
-                <ion-icon name="md-mic" style="zoom:1.6;" [class]="micState"></ion-icon>
+            <button left ion-button round clear padding-left (click)="microphoneMuted()">
+                <div [class]="micState">
+                    <ion-icon [name]="micMute" style="zoom:1.6;"></ion-icon>
+                </div>
             </button>
-        
+
             <button right ion-button menuToggle>
                 <ion-icon name="menu"></ion-icon>
             </button>
