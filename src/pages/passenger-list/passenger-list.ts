@@ -168,7 +168,7 @@ export class PassengerListPage {
                 var showPassenger = this.passengerStore.filter((item) => item.passenger_id == passenger[0].passenger_id)
                 this.openModal(
                   showPassenger[0],
-                  (showPassenger[0].pickup == 1 && this.navParams.get('is_last')) ? false : true
+                  false
                 )
               })
               .catch((err) => {
@@ -307,7 +307,8 @@ export class PassengerListPage {
           force_login: 0,
           pickup: passenger[0].pickup,
           action_point_id: action,
-          timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+          timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+          quote_id: this.navParams.get('quote_id')
         })
           .map((body) => body.json())
           .toPromise()
@@ -369,7 +370,8 @@ export class PassengerListPage {
               force_login: 0,
               pickup: passenger[0].pickup,
               action_point_id: action,
-              timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+              timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+              quote_id: this.navParams.get('quote_id')
             })
             resolve()
           })
@@ -434,7 +436,7 @@ export class PassengerListPage {
                 var showPassenger = this.passengerStore.filter((item) => item.passenger_id == passenger[0].passenger_id)
                 this.openModal(
                   showPassenger[0],
-                  (showPassenger[0].pickup == 1 && this.navParams.get('is_last')) ? false : true
+                  false
                 )
               })
               .catch((err) => {
@@ -679,7 +681,7 @@ export class PassengerListPage {
   }
 
   forceLogin(passenger: any) {
-    console.log(passenger)
+
     var action = this.navParams.get('movement_id')
     var movement_order = this.navParams.get('movement_order')
     var isLast = this.navParams.get('is_last')
@@ -687,40 +689,37 @@ export class PassengerListPage {
     var options: any = {}
     var pickUpUpdate = 0
     var newStatus = 0
-    if (passenger.pickup != 1 && passenger.movement_order != movement_order) {
-      options.title = `Incorrect Pickup Point`
-      options.icon = 'WRONG_ADDRESS'
-      options.shouldBeAddress = passenger.correctPickUp
-      this.modal.close('passenger-item')
-      this.openFailedModal(
-        options.title,
-        options.icon,
-        options.shouldBeAddress,
-        this.processForceLogin.bind(this, passenger, action, pickUpUpdate, newStatus))
-      // this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
-    } else if (passenger.pickup != 1 && passenger.movement_order == movement_order) {
-      this.processForceLogin(passenger, action, pickUpUpdate, newStatus)
-    } else if (passenger.pickup == 1 && passenger.point_id != action) {
-      // wrong pickup
-      // passenger from search
-      pickUpUpdate = 1
-      newStatus = 1
-      options.title = `Incorrect Pickup Point`
-      options.icon = 'WRONG_ADDRESS'
-      options.shouldBeAddress = passenger.correctPickUp
-      this.modal.close('passenger-item')
-      this.openFailedModal(
-        options.title,
-        options.icon,
-        options.shouldBeAddress,
-        this.processForceLogin.bind(this, passenger, action, pickUpUpdate, newStatus))
-      // this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
+    var findAlreadyPickup = null
+    if(passenger.pickup != 1) {
+      // if passenger pickup == 0 it means this passenger ever to board but alight with some reason
+      findAlreadyPickup = this.allPassenger.filter((item)=>{
+        return passenger.passenger_id == item.passenger_id && item.pickup == 1
+      })
+      if(findAlreadyPickup.length > 0) {
+        // just update alighted data status to 0
+        this.processForceLogin(passenger, action, 0, 0)
+      }
+    }else{
+      if (passenger.pickup == 1 && passenger.point_id != action && passenger.movement_order != movement_order) {
+        pickUpUpdate = 1
+        newStatus = 1
+        options.title = `Incorrect Pickup Point`
+        options.icon = 'WRONG_ADDRESS'
+        options.shouldBeAddress = passenger.correctPickUp
+        this.modal.close('passenger-item')
+        this.openFailedModal(
+          options.title,
+          options.icon,
+          options.shouldBeAddress,
+          this.processForceLogin.bind(this, passenger, action, pickUpUpdate, newStatus))
+        // this.processForceLogin(passenger,action,pickUpUpdate,newStatus)
+      } else if (passenger.movement_order == movement_order) {
+        pickUpUpdate = 1
+        newStatus = 1
+        this.processForceLogin(passenger, action, pickUpUpdate, newStatus)
+      }
     }
-    else {
-      pickUpUpdate = 1
-      newStatus = 1
-      this.processForceLogin(passenger, action, pickUpUpdate, newStatus)
-    }
+
     this.modal.close('passenger-item')
   }
 
@@ -734,11 +733,13 @@ export class PassengerListPage {
       force_login: 1,
       pickup: pickUp,
       action_point_id: action,
-      timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+      timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+      quote_id: this.navParams.get('quote_id')
     })
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
+        this.modal.close('warning-popup')
         if (data.status) {
           var movement_id = this.navParams.get('movement_id')
           this.allPassenger = this.allPassenger.map((item) => {
@@ -749,7 +750,6 @@ export class PassengerListPage {
             return item
           })
           var swapPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.passenger_id == passenger.passenger_id)[0]
-          this.modal.close('warning-popup')
           for (let parent of swapPassenger.parents) {
             var dataPayload: NotiPayload = {}
             if (!this.navParams.get('current_place').includes(swapPassenger.correctPickUp)) {
@@ -781,7 +781,8 @@ export class PassengerListPage {
           force_login: 1,
           pickup: pickUp,
           action_point_id: action,
-          timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+          timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+          quote_id: this.navParams.get('quote_id')
         }).subscribe(() => {
           console.log(err)
         })
@@ -797,8 +798,17 @@ export class PassengerListPage {
     var pickUpUpdate = 0
     var newStatus = 0
     if (isLast) movement_order = movement_order - 99
-    // console.log(passenger.movement_order , this.navParams.get('movement_order'))
-    if (passenger.pickup == 0 && passenger.movement_order != movement_order) {
+
+    if(passenger.pickup == 1 && passenger.status == 1) {
+      // fucntion recieved data from pickup item
+      var new_passenger = this.allPassenger.filter((item)=>{
+        return item.passenger_id == passenger.passenger_id && item.pickup == 0
+      })
+      passenger = new_passenger[0]
+    }
+    console.log(passenger)
+    console.log(passenger.movement_order , this.navParams.get('movement_order'))
+    if ((passenger.pickup == 0) && passenger.movement_order != movement_order) {
       // _passenger = this.allPassenger.filter((item)=>item.passenger_id == passenger.passenger_id && item.pickup == 0 && item.j_id == passenger.j_id)[0]
       // console.log(_passenger)
       var isFirst = this.navParams.get('is_first')
@@ -826,11 +836,13 @@ export class PassengerListPage {
       force_login: 1,
       pickup: 0,
       action_point_id: action,
-      timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+      timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+      quote_id: this.navParams.get('quote_id')
     })
       .map((body) => body.json())
       .subscribe((data) => {
         loader.dismiss()
+        this.modal.close('warning-popup')
         if (data.status) {
           var movement_id = action
           this.allPassenger = this.allPassenger.map((item) => {
@@ -873,7 +885,8 @@ export class PassengerListPage {
           force_login: 1,
           pickup: 0,
           action_point_id: action,
-          timescan: moment().format('YYYY-MM-DD HH:mm:ss')
+          timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
+          quote_id: this.navParams.get('quote_id')
         }).subscribe(() => {
           console.log(err)
         })
