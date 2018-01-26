@@ -46,7 +46,7 @@ declare var cordova: any;
 
 @Component({
   templateUrl: 'app.html',
-  providers:[HomeService, DataStorage]
+  providers: [HomeService, DataStorage]
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav
@@ -56,15 +56,19 @@ export class MyApp {
   resumeSubSribe: Subscription
   connectSubscription: Subscription
   disconnectSubscription: Subscription
-  pages: Array<{title: string, component: any, show:boolean, isCheckNTrack: boolean}>
+  pages: Array<{ title: string, component: any, show: boolean, isCheckNTrack: boolean }>
   toast: any
+
+  micMute: string
+  micState: string
+
   constructor(
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     public modalCtrl: ModalController,
     public events: Events,
-    private homeService:HomeService,
+    private homeService: HomeService,
     private dataStorage: DataStorage,
     private network: Network,
     private push: Push,
@@ -79,32 +83,32 @@ export class MyApp {
     this.initializeApp()
     this.toast = null
     this.pages = [
-      { title: "START WORK", component:"start_work", show: true, isCheckNTrack:false },
-      { title: "STOP WORK", component:"stop_work", show: false, isCheckNTrack:false },
-      { title: "SELECT THE VEHICLE", component: SignInVehiclePage, show: true, isCheckNTrack:false },
-      { title: "VIEW JOBS", component:JobsViewPage, show: true, isCheckNTrack:false },
-      { title: "VEHICLE CHECK", component: VehicleCheckPage, show: true, isCheckNTrack:false },
-      { title: "VEHICLE CHECK HISTORY", component: VehiclecheckHistoryPage, show: true, isCheckNTrack:false },
-      { title: "MESSAGE", component: MessagePage, show: true, isCheckNTrack:false },
-      { title: "SETTING", component: SettingPage, show: false, isCheckNTrack:false },
-      { title: "ADD COMPANY", component: "add_company", show: true, isCheckNTrack:false },
-      { title: "LOGOUT", component: "logout", show: true, isCheckNTrack:false },
-      { title: "LOGIN", component: LoginPage, show:false , isCheckNTrack: false},
-      { title: "HOME", component: HomePage, show:false , isCheckNTrack: false},
+      { title: "START WORK", component: "start_work", show: true, isCheckNTrack: false },
+      { title: "STOP WORK", component: "stop_work", show: false, isCheckNTrack: false },
+      { title: "SELECT THE VEHICLE", component: SignInVehiclePage, show: true, isCheckNTrack: false },
+      { title: "VIEW JOBS", component: JobsViewPage, show: true, isCheckNTrack: false },
+      { title: "VEHICLE CHECK", component: VehicleCheckPage, show: true, isCheckNTrack: false },
+      { title: "VEHICLE CHECK HISTORY", component: VehiclecheckHistoryPage, show: true, isCheckNTrack: false },
+      { title: "MESSAGE", component: MessagePage, show: true, isCheckNTrack: false },
+      { title: "SETTING", component: SettingPage, show: false, isCheckNTrack: false },
+      { title: "ADD COMPANY", component: "add_company", show: true, isCheckNTrack: false },
+      { title: "LOGOUT", component: "logout", show: true, isCheckNTrack: false },
+      { title: "LOGIN", component: LoginPage, show: false, isCheckNTrack: false },
+      { title: "HOME", component: HomePage, show: false, isCheckNTrack: false },
     ]
 
-    this.events.subscribe('isStartWork', (isStart)=>{
-      if(isStart){
+    this.events.subscribe('isStartWork', (isStart) => {
+      if (isStart) {
         this.pages[0].show = false
         this.pages[1].show = true
-      }else{
+      } else {
         this.pages[0].show = true
         this.pages[1].show = false
       }
     })
 
-    this.events.subscribe('isCheckNTrack', (isCheckNTrack)=>{
-      if(isCheckNTrack){
+    this.events.subscribe('isCheckNTrack', (isCheckNTrack) => {
+      if (isCheckNTrack) {
         for (var i in this.pages) {
           if (this.pages[i].component == JobsViewPage ||
             this.pages[i].component == VehicleCheckPage ||
@@ -115,7 +119,7 @@ export class MyApp {
             this.pages[i].isCheckNTrack = true
           }
         }
-      }else{
+      } else {
         for (var i in this.pages) {
           if (this.pages[i].component == JobsViewPage ||
             this.pages[i].component == VehicleCheckPage ||
@@ -153,27 +157,48 @@ export class MyApp {
       this.splashScreen.hide()
 
       // this.dataStorage = new DataStorage()
-      if(this.platform.is('cordova')) {
-        Global.setGlobal('connection',this.network.type)
+      if (this.platform.is('cordova')) {
+        Global.setGlobal('connection', this.network.type)
         this.initNetworkWatch()
       }
 
-    
-      //push to talk init ios
+
+      //iosrtc init ios
       if (this.platform.is('ios')) {
-        console.log('IOS registerGlobals...');
+        console.log('iosrtc registerGlobals...');
         cordova.plugins.iosrtc.registerGlobals();
       }
 
     });
 
-    this.pauseSubScribe = this.platform.pause.subscribe(()=>{
+    this.pauseSubScribe = this.platform.pause.subscribe(() => {
       this.unSubscribeNetwork()
     })
-    this.resumeSubSribe = this.platform.resume.subscribe(()=>{
+    this.resumeSubSribe = this.platform.resume.subscribe(() => {
       this.initNetworkWatch()
     })
   }
+
+  setStatePushToTalk() {
+    var i = Math.floor(Math.random() * Math.floor(3));
+
+    switch (i) {
+      case 0:
+        this.micMute = 'md-mic';
+        this.micState = 'ps-online';
+        break;
+      case 1:
+        this.micMute = 'md-mic-off';
+        this.micState = 'ps-offline';
+        break;
+      default:
+        this.micMute = 'md-mic';
+        this.micState = 'ps-private';
+        break;
+    }
+
+  }
+
 
   unSubscribeNetwork() {
     this.connectSubscription.unsubscribe()
@@ -183,8 +208,8 @@ export class MyApp {
   initNetworkWatch() {
     this.connectSubscription = this.network.onConnect().subscribe(() => {
       // alert(this.network.type)3
-      Global.setGlobal('connection',this.network.type)
-      if(this.toast != null) {
+      Global.setGlobal('connection', this.network.type)
+      if (this.toast != null) {
         this.toast.dismiss()
         this.toast = null
       }
@@ -199,8 +224,8 @@ export class MyApp {
     })
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       // alert('Please check your internet.')
-      Global.setGlobal('connection',this.network.type)
-      if(this.toast != null) {
+      Global.setGlobal('connection', this.network.type)
+      if (this.toast != null) {
         this.toast.dismiss()
         this.toast = null
       }
@@ -217,72 +242,72 @@ export class MyApp {
 
   toDoLoad() {
     this.dataStorage.getTodoAgain('sentTracking')
-    .then((todos)=>{
-      todos.map((item)=>{
-        this.tracking.sent(item)
+      .then((todos) => {
+        todos.map((item) => {
+          this.tracking.sent(item)
+        })
+        this.dataStorage.clearTodo('sentTracking')
       })
-      this.dataStorage.clearTodo('sentTracking')
-    })
     this.dataStorage.getTodoAgain('updatePassengerStatus')
-    .then((todos)=>{
-      todos.map((item:passengerUpdate)=>{
-        this.request.updatePassengerStatus(item)
+      .then((todos) => {
+        todos.map((item: passengerUpdate) => {
+          this.request.updatePassengerStatus(item)
+        })
+        this.dataStorage.clearTodo('updatePassengerStatus')
       })
-      this.dataStorage.clearTodo('updatePassengerStatus')
-    })
   }
 
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    if(page.component == "start_work"){
+    if (page.component == "start_work") {
       this.homeService.showStartWorkDialog()
 
-    }else if(page.component == "stop_work"){
+    } else if (page.component == "stop_work") {
       this.homeService.showStopWorkDialog()
 
-    }else if(page.component == "add_company"){
-      let modal = this.modalCtrl.create(AddCompany, "",{enableBackdropDismiss: false})
+    } else if (page.component == "add_company") {
+      let modal = this.modalCtrl.create(AddCompany, "", { enableBackdropDismiss: false })
       modal.present()
 
-    }else if(page.component == "logout"){
-      if(this.platform.is('cordova')) {
+    } else if (page.component == "logout") {
+      if (this.platform.is('cordova')) {
         var pushObject = this.push.init({})
         pushObject.unregister()
       }
 
       this.dataStorage.getLogData('push_token')
-      .subscribe((res)=>{
-        let items = res.rows
-        this.dataStorage.clearLogDB('push_token')
-        this.dataStorage.clearLogDB('auth')
-        var promiseObservable = []
-        promiseObservable.push(this.homeService.requestRemoveToken(items.item(0)).toPromise())
-        if(Global.getGlobal("start_work_id")) {
-          promiseObservable.push(this.stopWorkService.stopWorkNew(moment().format('YYYY-MM-DD HH:mm')))
-        }
-        if(Global.getGlobal("signed_vehicle_id")){
-          promiseObservable.push(this.signOutVehicleService.signOutVehicleNew(Global.getGlobal("signed_vehicle_id")))
-        }
+        .subscribe((res) => {
+          let items = res.rows
+          this.dataStorage.clearLogDB('push_token')
+          this.dataStorage.clearLogDB('auth')
+          var promiseObservable = []
+          promiseObservable.push(this.homeService.requestRemoveToken(items.item(0)).toPromise())
+          if (Global.getGlobal("start_work_id")) {
+            promiseObservable.push(this.stopWorkService.stopWorkNew(moment().format('YYYY-MM-DD HH:mm')))
+          }
+          if (Global.getGlobal("signed_vehicle_id")) {
+            promiseObservable.push(this.signOutVehicleService.signOutVehicleNew(Global.getGlobal("signed_vehicle_id")))
+          }
 
-        Promise.all(promiseObservable)
-        .then((results)=>{
-          console.log('test',results)
-          Global.setGlobal("start_work_id", 0)
-          this.events.publish('isStartWork', false)
-          Global.setGlobal("vehicle_signin_insert_id", 0)
-          Global.setGlobal("signed_vehicle_id", 0)
-          Global.setGlobal("signed_vehicle_name", "-")
-          this.events.publish('isVehicleSignIn', false)
-          this.tracking.stopWatchTracking()
-          this.nav.setRoot(LoginPage)
+          Promise.all(promiseObservable)
+            .then((results) => {
+              console.log('test', results)
+              Global.setGlobal("start_work_id", 0)
+              this.events.publish('isStartWork', false)
+              Global.setGlobal("vehicle_signin_insert_id", 0)
+              Global.setGlobal("signed_vehicle_id", 0)
+              Global.setGlobal("signed_vehicle_name", "-")
+              this.events.publish('isVehicleSignIn', false)
+              this.tracking.stopWatchTracking()
+              this.nav.setRoot(LoginPage)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
         })
-        .catch((err)=>{
-          console.log(err)
-        })
-      })
 
-    }else{
+    } else {
       this.nav.push(page.component)
     }
   }
