@@ -53,7 +53,15 @@ import { PassengerAddNotePage } from '../pages/passenger-add-note/passenger-add-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobalProvider } from '../providers/global/global';
 
+import { NativeAudio } from '@ionic-native/native-audio';
+import { MusicControls } from '@ionic-native/music-controls';
+import { PushToTalkService } from '../providers/pushToTalk/pushToTalk';
+
 import { NFC, Ndef } from '@ionic-native/nfc';
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -131,6 +139,8 @@ import { NFC, Ndef } from '@ionic-native/nfc';
     Diagnostic,
     FileTransfer,
     File,
+    NativeAudio,
+    MusicControls,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Network,
     SQLite,
@@ -142,6 +152,7 @@ import { NFC, Ndef } from '@ionic-native/nfc';
     DataStorage,
     SignOutVehicleService,
     StopWorkService,
+    PushToTalkService,
     NFC
   ]
 })

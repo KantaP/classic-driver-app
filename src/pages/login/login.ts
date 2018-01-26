@@ -221,8 +221,11 @@ export class LoginPage {
       alert("Please check your internet")
       return false
     }
+    this.username = "testjob3"
     //this.username = "nodev"
-    //this.password = "123456"
+    this.password = "123456"
+
+
     if(this.username == "" || this.password == ""){
       alert("Please enter Username or Password")
       return

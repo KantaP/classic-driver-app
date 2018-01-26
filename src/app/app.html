@@ -1,9 +1,13 @@
 <ion-menu side="right" [content]="content" class="ion-menu-custom" persistent="true">
     <ion-header>
         <ion-toolbar>
+            <button left ion-button round clear padding-left (click)="setStatePushToTalk()">
+                <ion-icon name="md-mic" style="zoom:1.6;" [class]="micState"></ion-icon>
+            </button>
+        
             <button right ion-button menuToggle>
                 <ion-icon name="menu"></ion-icon>
-              </button>
+            </button>
             <ion-title class="txt_center">
                 <div class="w100 h100 dis-t mg-top5percent mg-bottom5percent">
                     <div class="dis-tc ver-mid">
@@ -18,9 +22,10 @@
 
     <ion-content>
         <ion-list>
-            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [style.display]="p.show ? '': 'none'" [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}" [disabled]="p.isCheckNTrack == true">
-        {{global.translate(p.title)}}
-      </button>
+            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [style.display]="p.show ? '': 'none'" [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}"
+                [disabled]="p.isCheckNTrack == true">
+                {{global.translate(p.title)}}
+            </button>
         </ion-list>
     </ion-content>
 
