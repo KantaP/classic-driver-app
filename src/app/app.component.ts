@@ -32,6 +32,7 @@ import { Util } from '../pages/util/util';
 import { toPromise } from 'rxjs/operator/toPromise';
 import { StopWorkService } from '../pages/stopwork/stopwork.service';
 import * as moment from 'moment'
+import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 
 interface passengerUpdate {
   passenger_id?: number;
@@ -72,7 +73,8 @@ export class MyApp {
     private tracking: TrackingService,
     private stopWorkService: StopWorkService,
     private signOutVehicleService: SignOutVehicleService,
-    private request: RequestProvider
+    private request: RequestProvider,
+    private loaderCtrl : LoadingController
   ) {
 
     this.initializeApp()
@@ -237,6 +239,10 @@ export class MyApp {
       modal.present()
 
     }else if(page.component == "logout"){
+      var loader = this.loaderCtrl.create({
+        content: ''
+      })
+      loader.present()
       if(this.platform.is('cordova')) {
         var pushObject = this.push.init({})
         pushObject.unregister()
@@ -266,6 +272,7 @@ export class MyApp {
           Global.setGlobal("signed_vehicle_name", "-")
           this.events.publish('isVehicleSignIn', false)
           this.tracking.stopWatchTracking()
+          loader.dismiss()
           this.nav.setRoot(LoginPage)
         })
         .catch((err)=>{

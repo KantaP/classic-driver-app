@@ -26,6 +26,7 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="loadUrlTimeoutValue" value="700000" />
+    <preference name="InAppBrowserStorageEnabled" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
         <resource-file src="google-services.json" target="google-services.json" />
@@ -87,7 +88,7 @@
     </feature>
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
     <allow-navigation href="http://192.168.1.21:8100" />
-    <engine name="android" spec="^6.3.0" />
+    <engine name="android" spec="6.3.0" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />

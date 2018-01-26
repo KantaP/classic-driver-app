@@ -343,7 +343,6 @@ export class DataStorage{
             .catch((err)=>{
               observer.error(err)
             })
-
           })
         // }
 

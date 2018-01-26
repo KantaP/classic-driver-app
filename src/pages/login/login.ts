@@ -320,6 +320,7 @@ export class LoginPage {
       })
 
     }else{
+      loader.dismiss()
       alert(this.global.translate("Invalid Username or Password"))
       return
     }
