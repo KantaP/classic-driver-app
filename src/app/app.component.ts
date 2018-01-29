@@ -33,6 +33,8 @@ import { toPromise } from 'rxjs/operator/toPromise';
 import { StopWorkService } from '../pages/stopwork/stopwork.service';
 import * as moment from 'moment'
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
+import { PushToTalkService } from '../providers/pushToTalk/pushToTalk';
+import { Observable } from 'rxjs/Rx';
 
 interface passengerUpdate {
   passenger_id?: number;
@@ -62,6 +64,7 @@ export class MyApp {
 
   micMute: string
   micState: string
+  rxP2TalkInterface:any
 
   constructor(
     public platform: Platform,
@@ -79,7 +82,8 @@ export class MyApp {
     private stopWorkService: StopWorkService,
     private signOutVehicleService: SignOutVehicleService,
     private request: RequestProvider,
-    private loaderCtrl : LoadingController
+    private loaderCtrl: LoadingController,
+    private p2talk: PushToTalkService
   ) {
 
     this.initializeApp()
@@ -170,6 +174,8 @@ export class MyApp {
         console.log('iosrtc registerGlobals...');
         cordova.plugins.iosrtc.registerGlobals();
       }
+      this.p2talk.initRxStream();
+      this.displayStatePushToTalk();
 
     });
 
@@ -181,25 +187,36 @@ export class MyApp {
     })
   }
 
-  setStatePushToTalk() {
-    var i = Math.floor(Math.random() * Math.floor(3));
+  displayStatePushToTalk() {
 
-    switch (i) {
-      case 0:
-        this.micMute = 'md-mic';
-        this.micState = 'ps-online';
-        break;
-      case 1:
-        this.micMute = 'md-mic-off';
-        this.micState = 'ps-offline';
-        break;
-      default:
-        this.micMute = 'md-mic';
-        this.micState = 'ps-private';
-        break;
-    }
-
+      Observable.timer(3000).subscribe(() => {
+        this.rxP2TalkInterface = this.p2talk.rxStreamUpdateListener.subscribe(s => {
+          try {
+            this.micMute = s.micMute;
+            this.micState = s.micState;
+            if(!s.enabled){
+              this.unSubscribePushToTalk();
+            }
+            //console.log('displayStatePushToTalk: ' + JSON.stringify(s));
+          } catch (error) {
+            console.log('displayStatePushToTalk: ' + error);
+          }
+        });
+        console.log('p2talk.rxStreamUpdateListener.subscribe...');
+      });
   }
+
+  microphoneMuted(){
+    this.p2talk.muteAudio('switch');
+    this.micMute = this.p2talk.getMicMute();
+    this.micState = this.p2talk.getMicState();
+  }
+
+  unSubscribePushToTalk(){
+    this.rxP2TalkInterface.unsubscribe();
+    console.log('p2talk.rxStreamUpdateListener.Unsubscribe...');
+  }
+
 
 
   unSubscribeNetwork() {
@@ -273,12 +290,12 @@ export class MyApp {
       modal.present()
 
 
-    }else if(page.component == "logout"){
+    } else if (page.component == "logout") {
       var loader = this.loaderCtrl.create({
         content: ''
       })
       loader.present()
-      if(this.platform.is('cordova')) {
+      if (this.platform.is('cordova')) {
         var pushObject = this.push.init({})
         pushObject.unregister()
       }
@@ -298,20 +315,20 @@ export class MyApp {
           }
 
 
-        Promise.all(promiseObservable)
-        .then((results)=>{
-          console.log('test',results)
-          Global.setGlobal("start_work_id", 0)
-          this.events.publish('isStartWork', false)
-          Global.setGlobal("vehicle_signin_insert_id", 0)
-          Global.setGlobal("signed_vehicle_id", 0)
-          Global.setGlobal("signed_vehicle_name", "-")
-          this.events.publish('isVehicleSignIn', false)
-          this.tracking.stopWatchTracking()
-          loader.dismiss()
-          this.nav.setRoot(LoginPage)
+          Promise.all(promiseObservable)
+            .then((results) => {
+              console.log('test', results)
+              Global.setGlobal("start_work_id", 0)
+              this.events.publish('isStartWork', false)
+              Global.setGlobal("vehicle_signin_insert_id", 0)
+              Global.setGlobal("signed_vehicle_id", 0)
+              Global.setGlobal("signed_vehicle_name", "-")
+              this.events.publish('isVehicleSignIn', false)
+              this.tracking.stopWatchTracking()
+              loader.dismiss()
+              this.nav.setRoot(LoginPage)
+            })
         })
-      })
 
     } else {
       this.nav.push(page.component)

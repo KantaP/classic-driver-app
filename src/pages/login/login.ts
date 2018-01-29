@@ -251,7 +251,8 @@ export class LoginPage {
       Global.setGlobal('api_site', loginResult.apisite)
       Global.setGlobal('web_site', loginResult.website)
       Global.setGlobal('site_id', loginResult.site_id)
-
+      Global.setGlobal('region', loginResult.region)
+      
       let datetimeLogin = {
         datetime: ''
       }
