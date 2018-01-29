@@ -37,7 +37,7 @@ export class MessageService {
             })
 
             let body = {
-                quote_id: (Global.getGlobal('quote_id') == void(0) ? 0 : Global.getGlobal('quote_id')),
+                quoteid: (Global.getGlobal('quote_id') == void(0) ? 0 : Global.getGlobal('quote_id')),
                 lat:0,
                 lng:0,
                 subject: msg.subject,

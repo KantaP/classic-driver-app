@@ -234,11 +234,12 @@ export class PassengerListPage {
       var new_status = 0
       var notSwap = false
       var swapPassenger = []
-      // console.log(passenger)
+      console.log('start scan' , passenger)
       if (passenger[0].status == 1 && passenger[0].pickup == 1) {
         passenger = this.allPassenger.filter((item) => {
           return (item.status == 0 && item.pickup == 0 && item.passenger_id == passenger[0].passenger_id)
         })
+        console.log('will aligned')
         // this.passengerStore = this.passengerStore.map((item) => {
         //   if (item.passenger_id == passenger[0].passenger_id) item = passenger[0]
         //   return item
@@ -262,6 +263,7 @@ export class PassengerListPage {
         new_status = 0
         notSwap = true
       }
+
       if (((passenger[0].status == 0 || passenger[0].status == -1) && passenger[0].pickup == 1)) {
         console.log('set status true')
         new_status = 1
@@ -294,9 +296,9 @@ export class PassengerListPage {
         }
         action = this.navParams.get('movement_id')
       }
-      var loader = this.loading.create({
-        content: ''
-      })
+      // var loader = this.loading.create({
+      //   content: ''
+      // })
       // loader.present()
       if (this.navParams.get('is_last') && passenger[0].pickup == 1) {
         resolve()
@@ -313,7 +315,7 @@ export class PassengerListPage {
           .map((body) => body.json())
           .toPromise()
           .then((data) => {
-            // loader.dismiss()
+
             if (data.status) {
               var movement_id = action
               this.allPassenger = this.allPassenger.map((item) => {
@@ -326,9 +328,7 @@ export class PassengerListPage {
 
 
               // check where is the right place
-              // if(this.wrong_point == '1') {
 
-              // }
               var dataPayload: NotiPayload = {}
               if (swapPassenger.length > 0) {
                 for (let parent of swapPassenger[0].parents) {
@@ -339,8 +339,15 @@ export class PassengerListPage {
                   dataPayload.sentfrom = ""
                   dataPayload.name = swapPassenger[0].first_name + ' ' + swapPassenger[0].surname
                   dataPayload.time = moment().format('HH:mm')
-                  dataPayload.wrong_point = this.wrong_point
                   dataPayload.status = this.status_text
+                  if (!this.navParams.get('current_place').includes(swapPassenger[0].correctPickUp)) {
+                    this.wrong_point = '1'
+                    dataPayload.note = 'This is not passengers registered stop'
+                  } else {
+                    this.wrong_point = '0'
+                    dataPayload.note = ''
+                  }
+                  dataPayload.wrong_point = this.wrong_point
                   this.sendNotification(parent.email, dataPayload)
                 }
               } else {
@@ -352,18 +359,27 @@ export class PassengerListPage {
                   dataPayload.sentfrom = ""
                   dataPayload.name = passenger[0].first_name + ' ' + passenger[0].surname
                   dataPayload.time = moment().format('HH:mm')
-                  dataPayload.wrong_point = this.wrong_point
+
                   dataPayload.status = this.status_text
+                  if (!this.navParams.get('current_place').includes(swapPassenger[0].correctPickUp)) {
+                    this.wrong_point = '1'
+                    dataPayload.note = 'This is not passengers registered stop'
+                  } else {
+                    this.wrong_point = '0'
+                    dataPayload.note = ''
+                  }
+                  dataPayload.wrong_point = this.wrong_point
                   this.sendNotification(parent.email, dataPayload)
                 }
+                // loader.dismiss()
               }
 
               // this.passengers = this.passengerStore
-              resolve()
+
             }
+            resolve()
           })
           .catch((err) => {
-            loader.dismiss()
             this.dataStorage.saveTodoAgain('updatePassengerStatus', {
               passenger_id: passenger[0].passenger_id,
               status_new: new_status,
@@ -416,11 +432,15 @@ export class PassengerListPage {
   addListenNFC() {
     this.nfc.addTagDiscoveredListener(nfcEvent => this.sesReadNFC(nfcEvent.tag)).subscribe(data => {
       console.log('read',data)
+      this.startRead = true
       if (data && data.tag && data.tag.id) {
         let tagId = this.nfc.bytesToHexString(data.tag.id.reverse());
+        console.log()
         if (tagId) {
           this.rfValue = parseInt(tagId,16).toString()
           var passenger = this.passengerStore.filter((item) => item.RFID == this.rfValue)
+          console.log('passenger nfc' , passenger)
+          console.log('nfc read' , this.rfValue)
           this.closeModal('passenger-item')
           this.closeModal('warning-popup')
           if (passenger.length > 0) {
@@ -452,7 +472,7 @@ export class PassengerListPage {
             // it should found more than 1 row
             // then check if already board or not
             var options: FailedItem = {}
-            if (passenger.length > 1) {
+            if (passenger.length > 0) {
               // found in other route
               passenger = passenger.filter((item) => {
                 var failBoard = passenger.filter((item3) => item3.pickup == 1 && item3.status == -1)
@@ -506,6 +526,10 @@ export class PassengerListPage {
   }
 
   loadAllPassengers() {
+    var loader = this.loading.create({
+      content: ''
+    })
+    loader.present()
     this.request.getAllPassengerInJob(this.navParams.get('quote_id'))
       .subscribe((data) => {
         data.results = data.results.map((item) => {
@@ -514,6 +538,7 @@ export class PassengerListPage {
           return item
         })
         this.allPassenger = data.results
+        loader.dismiss()
         this.initPassengers()
       })
   }
@@ -667,6 +692,16 @@ export class PassengerListPage {
 
   openModal(passenger: Passenger, allow_force_login: boolean = true, allow_view_instructors: boolean = true) {
     this.passengerItem = passenger
+    if(this.passengerItem.pickup != 1) {
+      // if passenger pickup == 0 it means this passenger ever to board but alight with some reason
+      var findAlreadyPickup = this.allPassenger.filter((item)=>{
+        return this.passengerItem.passenger_id == item.passenger_id && item.pickup == 1
+      })
+      if(findAlreadyPickup.length > 0 && this.navParams.get('is_last')) {
+        // just update alighted data status to 0
+        allow_force_login = true
+      }
+    }
     this.viewForceLogin = allow_force_login
     // this.viewinstructors = allow_view_instructors
     if (!allow_force_login) this.colorViewForceLogin = "primary"

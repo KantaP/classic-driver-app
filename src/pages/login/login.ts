@@ -221,9 +221,9 @@ export class LoginPage {
       alert("Please check your internet")
       return false
     }
-    this.username = "testdriver"
-    //this.username = "nodev"
-    this.password = "123456"
+    // this.username = ""
+    // //this.username = "nodev"
+    // this.password = ""
 
 
     if(this.username == "" || this.password == ""){

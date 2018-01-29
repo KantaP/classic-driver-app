@@ -17,7 +17,7 @@ export class MessagePage {
 
     signedin_vehicle_name: string
     isVehicleSignedIn:boolean = false
-
+    disableSend: boolean = false
     loading: boolean = true
     shownGroup = null
     uniqueId:number = 0
@@ -55,6 +55,8 @@ export class MessagePage {
           body: ['',Validators.required]
         })
         this.getMessage()
+        if(!Global.getGlobal('quote_id')) this.disableSend = true
+        else this.disableSend = false
     }
 
     getMessage(){

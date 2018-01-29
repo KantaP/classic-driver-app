@@ -93,7 +93,7 @@
                     </ion-item>
                 </ion-row>
                 <ion-row class="margin-top-20" style="padding-right:16px;padding-left:16px;">
-                    <button ion-button block class="btn_blue" (click)="sendMessage()">{{global.translate('SEND')}}</button>
+                    <button ion-button block class="btn_blue" [disabled]="disableSend" (click)="sendMessage()">{{global.translate('SEND')}}</button>
                 </ion-row>
             </form>
         </ion-grid>
