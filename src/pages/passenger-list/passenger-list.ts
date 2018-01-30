@@ -435,12 +435,11 @@ export class PassengerListPage {
       this.startRead = true
       if (data && data.tag && data.tag.id) {
         let tagId = this.nfc.bytesToHexString(data.tag.id.reverse());
-        console.log()
         if (tagId) {
           this.rfValue = parseInt(tagId,16).toString()
           var passenger = this.passengerStore.filter((item) => item.RFID == this.rfValue)
-          console.log('passenger nfc' , passenger)
-          console.log('nfc read' , this.rfValue)
+          // console.log('passenger nfc' , passenger)
+          // console.log('nfc read' , this.rfValue)
           this.closeModal('passenger-item')
           this.closeModal('warning-popup')
           if (passenger.length > 0) {

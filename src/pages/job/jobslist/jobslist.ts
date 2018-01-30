@@ -1,3 +1,4 @@
+
 import { GlobalProvider } from './../../../providers/global/global';
 import { ViewJobPage } from './viewjob/viewjob'
 import { JobsListInterface } from './../../util/model/jobList.interface'
@@ -9,13 +10,16 @@ import { NavController, Events, ModalController } from 'ionic-angular'
 @Component({
     selector: 'page-jobslist',
     templateUrl: 'jobslist.html',
-    providers: [JobsListService]
+    providers: [JobsListService],
 })
 
 export class JobsListPage {
 
     jobs: Array<JobsListInterface> = []
+    jobsShow: Array<JobsListInterface> = []
     loading:boolean = true
+    startIndex: number = 0
+    endIndex: number = 4
 
     constructor(
         public navCtrl: NavController,
@@ -38,21 +42,26 @@ export class JobsListPage {
         .toPromise()
         .then((res)=>{
             console.log('getJobs res:', res)
-            this._ngZone.run(()=>{
-                let re:Array<JobsListInterface> = res.result
-                let latestQuoteBuffer = 0
+            this.jobsShow = res.result
+            this.jobs = this.jobsShow.slice(this.startIndex,this.endIndex).map((item)=>item)
+            this.loading = false
+            this.startIndex = this.endIndex
+            this.endIndex += 4
+            // this._ngZone.run(()=>{
+                // let re:Array<JobsListInterface> = res.result
+                // let latestQuoteBuffer = 0
 
-                for (let i in re) {
-                    if (re[i].quote_id != latestQuoteBuffer) {
-                        this.jobs.push(re[i])
-                        latestQuoteBuffer = re[i].quote_id
-                    }
-                }
+                // for (let i in re) {
+                //     if (re[i].quote_id != latestQuoteBuffer) {
+                //         this.jobs.push(re[i])
+                //         latestQuoteBuffer = re[i].quote_id
+                //     }
+                // }
                 // don't know why always add blank array in last index
-                this.jobs.pop()
+                // this.jobs.pop()
                 // console.log(this.jobs)
-                this.loading = false
-            })
+                // this.loading = false
+            // })
         })
         .catch((err)=>{
           console.log('getJobs err:', err)
@@ -73,4 +82,17 @@ export class JobsListPage {
       console.log(job)
         this.navCtrl.push(ViewJobPage, {data: job, callback: this.callbackForUpdate.bind(this)})
     }
+
+    onScrollDown(infiniteScroll) {
+        if(this.jobsShow.length != this.jobs.length) {
+          this.loading = true
+          this.jobs = this.jobs.concat(this.jobsShow.slice(this.startIndex,this.endIndex).map((item)=>item))
+          this.startIndex = this.endIndex
+          this.endIndex += 4
+          this.loading = false
+          infiniteScroll.complete()
+        }
+    }
+
+
 }

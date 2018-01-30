@@ -199,7 +199,7 @@ export class HomePage implements OnDestroy {
       .then(
       (res) => {
         Global.setGlobal('mobile_settings', res.result)
-        this.initPushToTalkService();
+        // this.initPushToTalkService();
       }
       )
   }

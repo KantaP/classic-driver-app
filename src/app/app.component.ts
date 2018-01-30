@@ -174,8 +174,8 @@ export class MyApp {
         console.log('iosrtc registerGlobals...');
         cordova.plugins.iosrtc.registerGlobals();
       }
-      this.p2talk.initRxStream();
-      this.displayStatePushToTalk();
+      // this.p2talk.initRxStream();
+      // this.displayStatePushToTalk();
 
     });
 

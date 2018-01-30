@@ -6,87 +6,89 @@
     </div>
 </div>
 <div *ngIf="loading == false">
-    <div class="w100" *ngFor="let job of jobs" (click)="openViewJob(job)">
+    <ion-infinite-scroll (ionInfinite)="onScrollDown($event)">
+        <div class="w100" *ngFor="let job of jobs" (click)="openViewJob(job)">
 
-        <div class="w100 h40px  bg_blue_royal_light txt_white">
-            <div class="w100 h100 dis-t pos-relate">
-                <div class="f-size-xx-small label_job_number">
-                    {{global.translate('JOB ID')}}: {{ job.quote_id }}
-                </div>
-                <div class="dis-tc ver-mid pd-left-10-px pd-right-5-px">
-                    <div class="w50-cal txt_left ib">
-                        <i class="icon icon-Agenda"></i> &nbsp;
-                        <span>{{ job.outward }}</span>
+            <div class="w100 h40px  bg_blue_royal_light txt_white">
+                <div class="w100 h100 dis-t pos-relate">
+                    <div class="f-size-xx-small label_job_number">
+                        {{global.translate('JOB ID')}}: {{ job.quote_id }}
                     </div>
-                    <div class="w50-cal txt_right ib">
-                        <i class="icon icon-User"></i>
-                        <span>{{ job.max_passenger }}</span>
+                    <div class="dis-tc ver-mid pd-left-10-px pd-right-5-px">
+                        <div class="w50-cal txt_left ib">
+                            <i class="icon icon-Agenda"></i> &nbsp;
+                            <span>{{ job.outward }}</span>
+                        </div>
+                        <div class="w50-cal txt_right ib">
+                            <i class="icon icon-User"></i>
+                            <span>{{ job.max_passenger }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div ion-row>
-            <div col-9 class="txt_center pd-no">
+            <div ion-row>
+                <div col-9 class="txt_center pd-no">
 
-                <div ion-row class="txt_left">
-                    <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
-                        <div class="w100 h5vh dis-t">
-                            <div class="w100 dis-tc ver-mid">
-                                <i class="icon icon-Pointer"></i> {{global.translate('PICK UP')}}
+                    <div ion-row class="txt_left">
+                        <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
+                            <div class="w100 h5vh dis-t">
+                                <div class="w100 dis-tc ver-mid">
+                                    <i class="icon icon-Pointer"></i> {{global.translate('PICK UP')}}
+                                </div>
                             </div>
                         </div>
+                        <div col-8 class="pd-left-10-px">
+                            {{ job.pickup }}
+                        </div>
                     </div>
-                    <div col-8 class="pd-left-10-px">
-                        {{ job.pickup }}
-                    </div>
-                </div>
 
-                <div ion-row class="txt_left">
-                    <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
-                        <div class="w100 h5vh dis-t">
-                            <div class="w100 dis-tc ver-mid">
-                                <i class="icon icon-Pointer"></i> {{global.translate('DEST')}}
+                    <div ion-row class="txt_left">
+                        <div col-4 class="txt_bold bg_grey_gainsboro pd-left-10-px">
+                            <div class="w100 h5vh dis-t">
+                                <div class="w100 dis-tc ver-mid">
+                                    <i class="icon icon-Pointer"></i> {{global.translate('DEST')}}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div col-8 class="pd-left-10-px">
-                        {{ job.destination }}
-                    </div>
-                </div>
-
-                <div ion-row class="">
-                    <div col-4 class="txt_left txt_bold pd-left-10-px">
-                        <img src="assets/img/icon_note_user.png" class="icon-note-user ver-top" />
-                        <div class="ib txt_bold f-size-xx-small ver-top">
-                            {{global.translate('Passenger Name')}} {{job.passenger_name}}
+                        <div col-8 class="pd-left-10-px">
+                            {{ job.destination }}
                         </div>
                     </div>
-                    <div col-8 class="txt_red f-size-x-small">
-                        <span *ngIf="job.driver_accept == false">
+
+                    <div ion-row class="">
+                        <div col-4 class="txt_left txt_bold pd-left-10-px">
+                            <img src="assets/img/icon_note_user.png" class="icon-note-user ver-top" />
+                            <div class="ib txt_bold f-size-xx-small ver-top">
+                                {{global.translate('Passenger Name')}} {{job.passenger_name}}
+                            </div>
+                        </div>
+                        <div col-8 class="txt_red f-size-x-small">
+                            <span *ngIf="job.driver_accept == false">
                             {{global.translate('Awaiting Acceptance')}}
                         </span>
+                        </div>
                     </div>
+
+
                 </div>
-
-
-            </div>
-            <div col-3 class="txt_center">
-                <div class="w100 h13vh dis-t">
-                    <div class="w100 h100 dis-tc ver-mid pos-relate">
-                        <div class="txt_right label_dollars color_green_forest" [hidden]="job.pay_ok != 'C'">
-                            <i class="icon icon-Dollars"></i>
-                        </div>
-                        <div class="color_green_forest txt-size-2rem">
-                            {{global.translate('$')}} {{ job.driver_pay }}
-                        </div>
-                        <strong class="f-size-x-small">
+                <div col-3 class="txt_center">
+                    <div class="w100 h13vh dis-t">
+                        <div class="w100 h100 dis-tc ver-mid pos-relate">
+                            <div class="txt_right label_dollars color_green_forest" [hidden]="job.pay_ok != 'C'">
+                                <i class="icon icon-Dollars"></i>
+                            </div>
+                            <div class="color_green_forest txt-size-2rem">
+                                {{global.translate('$')}} {{ job.driver_pay }}
+                            </div>
+                            <strong class="f-size-x-small">
                             {{global.translate('Vehicle Assign')}}
                         </strong>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
+    </ion-infinite-scroll>
 </div>

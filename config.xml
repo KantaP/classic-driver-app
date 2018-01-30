@@ -130,4 +130,5 @@
     <plugin name="cordova-plugin-iosrtc" spec="^4.0.2" />
     <plugin name="cordova-plugin-nativeaudio" spec="^3.0.9" />
     <plugin name="cordova-plugin-music-controls" spec="^2.1.4" />
+    <plugin name="cordova-plugin-android-permissions" spec="^1.0.0" />
 </widget>
