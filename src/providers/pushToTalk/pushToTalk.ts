@@ -7,6 +7,8 @@ import { MusicControls } from '@ionic-native/music-controls';
 //import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, RequestOptions } from '@angular/http'
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Network } from '@ionic-native/network';
+import { retry } from 'rxjs/operator/retry';
 
 // ref
 // http://licode.readthedocs.io/en/stable/client_api/
@@ -29,6 +31,7 @@ var position = 'driver';
 var me;
 var userId;
 var roomId;
+
 
 @Injectable()
 export class PushToTalkService {
@@ -60,13 +63,15 @@ export class PushToTalkService {
   private micMute;
   private isMicPermission = false;
   private isEnabled = false;
+  private isNetwork = true;
 
   constructor(private http: Http,
     private plt: Platform,
     private nativeAudio: NativeAudio,
     private musicCtrl: MusicControls,
     private alertCtrl: AlertController,
-    private permissions: AndroidPermissions
+    private permissions: AndroidPermissions,
+    private network: Network
   ) {
     console.log('p2Talk instance..:' + Erizo);
     me = this.me;
@@ -116,12 +121,16 @@ export class PushToTalkService {
     this.setMicUnMuted();
 
     this.rxStreamUpdateListener = Observable.create(observe => {
-      setInterval(() => {
 
-        if (isPrivateMode) {
-          this.setMicPrivate();
-        } else {
-          this.setMicOnline();
+      setInterval(() => {
+        if (this.isMicPermission) {
+          if (isPrivateMode) {
+            this.setMicPrivate();
+          } else if (this.isNetwork) {
+            this.setMicOnline();
+          } else {
+            this.setMicOffline();
+          }
         }
 
         observe.next(
@@ -138,23 +147,22 @@ export class PushToTalkService {
   connectRoom() {
 
     this.rxReconnectRoom = Observable.timer(100, 5000).subscribe(x => {
-      if (this.isMicPermission) {
-        this.initUserMedia();
-      } else {
+      
+      if (this.isMicPermission && this.isNetwork) {
 
+        if (localStream != null) {
+          localStream.stop();
+          localStream.close();
+        }
+
+        this.initUserMedia();
+
+      } else {
+        this.setMicOffline();
       }
     });
   }
 
-  stopStream() {
-    this.rxReconnectRoom.unsubscribe();
-    if (roomStream != undefined) {
-      if (roomStream.state > 0) {
-        roomStream.disconnect();
-      }
-    }
-    subscribePeerStore = [];
-  }
 
   private initUserMedia() {
 
@@ -338,8 +346,8 @@ export class PushToTalkService {
 
     // stop audio everyone and bypass answer only.
     subscribePeerStore.forEach(s => {
-      if (s.getAttributes().privateId == pid) {
-        privateWithId = s.getAttributes().privateId;
+      if (s.stream.getAttributes().privateId == pid) {
+        privateWithId = s.stream.getAttributes().privateId;
         privateWith = s.stream.getAttributes().name;
         s.stream.muteAudio(false);
       } else {
@@ -637,6 +645,9 @@ export class PushToTalkService {
 
 
   muteAudio(isMuted) {
+
+    if(!this.isMicPermission || localStream == null) return;
+
     if (localStream.hasAudio()) {
       if (isMuted == 'switch') { //auto switch muted
         if (this.isMuted) {
@@ -660,6 +671,7 @@ export class PushToTalkService {
   }
 
   private localMuted(isMuted) {
+ 
     localStream.muteAudio(isMuted, result => {
       this.logs(result);
     });
@@ -730,7 +742,7 @@ export class PushToTalkService {
   private removePeerList(pid) {
     let idx = 0;
     me.peerList.forEach(s => {
-      if (s.getAttributes().privateId == pid) {
+      if (s.stream.getAttributes().privateId == pid) {
         me.peerList.splice(idx, 1);
       }
       idx++;
@@ -856,6 +868,18 @@ export class PushToTalkService {
         );
       });
     }
+  }
+
+  networkCheck() {
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      this.logs('network was disconnected :-(');
+      this.isNetwork = false;
+    });
+
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      this.logs('network connected!');
+      this.isNetwork = true;
+    });
   }
 
 }
