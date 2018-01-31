@@ -122,7 +122,6 @@ export class PushToTalkService {
     this.setMicUnMuted();
 
     this.rxStreamUpdateListener = Observable.create(observe => {
-
       setInterval(() => {
         if (this.isMicPermission && isPublished) {
 
@@ -232,7 +231,7 @@ export class PushToTalkService {
         for (var idx in streams) {
           var s = streams[idx];
           try {
-            if (privateId !== s.getAttributes().privateId) {
+            if (localStream.getID() !== s.getID()) {
               roomStream.subscribe(s, { audio: true, video: false });
             }
           } catch (error) {
@@ -258,24 +257,30 @@ export class PushToTalkService {
         }
       });
 
-
       roomStream.addEventListener("stream-subscribed", (e) => {
         //remote stream.
         let remoteStream = e.stream;
-        let isDuplicate = false;
 
-        //check duplicate in store
+
+
         subscribePeerStore.forEach(s => {
+
           if (remoteStream.getAttributes().privateId == s.stream.getAttributes().privateId) {
-            isDuplicate = true;
-          } 
+            //if (remoteStream.getID() != s.stream.getID()) {
+            this.removeSubscribeStore(s.stream.getID());
+
+            //}
+          }
         })
 
-        if (isDuplicate == false) {
-          me.setStreamAttributes();
-          this.addSubscribeStore(remoteStream);
-          //this.addPeerList(remoteStream);
-        }
+
+        this.addSubscribeStore(remoteStream);
+
+
+
+
+
+
         remoteStream.addEventListener("stream-data", this.streamDataMessage);
         remoteStream.addEventListener("stream-attributes-update", this.streamAttributesUpdateEvent);
 
@@ -293,7 +298,7 @@ export class PushToTalkService {
             // normal mode
             this.logs(JSON.stringify('stream PLAY.. : ' + JSON.stringify(remoteStream.getAttributes())));
           } else {
-            // private mode stop all everyone. 
+            // private mode stop all everyone.
             remoteStream.muteAudio(true);
             this.logs(JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
           }
@@ -327,20 +332,17 @@ export class PushToTalkService {
         this.logs('stream-removed...');
         var s = e.stream;
 
-        if (s.getAttributes().privateId != null) {
-
-          if (isPrivateMode) {
-            if (s.getAttributes().privateId == privateWithId) {
-              let resMsg = 'disconnected';
-              this.privateHangup(resMsg);
-            }
+        // private mode
+        if (isPrivateMode) {
+          if (s.getAttributes().privateId == privateWithId) {
+            let resMsg = 'disconnected';
+            this.privateHangup(resMsg);
           }
-
-          this.setStreamAttributes();
-
-          this.removeSubscribeStore(s.getID());
-          //this.removePeerList(s.getID());
         }
+
+        this.setStreamAttributes();
+        this.removeSubscribeStore(s.getID());
+
       });
 
       roomStream.addEventListener('access-denied', (e) => {
@@ -483,7 +485,7 @@ export class PushToTalkService {
 
   }
 
-  // private call "ANSWER" 
+  // private call "ANSWER"
   private streamDataMessage(e) {
 
     if (!isPublished) return;
@@ -540,7 +542,7 @@ export class PushToTalkService {
                     , timestamp: 'timestamp'
                   });
                 }
-                // muted audio other peer.                
+                // muted audio other peer.
                 else {
                   s.stream.muteAudio(true);
                 }
@@ -624,7 +626,6 @@ export class PushToTalkService {
     let streamAttribute = { name: username, privateId: privateId, privateMode: isPrivateMode, position: position, state: this.stateUpdate(roomStream), userId: userId };
     localStream.setAttributes(streamAttribute);
     this.logs('localStream:' + JSON.stringify(localStream.getAttributes()));
-
   }
 
   private stateUpdate(roomStream) {
@@ -688,7 +689,6 @@ export class PushToTalkService {
   }
 
   private localMuted(isMuted) {
-
     localStream.muteAudio(isMuted, result => {
       //this.logs(result);
     });
@@ -746,23 +746,6 @@ export class PushToTalkService {
         s.stream.muteAudio(muted);
         this.logs('isPrivateMode audio muted:' + muted + ' name: ' + s.stream.getAttributes().name);
       }
-    });
-  }
-
-  private addPeerList(stream) {
-    me.peerList.push({
-      privateId: stream.getAttributes().privateId,
-      name: stream.getAttributes().name,
-    });
-  }
-
-  private removePeerList(pid) {
-    let idx = 0;
-    me.peerList.forEach(s => {
-      if (s.stream.getAttributes().privateId == pid) {
-        me.peerList.splice(idx, 1);
-      }
-      idx++;
     });
   }
 
@@ -889,7 +872,6 @@ export class PushToTalkService {
 
   networkCheck() {
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-
 
       this.disconnectRoom();
       localStream.stop();

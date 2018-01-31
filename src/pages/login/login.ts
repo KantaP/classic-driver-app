@@ -208,10 +208,10 @@ export class LoginPage {
   private fillLoginBox(index){
 
     let comp = this.comp_list[index]
-
     this.company_select = comp.comp_code
     this.username = comp.driver_u
     this.password = comp.driver_p
+
   }
 
   async login(){
@@ -222,7 +222,7 @@ export class LoginPage {
       return false
     }
     // this.username = ""
-    this.username = "testjob3"
+    this.username = "testjob4"
     this.password = "123456"
 
 
