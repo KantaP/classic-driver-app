@@ -58,7 +58,7 @@ export class PushToTalkService {
 
   private micState;
   private micMute;
-
+  private isMicPermission = false;
   private isEnabled = false;
 
   constructor(private http: Http,
@@ -74,6 +74,14 @@ export class PushToTalkService {
 
 
   initializeService(did, pid, name, room, url) {
+
+
+    if (this.plt.is('cordova')) {
+      this.isMicPermission = false;
+      this.getMicrophonePermission();
+    } else {
+      this.isMicPermission = true;
+    }
 
     username = name;
     userId = did;
@@ -130,7 +138,11 @@ export class PushToTalkService {
   connectRoom() {
 
     this.rxReconnectRoom = Observable.timer(100, 5000).subscribe(x => {
-      this.initUserMedia();
+      if (this.isMicPermission) {
+        this.initUserMedia();
+      } else {
+
+      }
     });
   }
 
@@ -145,7 +157,7 @@ export class PushToTalkService {
   }
 
   private initUserMedia() {
-    this.getMicrophonePermission();
+
     this.setMicOffline();
 
     var streamAttribute = { name: username, privateId: privateId, privateMode: isPrivateMode, position: position, state: this.stateUpdate(roomStream), userId: userId };
@@ -190,7 +202,6 @@ export class PushToTalkService {
 
   private initStream(token) {
 
-
     roomStream = Erizo.Room({ token: token });
     localStream.addEventListener("access-accepted", () => {
       this.logs(this.tag + 'access-accepted');
@@ -199,7 +210,7 @@ export class PushToTalkService {
         for (var idx in streams) {
           var s = streams[idx];
           try {
-            if (localStream.getID() !== s.getID()) {
+            if (privateId !== s.getAttributes().privateId) {
               roomStream.subscribe(s, { audio: true, video: false });
             }
           } catch (error) {
@@ -232,7 +243,7 @@ export class PushToTalkService {
 
         //check duplicate in store
         subscribePeerStore.forEach(s => {
-          if (remoteStream.getID() == s.stream.getID()) {
+          if (remoteStream.getAttributes().privateId == s.stream.getAttributes().privateId) {
             isDuplicate = true;
           }
         })
@@ -275,8 +286,8 @@ export class PushToTalkService {
 
         subscribeToStreams(streams);
 
-        if (localStream.getID() === e.stream.getID()) {
-          localStreamID = localStream.getID();
+        if (privateId === e.stream.getAttributes().privateId) {
+
           this.logs(this.tag + "stream-added Published!!!");
           isPublished = true;
           me.setStreamAttributes();
@@ -327,8 +338,8 @@ export class PushToTalkService {
 
     // stop audio everyone and bypass answer only.
     subscribePeerStore.forEach(s => {
-      if (s.privateId == pid) {
-        privateWithId = s.privateId;
+      if (s.getAttributes().privateId == pid) {
+        privateWithId = s.getAttributes().privateId;
         privateWith = s.stream.getAttributes().name;
         s.stream.muteAudio(false);
       } else {
@@ -487,11 +498,11 @@ export class PushToTalkService {
               subscribePeerStore.forEach(s => {
 
                 // allow audio with caller only.
-                if (s.privateId == msg.data.privateIdCaller) {
+                if (s.stream.getAttributes().privateId == msg.data.privateIdCaller) {
 
                   privateWith = s.stream.getAttributes().name;
                   s.stream.muteAudio(false);
-                  privateWithId = s.privateId;
+                  privateWithId = s.stream.getAttributes().privateId;
                   privateState = '[' + msg.data.privateIdCaller + '] connected ';
                   // send callback message to caller
                   localStream.sendData({
@@ -499,7 +510,7 @@ export class PushToTalkService {
                     oper: 'answer-accepted',
                     data: {
                       privateIdAnswer: privateId, //driver id
-                      privateIdCaller: s.privateId, // caller id
+                      privateIdCaller: s.stream.getAttributes().privateId, // caller id
                     }
                     , timestamp: 'timestamp'
                   });
@@ -519,7 +530,8 @@ export class PushToTalkService {
             me.privateHangUpFromCaller(msg.data.privateIdAnswer);
           }
         }
-        // answer send callback message to caller
+
+        // get callback message to caller
         else if (msg.oper == 'answer-accepted') {
 
           if (isPrivateMode && isCaller) {
@@ -680,22 +692,11 @@ export class PushToTalkService {
     }
   }
 
-  private echoReducer(stream) { // TODO: fixEcho
-
-    if (this.plt.is('cordova')) {
-
-    }
-
-  }
-
-  private addSubscribeStore(stream) {
+  private addSubscribeStore(s) {
     subscribePeerStore.push({
-      privateId: stream.getAttributes().privateId,
-      privateMode: stream.getAttributes().privateMode,
-      name: stream.getAttributes().name,
-      stream: stream
+      stream: s
     });
-    this.logs(this.tag + 'addSubscribeStore :' + stream.getAttributes().name);
+    this.logs(this.tag + 'addSubscribeStore :' + s.getAttributes().name);
   }
 
   private removeSubscribeStore(pid) {
@@ -729,7 +730,7 @@ export class PushToTalkService {
   private removePeerList(pid) {
     let idx = 0;
     me.peerList.forEach(s => {
-      if (s.privateId == pid) {
+      if (s.getAttributes().privateId == pid) {
         me.peerList.splice(idx, 1);
       }
       idx++;
@@ -839,7 +840,6 @@ export class PushToTalkService {
         },
         err => {
           this.permissions.requestPermission(this.permissions.PERMISSION.RECORD_AUDIO);
-          this.stopStream();
         }
       );
     }
@@ -849,16 +849,13 @@ export class PushToTalkService {
         this.permissions.checkPermission(this.permissions.PERMISSION.RECORD_AUDIO).then(
           result => {
             if (result.hasPermission) {
-              console.log('Has permission?', result.hasPermission + 'stopStream()... reconnecting()..')
-              this.stopStream();
               subPermission.unsubscribe();
+              this.isMicPermission = true;
             }
           }
         );
       });
-
     }
   }
-
 
 }

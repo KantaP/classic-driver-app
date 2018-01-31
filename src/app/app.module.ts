@@ -59,7 +59,6 @@ import { PushToTalkService } from '../providers/pushToTalk/pushToTalk';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 import { NFC, Ndef } from '@ionic-native/nfc';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 
@@ -102,8 +101,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
          driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     FormsModule,
-    ReactiveFormsModule,
-    InfiniteScrollModule
+    ReactiveFormsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

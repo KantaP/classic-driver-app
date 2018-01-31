@@ -64,7 +64,7 @@ export class MyApp {
 
   micMute: string
   micState: string
-  rxP2TalkInterface:any
+  rxP2TalkInterface: any
 
   constructor(
     public platform: Platform,
@@ -174,8 +174,8 @@ export class MyApp {
         console.log('iosrtc registerGlobals...');
         cordova.plugins.iosrtc.registerGlobals();
       }
-      // this.p2talk.initRxStream();
-      // this.displayStatePushToTalk();
+      this.p2talk.initRxStream();
+      this.displayStatePushToTalk();
 
     });
 
@@ -189,30 +189,30 @@ export class MyApp {
 
   displayStatePushToTalk() {
 
-      Observable.timer(3000).subscribe(() => {
-        this.rxP2TalkInterface = this.p2talk.rxStreamUpdateListener.subscribe(s => {
-          try {
-            this.micMute = s.micMute;
-            this.micState = s.micState;
-            if(!s.enabled){
-              this.unSubscribePushToTalk();
-            }
-            //console.log('displayStatePushToTalk: ' + JSON.stringify(s));
-          } catch (error) {
-            console.log('displayStatePushToTalk: ' + error);
+    Observable.timer(3000).subscribe(() => {
+      this.rxP2TalkInterface = this.p2talk.rxStreamUpdateListener.subscribe(s => {
+        try {
+          this.micMute = s.micMute;
+          this.micState = s.micState;
+          if (!s.enabled) {
+            this.unSubscribePushToTalk();
           }
-        });
-        console.log('p2talk.rxStreamUpdateListener.subscribe...');
+          //console.log('displayStatePushToTalk: ' + JSON.stringify(s));
+        } catch (error) {
+          console.log('displayStatePushToTalk: ' + error);
+        }
       });
+      console.log('p2talk.rxStreamUpdateListener.subscribe...');
+    });
   }
 
-  microphoneMuted(){
+  microphoneMuted() {
     this.p2talk.muteAudio('switch');
     this.micMute = this.p2talk.getMicMute();
     this.micState = this.p2talk.getMicState();
   }
 
-  unSubscribePushToTalk(){
+  unSubscribePushToTalk() {
     this.rxP2TalkInterface.unsubscribe();
     console.log('p2talk.rxStreamUpdateListener.Unsubscribe...');
   }
