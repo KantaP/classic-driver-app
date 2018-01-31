@@ -7,6 +7,8 @@ import { MusicControls } from '@ionic-native/music-controls';
 //import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Http, Headers, RequestOptions } from '@angular/http'
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Network } from '@ionic-native/network';
+import { retry } from 'rxjs/operator/retry';
 
 // ref
 // http://licode.readthedocs.io/en/stable/client_api/
@@ -29,6 +31,7 @@ var position = 'driver';
 var me;
 var userId;
 var roomId;
+
 
 @Injectable()
 export class PushToTalkService {
@@ -60,13 +63,15 @@ export class PushToTalkService {
   private micMute;
   private isMicPermission = false;
   private isEnabled = false;
+  private isNetwork = true;
 
   constructor(private http: Http,
     private plt: Platform,
     private nativeAudio: NativeAudio,
     private musicCtrl: MusicControls,
     private alertCtrl: AlertController,
-    private permissions: AndroidPermissions
+    private permissions: AndroidPermissions,
+    private network: Network
   ) {
     console.log('p2Talk instance..:' + Erizo);
     me = this.me;
@@ -77,6 +82,7 @@ export class PushToTalkService {
 
 
     if (this.plt.is('cordova')) {
+      this.networkCheck();
       this.isMicPermission = false;
       this.getMicrophonePermission();
     } else {
@@ -89,7 +95,7 @@ export class PushToTalkService {
     roomId = room;
     this.urlServer = 'https://' + url + '/';
 
-    this.logs(this.tag + 'driverId:' + userId + ', PrivateId:' + privateId + ' , Name:' + name + ' ,Room:' + room + ' , url:' + url);
+    this.logs('driverId:' + userId + ', PrivateId:' + privateId + ' , Name:' + name + ' ,Room:' + room + ' , url:' + url);
 
     isPrivateMode = false;
     isPublished = false;
@@ -116,12 +122,17 @@ export class PushToTalkService {
     this.setMicUnMuted();
 
     this.rxStreamUpdateListener = Observable.create(observe => {
-      setInterval(() => {
 
-        if (isPrivateMode) {
-          this.setMicPrivate();
-        } else {
-          this.setMicOnline();
+      setInterval(() => {
+        if (this.isMicPermission && isPublished) {
+          
+          if (isPrivateMode) {
+            this.setMicPrivate();
+          } else if (this.isNetwork) {
+            this.setMicOnline();
+          } else {
+            this.setMicOffline();
+          }
         }
 
         observe.next(
@@ -138,23 +149,22 @@ export class PushToTalkService {
   connectRoom() {
 
     this.rxReconnectRoom = Observable.timer(100, 5000).subscribe(x => {
-      if (this.isMicPermission) {
-        this.initUserMedia();
-      } else {
+      
+      if (this.isMicPermission && this.isNetwork) {
 
+        if (localStream != null) {
+          localStream.stop();
+          localStream.close();
+        }
+
+        this.initUserMedia();
+
+      } else {
+        this.setMicOffline();
       }
     });
   }
 
-  stopStream() {
-    this.rxReconnectRoom.unsubscribe();
-    if (roomStream != undefined) {
-      if (roomStream.state > 0) {
-        roomStream.disconnect();
-      }
-    }
-    subscribePeerStore = [];
-  }
 
   private initUserMedia() {
 
@@ -169,10 +179,10 @@ export class PushToTalkService {
     } else { // browser
       navigator.getUserMedia({ audio: true, video: false }, stream => {
         localStream = Erizo.Stream({ audio: true, video: false, data: true, attributes: streamAttribute });
-        console.log(this.tag + 'localStream success.');
+        console.log('localStream success.');
         this.getToken();
       }, error => {
-        console.error(this.tag + 'web getUserMedia failed: ', error);
+        console.error('web getUserMedia failed: ', error);
       }
       );
     }
@@ -193,10 +203,10 @@ export class PushToTalkService {
     this.http.post(this.urlServer + 'token', bodyParams, options)
       .subscribe(res => {
         let token = res['_body'];
-        this.logs(this.tag + 'getToken: ' + token);
+        this.logs('getToken: ' + token);
         this.initStream(token);
       }, err => {
-        this.logs(this.tag + 'getToken: ' + err);
+        this.logs('getToken: ' + err);
       });
   }
 
@@ -204,7 +214,7 @@ export class PushToTalkService {
 
     roomStream = Erizo.Room({ token: token });
     localStream.addEventListener("access-accepted", () => {
-      this.logs(this.tag + 'access-accepted');
+      this.logs('access-accepted');
 
       var subscribeToStreams = (streams) => {
         for (var idx in streams) {
@@ -222,15 +232,13 @@ export class PushToTalkService {
       roomStream.addEventListener("room-connected", (e) => {
         roomStream.publish(localStream);
         subscribeToStreams(e.streams);
-
-        //console.log(this.tag + 'room-connected....' + JSON.stringify({ stream: e.streams }));
         this.rxReconnectRoom.unsubscribe();
       });
 
 
       roomStream.addEventListener('room-disconnected', (e) => {
         this.setMicOffline();
-        this.logs(this.tag + "room-disconnected...");
+        this.logs("room-disconnected...");
         this.connectRoom();
         isPublished = false;
       });
@@ -253,7 +261,6 @@ export class PushToTalkService {
           this.addSubscribeStore(remoteStream);
           this.addPeerList(remoteStream);
         }
-        //console.log(this.tag + 'subscribeStore: ' + JSON.stringify(subscribeStore));
         remoteStream.addEventListener("stream-data", this.streamDataMessage);
         remoteStream.addEventListener("stream-attributes-update", this.streamAttributesUpdateEvent);
 
@@ -263,24 +270,24 @@ export class PushToTalkService {
         // stop remote stream audio in private mode peer.
         if (remoteStream.getAttributes().privateMode) {
           remoteStream.muteAudio(true);
-          this.logs(this.tag + JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
+          this.logs(JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
         } else {
 
           // you didn't private mode ?
           if (!localStream.getAttributes().privateMode) {
             // normal mode
-            this.logs(this.tag + JSON.stringify('stream PLAY.. : ' + JSON.stringify(remoteStream.getAttributes())));
+            this.logs(JSON.stringify('stream PLAY.. : ' + JSON.stringify(remoteStream.getAttributes())));
           } else {
             // private mode stop all everyone. 
             remoteStream.muteAudio(true);
-            this.logs(this.tag + JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
+            this.logs(JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
           }
         }
 
       });
 
       roomStream.addEventListener("stream-added", (e) => {
-        this.logs(this.tag + "stream-added....");
+        this.logs("stream-added....");
         let streams = [];
         streams.push(e.stream);
 
@@ -288,7 +295,7 @@ export class PushToTalkService {
 
         if (privateId === e.stream.getAttributes().privateId) {
 
-          this.logs(this.tag + "stream-added Published!!!");
+          this.logs("stream-added Published!!!");
           isPublished = true;
           me.setStreamAttributes();
           this.setMicOnline();
@@ -297,7 +304,7 @@ export class PushToTalkService {
       });
 
       roomStream.addEventListener("stream-ended", (e) => {
-        this.logs(this.tag + 'stream-ended...');
+        this.logs('stream-ended...');
       });
 
       roomStream.addEventListener("stream-removed", (e) => {
@@ -314,11 +321,11 @@ export class PushToTalkService {
         this.removeSubscribeStore(s.getAttributes().privateId);
         this.removePeerList(s.getAttributes().privateId);
 
-        this.logs(this.tag + 'stream-removed...');
+        this.logs('stream-removed...');
       });
 
       roomStream.addEventListener('access-denied', (e) => {
-        this.logs(this.tag + "Access to webcam and/or microphone rejected" + e.message);
+        this.logs("Access to webcam and/or microphone rejected" + e.message);
       });
 
       roomStream.connect();
@@ -338,8 +345,8 @@ export class PushToTalkService {
 
     // stop audio everyone and bypass answer only.
     subscribePeerStore.forEach(s => {
-      if (s.getAttributes().privateId == pid) {
-        privateWithId = s.getAttributes().privateId;
+      if (s.stream.getAttributes().privateId == pid) {
+        privateWithId = s.stream.getAttributes().privateId;
         privateWith = s.stream.getAttributes().name;
         s.stream.muteAudio(false);
       } else {
@@ -389,8 +396,7 @@ export class PushToTalkService {
     var rxPrivateSignal = Observable.timer(200, 1000).subscribe(() => {
 
       this.privateSignalCount++;
-      //console.log(this.tag + 'privateSignalCount: ' + this.privateSignalCount)
-
+     
       if (!isPrivateMode) {
         rxPrivateSignal.unsubscribe();
         this.privateSignalCount = 0;
@@ -637,6 +643,9 @@ export class PushToTalkService {
 
 
   muteAudio(isMuted) {
+
+    if(!this.isMicPermission || localStream == null) return;
+
     if (localStream.hasAudio()) {
       if (isMuted == 'switch') { //auto switch muted
         if (this.isMuted) {
@@ -654,17 +663,18 @@ export class PushToTalkService {
         this.localMuted(isMuted);
       }
     } else {
-      this.logs(this.tag + 'the stream is not audio activated');
+      this.logs('the stream is not audio activated');
     }
 
   }
 
   private localMuted(isMuted) {
+ 
     localStream.muteAudio(isMuted, result => {
       this.logs(result);
     });
     this.isMuted = isMuted;
-    this.logs(this.tag + 'isMuted = ' + this.isMuted);
+    this.logs('isMuted = ' + this.isMuted);
   }
 
   getName() { return username; }
@@ -679,7 +689,7 @@ export class PushToTalkService {
       if (roomStream.state == 0) return;
       roomStream.disconnect();
     } catch (error) {
-      this.logs(this.tag + 'disconnectRoom error:' + error);
+      this.logs('disconnectRoom error:' + error);
     }
 
   }
@@ -696,14 +706,14 @@ export class PushToTalkService {
     subscribePeerStore.push({
       stream: s
     });
-    this.logs(this.tag + 'addSubscribeStore :' + s.getAttributes().name);
+    this.logs('addSubscribeStore :' + s.getAttributes().name);
   }
 
   private removeSubscribeStore(pid) {
     let idx = 0;
     subscribePeerStore.forEach(s => {
       if (s.stream.getAttributes().privateId == pid) {
-        this.logs(this.tag + 'removeSubscribeStore :' + s.stream.getAttributes().name);
+        this.logs('removeSubscribeStore :' + s.stream.getAttributes().name);
         subscribePeerStore.splice(idx, 1);
       }
       idx++;
@@ -730,7 +740,7 @@ export class PushToTalkService {
   private removePeerList(pid) {
     let idx = 0;
     me.peerList.forEach(s => {
-      if (s.getAttributes().privateId == pid) {
+      if (s.stream.getAttributes().privateId == pid) {
         me.peerList.splice(idx, 1);
       }
       idx++;
@@ -856,6 +866,18 @@ export class PushToTalkService {
         );
       });
     }
+  }
+
+  networkCheck() {
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      this.logs('network was disconnected :-(');
+      this.isNetwork = false;
+    });
+
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      this.logs('network connected!');
+      this.isNetwork = true;
+    });
   }
 
 }

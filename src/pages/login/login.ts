@@ -222,8 +222,8 @@ export class LoginPage {
       return false
     }
     // this.username = ""
-    // //this.username = "nodev"
-    // this.password = ""
+    this.username = "testjob3"
+    this.password = "123456"
 
 
     if(this.username == "" || this.password == ""){
