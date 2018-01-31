@@ -125,7 +125,7 @@ export class PushToTalkService {
 
       setInterval(() => {
         if (this.isMicPermission && isPublished) {
-          
+
           if (isPrivateMode) {
             this.setMicPrivate();
           } else if (this.isNetwork) {
@@ -148,11 +148,23 @@ export class PushToTalkService {
 
   connectRoom() {
 
+    try {
+      this.rxReconnectRoom.unsubscribe();
+    } catch (err) {
+      this.logs('rxReconnectRoom:' + err);
+    }
+
+    isPublished = false;
     this.rxReconnectRoom = Observable.timer(100, 5000).subscribe(x => {
-      
+
       if (this.isMicPermission && this.isNetwork) {
 
         if (localStream != null) {
+          if (roomStream != undefined) {
+            if (roomStream.state > 0) {
+              roomStream.disconnect();
+            }
+          }
           localStream.stop();
           localStream.close();
         }
@@ -239,8 +251,11 @@ export class PushToTalkService {
       roomStream.addEventListener('room-disconnected', (e) => {
         this.setMicOffline();
         this.logs("room-disconnected...");
-        this.connectRoom();
+        //this.connectRoom();
         isPublished = false;
+        if (this.isNetwork) {
+          this.connectRoom();
+        }
       });
 
 
@@ -253,13 +268,13 @@ export class PushToTalkService {
         subscribePeerStore.forEach(s => {
           if (remoteStream.getAttributes().privateId == s.stream.getAttributes().privateId) {
             isDuplicate = true;
-          }
+          } 
         })
 
         if (isDuplicate == false) {
           me.setStreamAttributes();
           this.addSubscribeStore(remoteStream);
-          this.addPeerList(remoteStream);
+          //this.addPeerList(remoteStream);
         }
         remoteStream.addEventListener("stream-data", this.streamDataMessage);
         remoteStream.addEventListener("stream-attributes-update", this.streamAttributesUpdateEvent);
@@ -309,19 +324,23 @@ export class PushToTalkService {
 
       roomStream.addEventListener("stream-removed", (e) => {
 
-        var s = e.stream;
-        // private mode
-        if (isPrivateMode) {
-          if (s.getAttributes().privateId == privateWithId) {
-            let resMsg = '[' + s.getAttributes().privateId + '] disconnected';
-            this.privateHangup(resMsg);
-          }
-        }
-        me.setStreamAttributes();
-        this.removeSubscribeStore(s.getAttributes().privateId);
-        this.removePeerList(s.getAttributes().privateId);
-
         this.logs('stream-removed...');
+        var s = e.stream;
+
+        if (s.getAttributes().privateId != null) {
+
+          if (isPrivateMode) {
+            if (s.getAttributes().privateId == privateWithId) {
+              let resMsg = 'disconnected';
+              this.privateHangup(resMsg);
+            }
+          }
+
+          this.setStreamAttributes();
+
+          this.removeSubscribeStore(s.getID());
+          //this.removePeerList(s.getID());
+        }
       });
 
       roomStream.addEventListener('access-denied', (e) => {
@@ -396,7 +415,7 @@ export class PushToTalkService {
     var rxPrivateSignal = Observable.timer(200, 1000).subscribe(() => {
 
       this.privateSignalCount++;
-     
+
       if (!isPrivateMode) {
         rxPrivateSignal.unsubscribe();
         this.privateSignalCount = 0;
@@ -644,7 +663,7 @@ export class PushToTalkService {
 
   muteAudio(isMuted) {
 
-    if(!this.isMicPermission || localStream == null) return;
+    if (!this.isMicPermission || localStream == null) return;
 
     if (localStream.hasAudio()) {
       if (isMuted == 'switch') { //auto switch muted
@@ -669,9 +688,9 @@ export class PushToTalkService {
   }
 
   private localMuted(isMuted) {
- 
+
     localStream.muteAudio(isMuted, result => {
-      this.logs(result);
+      //this.logs(result);
     });
     this.isMuted = isMuted;
     this.logs('isMuted = ' + this.isMuted);
@@ -709,10 +728,10 @@ export class PushToTalkService {
     this.logs('addSubscribeStore :' + s.getAttributes().name);
   }
 
-  private removeSubscribeStore(pid) {
+  private removeSubscribeStore(sid) {
     let idx = 0;
     subscribePeerStore.forEach(s => {
-      if (s.stream.getAttributes().privateId == pid) {
+      if (s.stream.getID() == sid) {
         this.logs('removeSubscribeStore :' + s.stream.getAttributes().name);
         subscribePeerStore.splice(idx, 1);
       }
@@ -725,7 +744,7 @@ export class PushToTalkService {
     subscribePeerStore.forEach(s => {
       if (s.stream.getAttributes().privateId == pid) {
         s.stream.muteAudio(muted);
-        this.logs(me.tag + 'isPrivateMode audio muted:' + muted + ' name: ' + s.stream.getAttributes().name);
+        this.logs('isPrivateMode audio muted:' + muted + ' name: ' + s.stream.getAttributes().name);
       }
     });
   }
@@ -870,6 +889,12 @@ export class PushToTalkService {
 
   networkCheck() {
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+
+
+      this.disconnectRoom();
+      localStream.stop();
+      localStream.close();
+
       this.logs('network was disconnected :-(');
       this.isNetwork = false;
     });
@@ -877,6 +902,7 @@ export class PushToTalkService {
     let connectSubscription = this.network.onConnect().subscribe(() => {
       this.logs('network connected!');
       this.isNetwork = true;
+      this.connectRoom();
     });
   }
 

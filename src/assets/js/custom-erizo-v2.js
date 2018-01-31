@@ -2956,7 +2956,11 @@ var Erizo = function(m) {
                     (b = a.peerId ? h.get(a.peerId) : r.get(a.streamId)) && !b.failed && b.pc.processSignalingMessage(a.mess)
                 } catch (err) {
                     console.log('processSignalingMessage error : ' + err);
-                    w.disconnect() // dis and reconnect in wk service.  
+                    try {
+                        v.disconnect()
+                    } catch (Q) {
+                        b.a.debug("Socket already disconnected")
+                    }
                 }
 
             }));
