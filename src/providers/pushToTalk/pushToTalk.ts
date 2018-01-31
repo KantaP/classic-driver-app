@@ -122,7 +122,6 @@ export class PushToTalkService {
     this.setMicUnMuted();
 
     this.rxStreamUpdateListener = Observable.create(observe => {
-
       setInterval(() => {
         if (this.isMicPermission && isPublished) {
 
@@ -268,7 +267,7 @@ export class PushToTalkService {
         subscribePeerStore.forEach(s => {
           if (remoteStream.getAttributes().privateId == s.stream.getAttributes().privateId) {
             isDuplicate = true;
-          } 
+          }
         })
 
         if (isDuplicate == false) {
@@ -293,7 +292,7 @@ export class PushToTalkService {
             // normal mode
             this.logs(JSON.stringify('stream PLAY.. : ' + JSON.stringify(remoteStream.getAttributes())));
           } else {
-            // private mode stop all everyone. 
+            // private mode stop all everyone.
             remoteStream.muteAudio(true);
             this.logs(JSON.stringify('stream STOP.. : ' + JSON.stringify(remoteStream.getAttributes())));
           }
@@ -483,7 +482,7 @@ export class PushToTalkService {
 
   }
 
-  // private call "ANSWER" 
+  // private call "ANSWER"
   private streamDataMessage(e) {
 
     if (!isPublished) return;
@@ -540,7 +539,7 @@ export class PushToTalkService {
                     , timestamp: 'timestamp'
                   });
                 }
-                // muted audio other peer.                
+                // muted audio other peer.
                 else {
                   s.stream.muteAudio(true);
                 }
@@ -688,7 +687,6 @@ export class PushToTalkService {
   }
 
   private localMuted(isMuted) {
-
     localStream.muteAudio(isMuted, result => {
       //this.logs(result);
     });
@@ -889,7 +887,6 @@ export class PushToTalkService {
 
   networkCheck() {
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-
 
       this.disconnectRoom();
       localStream.stop();
