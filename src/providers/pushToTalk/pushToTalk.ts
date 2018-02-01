@@ -261,25 +261,13 @@ export class PushToTalkService {
         //remote stream.
         let remoteStream = e.stream;
 
-
-
         subscribePeerStore.forEach(s => {
-
           if (remoteStream.getAttributes().privateId == s.stream.getAttributes().privateId) {
-            //if (remoteStream.getID() != s.stream.getID()) {
             this.removeSubscribeStore(s.stream.getID());
-
-            //}
           }
         })
 
-
         this.addSubscribeStore(remoteStream);
-
-
-
-
-
 
         remoteStream.addEventListener("stream-data", this.streamDataMessage);
         remoteStream.addEventListener("stream-attributes-update", this.streamAttributesUpdateEvent);
