@@ -31,6 +31,7 @@ var position = 'driver';
 var me;
 var userId;
 var roomId;
+var privateWithSID;
 
 
 @Injectable()
@@ -322,7 +323,7 @@ export class PushToTalkService {
 
         // private mode
         if (isPrivateMode) {
-          if (s.getAttributes().privateId == privateWithId) {
+          if (s.getAttributes().privateId == privateWithId && s.getID() == privateWithSID) {
             let resMsg = 'disconnected';
             this.privateHangup(resMsg);
           }
@@ -526,6 +527,7 @@ export class PushToTalkService {
                     data: {
                       privateIdAnswer: privateId, //driver id
                       privateIdCaller: s.stream.getAttributes().privateId, // caller id
+                      answerStreamID: localStream.getID()
                     }
                     , timestamp: 'timestamp'
                   });
@@ -553,6 +555,7 @@ export class PushToTalkService {
 
             if (privateId == msg.data.privateIdCaller) {
               rxPrivateCallerTimeout.unsubscribe();
+              privateWithSID = msg.data.answerStreamID;
               privateState = '[' + msg.data.privateIdAnswer + '] connected ';
               me.privateSignalListener(msg.data.privateIdAnswer);
             }
