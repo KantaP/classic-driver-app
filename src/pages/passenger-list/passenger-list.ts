@@ -81,6 +81,8 @@ export class PassengerListPage {
   private status_text: string;
   private lastPoint: boolean;
   private connection: string;
+  popUpTitle: string;
+  popUpMessage: string;
 
   // private readerProvider: string;
   constructor(
@@ -128,6 +130,8 @@ export class PassengerListPage {
     this.wrong_point = '0'
     this.status_text = ''
     this.lastPoint = false
+    this.popUpTitle = ""
+    this.popUpMessage = ""
     // this.readerProvider = "nfc"
     this.connection = Global.getGlobal('connection')
     Global.setGlobal('journey_id', this.navParams.get('j_id'))
@@ -218,6 +222,16 @@ export class PassengerListPage {
       }
     // }
 
+  }
+
+  showNote(title: string, message: string) {
+    if(message != '') {
+      this.popUpTitle = title
+      this.popUpMessage = message
+      console.log(this.popUpTitle, this.popUpMessage)
+      this.closeModal('passenger-item')
+      this.modal.open('popup-item')
+    }
   }
 
   allowOtherScan(passenger: Array<Passenger>) {
@@ -841,6 +855,11 @@ export class PassengerListPage {
     this.modal.close(modalName)
   }
 
+  closeNote(modalName) {
+    this.modal.close('popup-item')
+    this.modal.open('passenger-item')
+  }
+
   forceLogin(passenger: any) {
 
     var action = this.navParams.get('movement_id')
@@ -1285,7 +1304,10 @@ export class PassengerListPage {
         params: {
           movement_id: this.navParams.get('movement_id'),
           movement_order: this.navParams.get('movement_order'),
-          quote_id: this.navParams.get('quote_id')
+          quote_id: this.navParams.get('quote_id'),
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          date_time: moment().format('YYYY-MM-DD HH:mm')
         }
       })
       this.allPassenger = this.allPassenger.map((item) => {

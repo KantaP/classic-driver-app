@@ -187,8 +187,7 @@ export class MyApp {
       this.initNetworkWatch()
     })
 
-    this.toDoLoad()
-    this.request.runRequestBackGround()
+
   }
 
   displayStatePushToTalk() {
@@ -243,7 +242,8 @@ export class MyApp {
         closeButtonText: 'Ok'
       });
       this.toast.present()
-
+      this.toDoLoad()
+      this.request.runRequestBackGround()
     })
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       // alert('Please check your internet.')
@@ -266,31 +266,36 @@ export class MyApp {
   toDoLoad() {
     this.dataStorage.getTodoAgain('sentTracking')
       .then((todos) => {
-        var count = todos.length
-        todos.map((item) => {
-          try {
-            this.tracking.sent(item)
-            count = count - 1
-          }catch(err) {
-            console.log(err)
-          }
-        })
-        this.dataStorage.clearTodo('sentTracking')
+        if(todos != null) {
+          var count = todos.length
+          todos.map((item) => {
+            try {
+              this.tracking.sent(item)
+              count = count - 1
+            }catch(err) {
+              console.log(err)
+            }
+          })
+          this.dataStorage.clearTodo('sentTracking')
+        }
+
       })
     this.dataStorage.getTodoAgain('updatePassengerStatus')
       .then((todos) => {
-        var count = todos.length
-        todos.map((item: passengerUpdate) => {
-          this.request.updatePassengerStatus(item)
-          .toPromise()
-          .then(()=>{
-            count = count - 1
+        if(todos != null) {
+          var count = todos.length
+          todos.map((item: passengerUpdate) => {
+            this.request.updatePassengerStatus(item)
+            .toPromise()
+            .then(()=>{
+              count = count - 1
+            })
+            .catch(()=>{
+              console.log('Todo #'+count+' not success')
+            })
           })
-          .catch(()=>{
-            console.log('Todo #'+count+' not success')
-          })
-        })
-        this.dataStorage.clearTodo('updatePassengerStatus')
+          this.dataStorage.clearTodo('updatePassengerStatus')
+        }
       })
 
   }

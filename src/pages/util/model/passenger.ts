@@ -18,6 +18,7 @@ export interface Passenger {
   j_id?: number
   movement_order?: number
   quote_id?:number
+  note?:string
 }
 
 interface Parent {

@@ -707,6 +707,22 @@ $colors-passenger: (primary: #1a50cc, secondary: #febe04, third: #09a003, fourth
     padding: 5px;
 }
 
+.passenger-note-block {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+}
+
+.note-red {
+    color: red;
+    font-size: 1.5em;
+}
+
+.note-silver {
+    color: #ccc;
+    font-size: 1.5em;
+}
+
 .passenger-list-primary {
     background: map-get($colors-passenger, primary);
     // border-left: 10px solid map-get($colors-passenger, primary);

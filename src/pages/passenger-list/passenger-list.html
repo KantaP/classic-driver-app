@@ -99,15 +99,14 @@
             <ion-grid no-padding>
                 <ion-row justify-content-between class="modal-title">
                     <div>{{global.translate('PASSENGER INFO')}}</div>
-                    <ion-icon ios="md-close" md="md-close" (click)="closeModal('passenger-item')"></ion-icon>
+                    <ion-icon ios="md-close" md="md-close" (click)="closeNote()"></ion-icon>
                 </ion-row>
                 <ion-row>
                     <div style="position:relative;width:100%;">
                         <img [src]="passengerItem.photo" class="modal-picture" />
                         <div [class]="generateCircleColor(passengerItem.status,passengerItem.pickup)"></div>
-                        <div>
-                            <i class="fas fa-info-circle" style="color:red;font-size:1.5em;" *ngIf="passengerItem.note != ''"></i>
-                            <!-- <i class="fas fa-info-circle" style="color:#ccc;font-size:1.5em;" *ngIf="passengerItem.note == ''"></i> -->
+                        <div class="passenger-note-block" (click)="showNote('PASSENGER NOTES' , passengerItem.note)">
+                            <i [ngClass]="{'fas fa-info-circle note-red': passengerItem.note , 'fas fa-info-circle note-silver': !passengerItem.note }"></i>
                         </div>
                     </div>
                 </ion-row>
@@ -166,6 +165,30 @@
                         <ion-row class="margin-top-1" *ngIf="!failedItem.notAllow">
                             <button ion-button block color="danger" (click)="closeModal('warning-popup')">{{global.translate('CANCEL')}}</button>
                         </ion-row>
+                    </ion-grid>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
+<modal id="popup-item">
+    <div class="modal">
+        <div class="modal-body">
+            <ion-grid no-padding>
+                <ion-row justify-content-between class="modal-title">
+                    <div>{{global.translate(popUpTitle)}}</div>
+                    <ion-icon ios="md-close" md="md-close" (click)="closeModal('popup-item')"></ion-icon>
+                </ion-row>
+                <ion-row>
+                    <ion-grid style="padding:10px;">
+                        <ion-row class="margin-top-3">
+                            <div>{{popUpMessage}}</div>
+                        </ion-row>
+                        <!-- <ion-row class="margin-top-3">
+                            <button ion-button block [disabled]="viewinstructors" [color]="colorViewInstructors">VIEW SPECIAL INSTRUTORS</button>
+                        </ion-row> -->
                     </ion-grid>
                 </ion-row>
             </ion-grid>
