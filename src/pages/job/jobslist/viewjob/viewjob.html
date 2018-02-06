@@ -42,7 +42,17 @@
     </div> -->
 
     <div padding class="pd-no-top margin-top-2">
-        <div ion-row class="border-around">
+        <div ion-row [ngClass]="{'border-around border-bottom-less':true}">
+            <ion-grid padding (click)="showNote('DRIVER NOTES', job.driver_notes)">
+                <ion-row justify-content-end *ngIf="job.driver_notes != ''">
+                    <i class="fas fa-info-circle" style="color:red;font-size:1.5em;"></i>
+                </ion-row>
+                <ion-row justify-content-end *ngIf="job.driver_notes == ''">
+                    <i class="fas fa-info-circle" style="color:ccc;font-size:1.5em;"></i>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div ion-row [ngClass]="{'border-around':true, 'border-top-less': true}">
             <div col-6>
                 <div>
                     <strong> {{global.translate('JOB ID')}}:</strong> {{job.quote_id}}
@@ -133,13 +143,15 @@
                   'disable-row': !alreadyAccept,
                   'bg_grey':m.progress == 10 || m.progress == 8,
                   'bg_green_lime': isCurrentPoint(m.movement_order)
-                }" *ngFor="let m of j.movement;let i = index" (click)="openViewRoute(m,ji,i)">
+                }" *ngFor="let m of j.movement;let i = index">
                     <div col-1 class="gravity-center-vertical">
-                        <div class="mg-auto">
-                            <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
+                        <div class="mg-auto" (click)="showNote('COLLECTION NOTES', m.collection_notes)">
+                            <!-- <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement"> -->
+                            <i class="fas fa-info-circle" style="color:red;font-size:1.5em;" *ngIf="m.collection_notes != ''"></i>
+                            <i class="fas fa-info-circle" style="color:ccc;font-size:1.5em;" *ngIf="m.collection_notes == ''"></i>
                         </div>
                     </div>
-                    <div col-8 class="gravity-center-vertical">
+                    <div col-8 class="gravity-center-vertical" (click)="openViewRoute(m,ji,i)">
                         <div *ngIf="i != (j.movement.length-1)">
                             {{ m.collection_address }}
                         </div>
@@ -147,7 +159,7 @@
                             {{ m.destination_address }}
                         </div>
                     </div>
-                    <div col-3 class="gravity-center-vertical txt_right">
+                    <div col-3 class="gravity-center-vertical txt_right" (click)="openViewRoute(m,ji,i)">
                         <div *ngIf="i != (j.movement.length-1)">
                             <i class="icon icon-Time"></i> {{ m.time }}
                         </div>
@@ -180,7 +192,7 @@
                     <div ion-row class="disable-row" *ngFor="let m of j.movement; let i = index">
                         <div col-1 class="gravity-center-vertical">
                             <div class="mg-auto">
-                                <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement">
+                                <!-- <img src="assets/img/icon_movement.png" alt="" class="logo-header ver-sub img_movement"> -->
                             </div>
                         </div>
                         <div col-8 class="gravity-center-vertical">
@@ -254,4 +266,28 @@
         </div>
         <div class="modal-background"></div>
     </modal>
+    <modal id="popup-item">
+        <div class="modal">
+            <div class="modal-body">
+                <ion-grid no-padding>
+                    <ion-row justify-content-between class="modal-title">
+                        <div>{{global.translate(popUpTitle)}}</div>
+                        <ion-icon ios="md-close" md="md-close" (click)="closeModal('popup-item')"></ion-icon>
+                    </ion-row>
+                    <ion-row>
+                        <ion-grid style="padding:10px;">
+                            <ion-row class="margin-top-3">
+                                <div>{{popUpMessage}}</div>
+                            </ion-row>
+                            <!-- <ion-row class="margin-top-3">
+                                <button ion-button block [disabled]="viewinstructors" [color]="colorViewInstructors">VIEW SPECIAL INSTRUTORS</button>
+                            </ion-row> -->
+                        </ion-grid>
+                    </ion-row>
+                </ion-grid>
+            </div>
+        </div>
+        <div class="modal-background"></div>
+    </modal>
+
 </ion-content>

@@ -25,6 +25,7 @@ export class ViewJobService {
         Util.getSystemURL() + '/api/ecmdriver/jobs/byQuoteId/' + quote_id,
         { headers: headers }
       )
+      .retry(5)
       .map(res => res.json())
   }
 
@@ -38,6 +39,7 @@ export class ViewJobService {
         Util.getSystemURL() + '/api/ecmdriver/jobs/otherMovmentByQuote/' + quote_id,
         { headers: headers }
       )
+      .retry(5)
       .map(res => res.json())
   }
 
@@ -51,6 +53,7 @@ export class ViewJobService {
       { driver_id , quote_id},
       { headers: headers }
     )
+    .retry(5)
     .map(res => res.json())
   }
 

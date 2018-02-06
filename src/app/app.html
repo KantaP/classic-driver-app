@@ -24,8 +24,7 @@
 
     <ion-content>
         <ion-list>
-            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [style.display]="p.show ? '': 'none'" [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}"
-                [disabled]="p.isCheckNTrack == true">
+            <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [style.display]="p.show ? '': 'none'" [ngClass]="{ 'bg_light_gray color_grey' : p.isCheckNTrack}" [disabled]="p.isCheckNTrack == true">
                 {{global.translate(p.title)}}
             </button>
         </ion-list>
@@ -39,7 +38,7 @@
                         <div class="color_white">
                             <img src="assets/img/logo_ecm_white.png" alt="" class="logo-footer ver-sub"> &nbsp;
                             <div class="txt_right ib page-footer-custom-title">
-                                Build Number. T12D17T
+                                Build Number. T05F18A
                             </div>
                         </div>
                     </div>

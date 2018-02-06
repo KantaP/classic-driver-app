@@ -700,25 +700,31 @@ $colors-passenger: (primary: #1a50cc, secondary: #febe04, third: #09a003, fourth
 }
 
 .avatar-img {
-    width: 14vw;
-    height: 14vw;
+    width: 17vw;
+    height: 17vw;
     border-radius: 50%;
+    background: #ccc;
+    padding: 5px;
 }
 
 .passenger-list-primary {
-    border-left: 10px solid map-get($colors-passenger, primary);
+    background: map-get($colors-passenger, primary);
+    // border-left: 10px solid map-get($colors-passenger, primary);
 }
 
 .passenger-list-secondary {
-    border-left: 10px solid map-get($colors-passenger, secondary);
+    background: map-get($colors-passenger, secondary);
+    // border-left: 10px solid map-get($colors-passenger, secondary);
 }
 
 .passenger-list-third {
-    border-left: 10px solid map-get($colors-passenger, third);
+    background: map-get($colors-passenger, third);
+    // border-left: 10px solid map-get($colors-passenger, third);
 }
 
 .passenger-list-fourth {
-    border-left: 10px solid map-get($colors-passenger, fourth);
+    background: map-get($colors-passenger, fourth);
+    // border-left: 10px solid map-get($colors-passenger, fourth);
 }
 
 .passenger-list-error {
@@ -729,6 +735,8 @@ $colors-passenger: (primary: #1a50cc, secondary: #febe04, third: #09a003, fourth
     border: 1px solid #ccc;
     background: #fff;
     margin-top: 2px;
+    border-right: 0px;
+    border-left: 0px;
 }
 
 .passenger-block {
@@ -736,6 +744,8 @@ $colors-passenger: (primary: #1a50cc, secondary: #febe04, third: #09a003, fourth
     height: 48vh;
 }
 
+
+/*
 ion-row[class^="passenger-list"]:first-child {
     border-bottom: 0px;
 }
@@ -743,6 +753,7 @@ ion-row[class^="passenger-list"]:first-child {
 ion-row[class^="passenger-list"]:last-child {
     border-top: 0px;
 }
+*/
 
 modal {
     /* modals are hidden by default */
@@ -862,21 +873,21 @@ body.modal-open {
     box-shadow: none;
 }
 
-.ps-online{
-    color:#32db64;
+.ps-online {
+    color: #32db64;
     text-shadow: 0px 0px 6px rgba(87, 179, 57, 1)
 }
 
-.ps-offline{
-    color:#770516;
+.ps-offline {
+    color: #770516;
     text-shadow: 0px 0px 6px rgb(255, 82, 111)
 }
 
-.ps-private{
-    color:#fee938;
+.ps-private {
+    color: #fee938;
     text-shadow: 0px 0px 6px rgb(255, 234, 44)
 }
-.ps-disable{
-    color:#ccc;
-}
 
+.ps-disable {
+    color: #ccc;
+}

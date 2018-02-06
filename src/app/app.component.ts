@@ -179,12 +179,16 @@ export class MyApp {
 
     });
 
+
     this.pauseSubScribe = this.platform.pause.subscribe(() => {
       this.unSubscribeNetwork()
     })
     this.resumeSubSribe = this.platform.resume.subscribe(() => {
       this.initNetworkWatch()
     })
+
+    this.toDoLoad()
+    this.request.runRequestBackGround()
   }
 
   displayStatePushToTalk() {
@@ -239,7 +243,7 @@ export class MyApp {
         closeButtonText: 'Ok'
       });
       this.toast.present()
-      this.toDoLoad()
+
     })
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       // alert('Please check your internet.')
@@ -262,18 +266,33 @@ export class MyApp {
   toDoLoad() {
     this.dataStorage.getTodoAgain('sentTracking')
       .then((todos) => {
+        var count = todos.length
         todos.map((item) => {
-          this.tracking.sent(item)
+          try {
+            this.tracking.sent(item)
+            count = count - 1
+          }catch(err) {
+            console.log(err)
+          }
         })
         this.dataStorage.clearTodo('sentTracking')
       })
     this.dataStorage.getTodoAgain('updatePassengerStatus')
       .then((todos) => {
+        var count = todos.length
         todos.map((item: passengerUpdate) => {
           this.request.updatePassengerStatus(item)
+          .toPromise()
+          .then(()=>{
+            count = count - 1
+          })
+          .catch(()=>{
+            console.log('Todo #'+count+' not success')
+          })
         })
         this.dataStorage.clearTodo('updatePassengerStatus')
       })
+
   }
 
   openPage(page) {
@@ -329,7 +348,7 @@ export class MyApp {
               this.nav.setRoot(LoginPage)
             })
         })
-
+      this.dataStorage.clearLogDB('driver_login')
     } else {
       this.nav.push(page.component)
     }

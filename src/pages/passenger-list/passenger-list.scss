@@ -2,4 +2,17 @@ page-passenger-list {
     .route-bottom-bg {
         background: #eee;
     }
+    .circle-todo {
+        border-radius: 50%;
+        width: 15vw;
+        height: 15vw;
+    }
+    .passenger-circle-status {
+        position: absolute;
+        width: 5vw;
+        height: 5vw;
+        border-radius: 50%;
+        top: 0px;
+        left: 52%;
+    }
 }

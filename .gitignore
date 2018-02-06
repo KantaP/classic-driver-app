@@ -31,6 +31,8 @@ $RECYCLE.BIN/
 .vscode
 platforms
 back_up_node_modules
+back_up_2_node_modules
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+package-lock.json

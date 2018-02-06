@@ -1,12 +1,17 @@
+import { DataStorage } from './../../pages/util/storage';
 
 import { Util } from './../../pages/util/util';
 import { Global } from './../../pages/util/global';
 import { Injectable } from '@angular/core';
-import { Http , Headers , RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { Http, Headers , RequestOptions } from '@angular/http';
+// import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/retry';
 import * as moment from 'moment'
+
+// import { HttpClient } from '@angular/common/http';
+// import { Observable } from 'rxjs/Observable';
+// import { map, catchError } from 'rxjs/operators';
 
 interface passengerUpdate {
   passenger_id?: number;
@@ -18,6 +23,41 @@ interface passengerUpdate {
   quote_id?: number;
 }
 
+interface driverAction {
+  movement_id: number;
+  action: string;
+  lat: string;
+  lng: string;
+  type: string;
+  date_time: string;
+  quote_id?: string;
+}
+
+interface driverActionWhole {
+  quote_id: number;
+  action: string;
+  lat: string;
+  lng: string;
+  type: string;
+  date_time: string;
+}
+
+interface enRoute {
+  movement_id: number;
+  movement_order: number;
+  quote_id: number;
+  lat: string;
+  lng: string;
+  date_time: string;
+}
+
+interface requestParams {
+  title: string;
+  url: string;
+  type: string;
+  params?: Object;
+}
+
 /*
   Generated class for the RequestProvider provider.
 
@@ -27,8 +67,80 @@ interface passengerUpdate {
 @Injectable()
 export class RequestProvider {
   connection: string
-  constructor(public http: Http ) {
+  constructor(public http: Http , private store: DataStorage ) {
     console.log('Hello RequestProvider Provider');
+  }
+
+
+  saveRequestToStore(request: requestParams) {
+    this.store.getLogDataPromise("request-in-progress")
+    .then((data)=>{
+      if(data != null) {
+        if(typeof data != 'object') {
+          data = [data]
+        }
+        data.push(request)
+        this.store.addLogData("request-in-progress", data)
+      }else{
+        var saveData = [request]
+        this.store.addLogData("request-in-progress", saveData)
+      }
+    })
+  }
+
+  async runRequestBackGround() {
+    var requests = await this.store.getLogDataPromise("request-in-progress")
+    if(requests != null) {
+      var headers = new Headers()
+      headers.append('x-access-key', Global.getGlobal('api_key'));
+      headers.append('x-access-token', Global.getGlobal('api_token'));
+      var options = new RequestOptions({ headers: headers });
+      var newRequests = requests
+      for(let request of requests) {
+        var results = null
+        if(request.type == 'GET' || request.type == 'get') {
+          // results  = await this.http.get(request.url,options)
+          // .retry(5)
+          // .map((body)=> Object.assign({},{label:request.title},body.json()))
+          // .toPromise()
+          // if(results) {
+          //   this.store.addLogData(results.label , results)
+          // }else{
+          //   console.log(request.title + ' has error' , results)
+          // }
+        }else {
+          results = await this.http.post(request.url , (request.params)? request.params : {} , options)
+          .retry(5)
+          .map((body)=>body.json())
+          .toPromise()
+          if(results) {
+            console.log(request.title + ' has been success' , results)
+            newRequests = newRequests.filter((item)=>item.title != request.title)
+          }else{
+            console.log(request.title + ' has error' , results)
+          }
+        }
+      }
+      this.store.addLogData("request-in-progress", newRequests)
+    }
+  }
+
+  saveDriverAction(params:driverAction) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    let body = params
+    return this.http.post(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/driveraction', body, options).retry(5)
+  }
+
+  saveDriverActionWhole(params: driverActionWhole) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    let body = params
+    return this.http.post(Util.getSystemURL() + '/api/ecmdriver/mobileSettings/driveractionwhole', body, options).retry(5)
   }
 
   updatePassengerStatus(params:passengerUpdate) {
@@ -280,4 +392,16 @@ export class RequestProvider {
                     .map((body) => Object.assign({},{label:'lang_'+lang},body.json()))
   }
 
+  enroute(params: enRoute) {
+    let headers = new Headers()
+    headers.append('x-access-key', Global.getGlobal('api_key'));
+    headers.append('x-access-token', Global.getGlobal('api_token'));
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(Util.getSystemURL() + '/api/ecmdriver/jobs/enroute', params , options)
+          .retry(5)
+          .map((body)=>body.json())
+  }
+
 }
+
+

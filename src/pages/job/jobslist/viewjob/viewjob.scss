@@ -15,11 +15,17 @@ page-viewjob {
         //image-rendering: pixelated;
     }
     .disable-row {
-        background: #ccc;
+        background: #fff;
         color: #999
     }
     .disable-row-header {
-        background: #666;
+        background: #fff;
         color: #999;
+    }
+    .border-top-less {
+        border-top: 0px;
+    }
+    .border-bottom-less {
+        border-bottom: 0px;
     }
 }

@@ -1,6 +1,7 @@
+import { MessageModal } from './../message/modal/modal.sentmessage';
 import { SignOutVehicleService } from './../signoutvehicle/signoutvehicle.service';
 import { Component } from '@angular/core'
-import { ViewController, Events, LoadingController } from 'ionic-angular'
+import { ViewController, Events, LoadingController, ModalController } from 'ionic-angular'
 import { StopWorkService } from './stopwork.service'
 import { Global } from '../util/global'
 import moment from 'moment'
@@ -28,7 +29,8 @@ export class StopWork {
     public loadingCtrl: LoadingController,
     public events: Events,
     private signOutVehicleService: SignOutVehicleService,
-    private global: GlobalProvider
+    private global: GlobalProvider,
+    private modalCtrl: ModalController
     ) {
 
 
@@ -86,7 +88,9 @@ export class StopWork {
               }
               Global.setGlobal("start_work_id", 0)
               this.closeStopWorkModal()
-              alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
+              let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA')}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+              modal.present()
+              // alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
               this.events.publish('isStartWork', false)
             },(err)=>{
               console.log("signOutVehicle service err:", err)
@@ -94,18 +98,24 @@ export class StopWork {
           }else {
             Global.setGlobal("start_work_id", 0)
             this.closeStopWorkModal()
-            alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
+            // alert(this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA'))
+            let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate('Work Stop Time Set:') + moment(stopTime).format('hh:mmA')}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+            modal.present()
             this.events.publish('isStartWork', false)
 
           }
         }else{
-          alert("Cannot update.")
+          let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate('Cannot update') + moment(stopTime).format('hh:mmA')}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+          modal.present()
+          // alert("Cannot update.")
         }
 
 
       },(err)=>{
         console.log("stopWork service err:", err)
-        alert("Cannot update.")
+        let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate('Cannot update') + moment(stopTime).format('hh:mmA')}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+        modal.present()
+        // alert("Cannot update.")
       })
   }
 

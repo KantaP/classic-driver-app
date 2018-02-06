@@ -3,7 +3,7 @@ import { Global } from './global'
 import { Injectable } from '@angular/core'
 import { Http, Headers } from '@angular/http'
 import { Util } from '../util/util'
-import { Geolocation } from '@ionic-native/geolocation'
+import { Geolocation, Geoposition } from '@ionic-native/geolocation'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/retry';
@@ -14,6 +14,7 @@ declare var google;
 @Injectable()
 export class TrackingService {
     watchSubscription: any
+    positionStore: any
     constructor(
         public http: Http,
         public geolocation: Geolocation,
@@ -30,7 +31,26 @@ export class TrackingService {
       this.geolocation.getCurrentPosition(opts)
         .then((pos) => {
           this.sendTracking(pos)
+          this.positionStore = pos
         })
+    }
+
+    async getCurrentPosition(): Promise<any> {
+      return new Promise((resolve, reject)=>{
+        var opts = {
+            enableHighAccuracy: true,
+            timeout: 8000,
+            maximumAge: 5000
+        };
+        this.geolocation.getCurrentPosition(opts)
+          .then((pos) => {
+            this.positionStore = pos
+            resolve(pos)
+          })
+          .catch(()=>{
+            resolve(this.positionStore)
+          })
+      })
     }
 
     public watchTracking() {
@@ -50,6 +70,7 @@ export class TrackingService {
         this.geolocation.getCurrentPosition(opts)
         .then((pos) => {
           this.sendTracking(pos)
+          this.positionStore = pos
         })
       })
     }

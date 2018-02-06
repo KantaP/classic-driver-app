@@ -1,3 +1,7 @@
+import { SignInVehiclePageService } from './../pages/signinvehiclelist/signinvehiclepage.service';
+import { LoginService } from './../pages/login/login.service';
+import { HomeService } from './../pages/home/home.service';
+import { AngularInterceptor } from './../providers/angular-interceptor/angular-interceptor';
 import { StopWorkService } from './../pages/stopwork/stopwork.service';
 import { SignOutVehicleService } from './../pages/signoutvehicle/signoutvehicle.service';
 import { DataStorage } from './../pages/util/storage';
@@ -59,7 +63,18 @@ import { PushToTalkService } from '../providers/pushToTalk/pushToTalk';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 import { NFC, Ndef } from '@ionic-native/nfc';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ViewCheckListService } from '../pages/vehiclecheckhistory/history/viewchecklist/viewchecklist.service';
+import { ViewJobService } from '../pages/job/jobslist/viewjob/viewjob.service';
+import { VehicleCheckService } from '../pages/vehiclecheck/vehiclecheck.service';
+import { JobsListService } from '../pages/job/jobslist/jobslist.service';
+import { JobsSummaryService } from '../pages/job/jobssummary/jobssummary.service';
+import { MessageService } from '../pages/message/message.service';
+import { SignInVehicleService } from '../pages/signinvehicle/signinvehicle.service';
+import { StartWorkService } from '../pages/startwork/startwork.service';
+import { QuestionService } from '../pages/vehiclecheck/questionPage/questionpage.service';
+import { VehicleHistoryService } from '../pages/vehiclecheckhistory/history/veh_history.service';
+
 
 
 
@@ -103,7 +118,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     }),
     FormsModule,
     ReactiveFormsModule,
-    InfiniteScrollModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -156,7 +170,23 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     SignOutVehicleService,
     StopWorkService,
     PushToTalkService,
-    NFC
+    NFC,
+    { provide: HTTP_INTERCEPTORS, useClass: AngularInterceptor, multi: true },
+    ViewCheckListService,
+    ViewJobService,
+    VehicleCheckService,
+    HomeService,
+    JobsListService,
+    JobsSummaryService,
+    LoginService,
+    MessageService,
+    SignInVehiclePageService,
+    SignInVehicleService,
+    SignOutVehicleService,
+    StartWorkService,
+    StopWorkService,
+    QuestionService,
+    VehicleHistoryService
   ]
 })
 export class AppModule {}

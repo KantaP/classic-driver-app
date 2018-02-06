@@ -40,27 +40,42 @@
             </ion-col>
         </ion-row>
         <ion-row justify-content-center class="margin-top-1 txt_white txt_center">
-            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-primary">
-                <span class="txt_center">{{listTodo.waitBus}}</span>
+            <ion-col col-2 class="padding-vertical-2-2 margin-half-1 margin-right-2 margin-left-2">
+                <ion-row justify-content-center align-items-center class="circle-todo passenger-box-primary">
+                    <span class="txt_center font-size-4-vw">{{listTodo.waitBus}}</span>
+                </ion-row>
             </ion-col>
-            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-secondary">
-                <span class="txt_center">{{listTodo.waitAlign}}</span>
+            <ion-col col-2 class="padding-vertical-2-2 margin-half-1 margin-right-2 margin-left-2">
+                <ion-row justify-content-center align-items-center class="circle-todo passenger-box-secondary">
+                    <span class="txt_center font-size-4-vw">{{listTodo.waitAlign}}</span>
+                </ion-row>
             </ion-col>
-            <ion-col col-2 class="h7percent padding-vertical-2-2 margin-half-1 passenger-box-third">
-                <span class="txt_center">{{listTodo.availableOnBus}}</span>
+            <ion-col col-2 class="padding-vertical-2-2 margin-half-1 margin-right-2 margin-left-2">
+                <ion-row justify-content-center align-items-center class="circle-todo passenger-box-third">
+                    <span class="txt_center font-size-4-vw">{{listTodo.availableOnBus}}</span>
+                </ion-row>
             </ion-col>
-            <ion-col col-2 class="h7percent padding-vertical-2-2  margin-half-1 passenger-box-fourth">
-                <span class="txt_center">{{listTodo.aligned}}</span>
+            <ion-col col-2 class="padding-vertical-2-2  margin-half-1 margin-right-2 margin-left-2">
+                <ion-row justify-content-center align-items-center class="circle-todo passenger-box-fourth">
+                    <span class="txt_center font-size-4-vw">{{listTodo.aligned}}</span>
+                </ion-row>
             </ion-col>
         </ion-row>
         <br/>
         <div *ngIf="passengers.length > 0" class="passenger-block">
             <ion-row class="padding-10" *ngFor="let passenger of passengers;let i = index" class="passenger-list" (click)="openModal(passenger,false)">
-                <ion-col col-4 align-self-center [class]="generateStatusColor(passenger.status,passenger.pickup)">
-                    <img [src]="passenger.photo" class="avatar-img">
+                <ion-col col-3 align-self-center>
+                    <div style="position:relative;">
+                        <img [src]="passenger.photo" class="avatar-img">
+                        <div [class]="generateStatusColor(passenger.status,passenger.pickup)"></div>
+                    </div>
+
                 </ion-col>
-                <ion-col col-8 align-self-center>
-                    <div>{{passenger.first_name}} {{passenger.surname}}</div>
+                <ion-col col-9 align-self-center>
+                    <ion-row justify-content-between>
+                        <div>{{passenger.first_name}} {{passenger.surname}}</div>
+                        <i class="fa fa-angle-right" style="    font-size: 6vw;margin-right: 5%;"></i>
+                    </ion-row>
                 </ion-col>
             </ion-row>
         </div>
@@ -71,7 +86,7 @@
                 <marquee behavior="scroll" direction="left" style="font-weight:bold" loop="infinite">{{routeString}}</marquee>
             </ion-col>
             <ion-col col-4 class="all-no-margin">
-                <a *ngIf="!lastPoint" ion-button color="primary" class="w100 h100" (click)="enroute()">{{global.translate('EN-ROUTE')}}</a>
+                <a *ngIf="!lastPoint" ion-button color="primary" class="w100 h100" (click)="enrouteDialog()">{{global.translate('EN-ROUTE')}}</a>
                 <a *ngIf="lastPoint" ion-button color="dark" class="w100 h100" (click)="endroute()">{{global.translate('END')}}</a>
             </ion-col>
         </ion-row>
@@ -90,6 +105,10 @@
                     <div style="position:relative;width:100%;">
                         <img [src]="passengerItem.photo" class="modal-picture" />
                         <div [class]="generateCircleColor(passengerItem.status,passengerItem.pickup)"></div>
+                        <div>
+                            <i class="fas fa-info-circle" style="color:red;font-size:1.5em;" *ngIf="passengerItem.note != ''"></i>
+                            <!-- <i class="fas fa-info-circle" style="color:#ccc;font-size:1.5em;" *ngIf="passengerItem.note == ''"></i> -->
+                        </div>
                     </div>
                 </ion-row>
                 <ion-row>

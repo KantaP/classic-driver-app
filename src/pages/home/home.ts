@@ -21,7 +21,7 @@ import { Md5 } from 'ts-md5/dist/md5';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers: [HomeService, TrackingService]
+  // providers: [HomeService, TrackingService]
 })
 export class HomePage implements OnDestroy {
   hs: HomeService
@@ -75,6 +75,7 @@ export class HomePage implements OnDestroy {
 
     // this.timer = this.startTracking()
     this.trackingService.watchTracking()
+    this.trackingService.getCurrentPosition()
     // this.langSubscription = this.global.watchLang()
     // .subscribe((data)=>{
     //   this.lang = data
@@ -91,7 +92,7 @@ export class HomePage implements OnDestroy {
   }
 
   initPushToTalkService() {
-    
+
     this.p2Talk.enabledLog(true);
 
     var enabled = this.hs.getMobileSettingsValue('enable_broadcast232');

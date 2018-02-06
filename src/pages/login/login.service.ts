@@ -16,6 +16,7 @@ export class LoginService {
   requestApiKey(){
     return this.http.get( Util.getSystemURL() + '/secret/generateApiKey/ecmdriver')
       .map(res => res.json())
+      .retry(5)
   }
 
   requestSiteURL( company_code ) {

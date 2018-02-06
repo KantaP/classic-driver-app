@@ -1,3 +1,4 @@
+import { MessageModal } from './../message/modal/modal.sentmessage';
 import { toPromise } from 'rxjs/operator/toPromise';
 
 import { RequestProvider } from './../../providers/request/request';
@@ -13,6 +14,7 @@ import { Global } from '../util/global'
 import { AddCompany } from '../addcompany/addcompany'
 import { Network } from '@ionic-native/network';
 import { GlobalProvider } from '../../providers/global/global';
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -85,9 +87,9 @@ export class LoginPage {
     })
   }
 
-  ionViewDidLoad() {
+  async ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage')
-    this.getApiKey()
+    await this.getApiKey()
     this.getCompany()
 
   }
@@ -128,16 +130,22 @@ export class LoginPage {
   }
 
   private getApiKey(){
-    this.loginService.requestApiKey()
-      .subscribe( res =>{
+    return new Promise((resolve, reject)=>{
+      this.loginService.requestApiKey()
+      .toPromise()
+      .then( res =>{
         console.log(res);
         Global.setGlobal("api_key", res.result)
         this.dataStore.addLogData("api_key", res.result)
         console.log('Global get ',Global.getGlobal("api_key"))
-      },
-      err =>{
-        console.log(err)
+        resolve()
       })
+      .catch((err) =>{
+        console.log(err)
+        reject(err)
+      })
+    })
+
   }
   private getCompany(){
     // Find all company
@@ -151,7 +159,7 @@ export class LoginPage {
           }
         }
         console.log("getCompany succ:", res.rows)
-        this._ngZone.run(()=>{
+        // this._ngZone.run(()=>{
           let items = res.rows
           // console.log(items.item(0))
           if(items.length == 0){
@@ -161,8 +169,20 @@ export class LoginPage {
           }else if(items.length == 1){
             this.add_comp_box = false
             this.select_box = false
-            this.login_box = true
+            this.login_box = false
             this.company_select = items.item(0).comp_code
+            // auto login if get only 1 company
+            this.dataStore.getLogDataPromise('driver_login')
+            .then((data)=>{
+              if(data != null) {
+                this.username = data.username
+                this.password = data.password
+                this.company_select = data.company
+                this.login()
+              }else{
+                this.login_box = true
+              }
+            })
           }else{
             // if length of items > 1
             this.add_comp_box = false
@@ -189,14 +209,14 @@ export class LoginPage {
             }
             console.log(this.comp_list)
           }
-        })
+        // })
       },(err)=>{
         console.log("getCompany err:", err)
-        this._ngZone.run(()=>{
+        // this._ngZone.run(()=>{
           this.add_comp_box = true
           this.select_box = false
           this.login_box = false
-        })
+        // })
       })
   }
 
@@ -218,7 +238,9 @@ export class LoginPage {
     var connection = Global.getGlobal('connection')
     // alert(connection)
     if(connection == 'none') {
-      alert("Please check your internet")
+      let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate("Please check your internet")}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+      modal.present()
+      // alert("Please check your internet")
       return false
     }
     // this.username = ""
@@ -227,10 +249,12 @@ export class LoginPage {
 
 
     if(this.username == "" || this.password == ""){
-      alert("Please enter Username or Password")
+      let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate("Please enter Username or Password")}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+      modal.present()
+      // alert("Please enter Username or Password")
       return
     }
-
+    this.login_box = false
     let loader = this.loadingCtrl.create({
       content: "Please wait..."
     })
@@ -239,7 +263,7 @@ export class LoginPage {
     var loginResult = await this.loginService.authen(this.username, this.password, this.company_select).toPromise()
     // this.loginService.authen("Jdriver","123456", this.company_select)
     // .subscribe(async (res)=>{
-
+    this.dataStore.addLogData('driver_login' , {username: this.username , password: this.password , company: this.company_select})
 
 
     console.log("loginService", loginResult)
@@ -252,7 +276,7 @@ export class LoginPage {
       Global.setGlobal('web_site', loginResult.website)
       Global.setGlobal('site_id', loginResult.site_id)
       Global.setGlobal('region', loginResult.region)
-      
+
       let datetimeLogin = {
         datetime: ''
       }
@@ -325,7 +349,9 @@ export class LoginPage {
 
     }else{
       loader.dismiss()
-      alert(this.global.translate("Invalid Username or Password"))
+      let modal = this.modalCtrl.create(MessageModal, {txt:this.global.translate("Invalid Username or Password")}, {enableBackdropDismiss: false, cssClass: 'modal-signoutvehicle-wrapper modal-message-custom'})
+      modal.present()
+      this.login_box = true
       return
     }
     // },(err)=>{

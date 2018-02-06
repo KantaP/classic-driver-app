@@ -82,7 +82,7 @@ export class PassengerListPage {
   private lastPoint: boolean;
   private connection: string;
 
-  private readerProvider: string;
+  // private readerProvider: string;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -128,12 +128,11 @@ export class PassengerListPage {
     this.wrong_point = '0'
     this.status_text = ''
     this.lastPoint = false
-    this.readerProvider = "nfc"
+    // this.readerProvider = "nfc"
     this.connection = Global.getGlobal('connection')
     Global.setGlobal('journey_id', this.navParams.get('j_id'))
     Global.setGlobal('movement_id', this.navParams.get('movement_id'))
     Global.setGlobal('job_status', this.navParams.get('progress'))
-
   }
 
 
@@ -389,6 +388,67 @@ export class PassengerListPage {
               timescan: moment().format('YYYY-MM-DD HH:mm:ss'),
               quote_id: this.navParams.get('quote_id')
             })
+            var movement_id = action
+            this.allPassenger = this.allPassenger.map((item) => {
+              if (item.passenger_id == passenger[0].passenger_id && item.pickup == passenger[0].pickup) {
+                item.status = new_status
+                item.action_point_id = action
+              }
+              return item
+            })
+            var dataPayload: NotiPayload = {}
+            if (swapPassenger.length > 0) {
+              for (let parent of swapPassenger[0].parents) {
+                dataPayload.message = "Passenger update"
+                dataPayload.title = "Passenger Update"
+                dataPayload.route = swapPassenger[0].jobPattern[0].job_name || ""
+                dataPayload.place = (swapPassenger[0].pickup) ? this.navParams.get('current_place') : this.navParams.get('current_place')
+                dataPayload.sentfrom = ""
+                dataPayload.name = swapPassenger[0].first_name + ' ' + swapPassenger[0].surname
+                dataPayload.time = moment().format('HH:mm')
+                dataPayload.status = this.status_text
+                if (!this.navParams.get('current_place').includes(swapPassenger[0].correctPickUp)) {
+                  this.wrong_point = '1'
+                  dataPayload.note = 'This is not passengers registered stop'
+                } else {
+                  this.wrong_point = '0'
+                  dataPayload.note = ''
+                }
+                dataPayload.wrong_point = this.wrong_point
+                this.request.saveRequestToStore({
+                  title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+                  url: Util.getNotificationUrl(),
+                  type: 'POST',
+                  params: dataPayload
+                })
+              }
+            } else {
+              for (let parent of passenger[0].parents) {
+                dataPayload.message = "Passenger update"
+                dataPayload.title = "Passenger Update"
+                dataPayload.route = passenger[0].jobPattern[0].job_name || ""
+                dataPayload.place = (passenger[0].pickup == 1) ? this.navParams.get('current_place') : this.navParams.get('current_place')
+                dataPayload.sentfrom = ""
+                dataPayload.name = passenger[0].first_name + ' ' + passenger[0].surname
+                dataPayload.time = moment().format('HH:mm')
+
+                dataPayload.status = this.status_text
+                if (!this.navParams.get('current_place').includes(swapPassenger[0].correctPickUp)) {
+                  this.wrong_point = '1'
+                  dataPayload.note = 'This is not passengers registered stop'
+                } else {
+                  this.wrong_point = '0'
+                  dataPayload.note = ''
+                }
+                dataPayload.wrong_point = this.wrong_point
+                this.request.saveRequestToStore({
+                  title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+                  url: Util.getNotificationUrl(),
+                  type: 'POST',
+                  params: dataPayload
+                })
+              }
+            }
             resolve()
           })
       }
@@ -526,21 +586,64 @@ export class PassengerListPage {
 
   loadAllPassengers() {
     var loader = this.loading.create({
-      content: ''
+      content: '',
+      duration: 10000
     })
-    loader.present()
-    this.request.getAllPassengerInJob(this.navParams.get('quote_id'))
-      .subscribe((data) => {
-        data.results = data.results.map((item) => {
-          if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
-          item.fromOtherRoute = true
-          return item
-        })
-        this.allPassenger = data.results
-        loader.dismiss()
-        this.initPassengers()
-      })
+    this.dataStorage.getLogDataPromise('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'))
+    .then((data)=>{
+      console.log('passenger data' , data)
+      if(data != null) {
+        this.allPassenger = data
+      }else {
+        this.allPassenger = []
+      }
+      loader.dismiss()
+      this.initPassengers()
+    })
+    .catch((err)=>{
+      console.log(err)
+      loader.dismiss()
+    })
   }
+
+  // loadAllPassengers() {
+  //   var loader = this.loading.create({
+  //     content: '',
+  //     duration: 10000
+  //   })
+  //   loader.present()
+  //   this.request.getAllPassengerInJob(this.navParams.get('quote_id'))
+  //   .toPromise()
+  //   .then((data)=>{
+  //     if(data.results.length > 0) {
+  //       data.results = data.results.map((item) => {
+  //         if (item.photo == "") item.photo = normalizeURL("assets/img/nouser.png")
+  //         item.fromOtherRoute = true
+  //         return item
+  //       })
+  //       this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), data.results)
+  //       this.allPassenger = data.results
+  //     }else{
+  //       this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), [])
+  //       this.allPassenger = []
+  //     }
+
+  //     loader.dismiss()
+  //     this.initPassengers()
+  //   })
+  //   .catch((err)=>{
+  //     this.dataStorage.getLogDataPromise('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'))
+  //     .then((data)=>{
+  //       if(data != null) {
+  //         this.allPassenger = data
+  //       }else {
+  //         this.allPassenger = []
+  //       }
+  //     })
+  //     loader.dismiss()
+  //     this.initPassengers()
+  //   })
+  // }
 
   initPassengers() {
     var movement_id = this.navParams.get('movement_id')
@@ -553,15 +656,27 @@ export class PassengerListPage {
     var passengerWaitAlign, passengerFailed
     this.routeString = this.navParams.get('current_place')
     if (isFirst) {
-      this.passengerStore = this.allPassenger.filter((item) => (item.pickup == 1 && item.point_id == movement_id) || (item.pickup == 0 && item.status == 1 && item.action_point_id == -1))
-      this.passengerStore = this.passengerStore.filter((item) => {
-        var duplicate = this.passengerStore.filter((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 0 && item2.status == 1 && item2.action_point_id == -1)
-        if (duplicate.length > 0) {
-          return item.pickup == 0 && item.status == 1 && item.action_point_id == -1
-        } else {
-          return item
+      // this.passengerStore = this.allPassenger.filter((item) => (item.pickup == 1 && item.point_id == movement_id) || (item.pickup == 0 && item.status == 1 && item.action_point_id == -1))
+      // this.passengerStore = this.passengerStore.filter((item) => {
+      //   var duplicate = this.passengerStore.filter((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 0 && item2.status == 1 && item2.action_point_id == -1)
+      //   if (duplicate.length > 0) {
+      //     return item.pickup == 0 && item.status == 1 && item.action_point_id == -1
+      //   } else {
+      //     return item
+      //   }
+      // })
+      this.passengerStore = this.allPassenger.filter((item) => {
+        var duplicate = this.allPassenger.filter((item2) => {
+          return item.passenger_id == item2.passenger_id && item2.pickup == 0 && item2.status == 1
+        })
+        if(duplicate.length > 0) {
+          return item.pickup == 0 &&
+          item.status == 1 &&
+          this.allPassenger.findIndex((item3)=>item.point_id == movement_id && item3.passenger_id == item.passenger_id) > -1
         }
+        return item.pickup == 1 && item.point_id == movement_id
       })
+      console.log('is_first_pass', this.passengerStore)
     } else if (isLast) {
       passengerWaitAlign = this.allPassenger.filter((item) => item.pickup == 0 && item.point_id == movement_id)
       passengerFailed = this.allPassenger
@@ -575,9 +690,20 @@ export class PassengerListPage {
       })
       this.passengerStore = passengerWaitAlign
     } else if (!isFirst && !isLast) {
-      this.passengerStore = this.allPassenger.filter((item) => item.pickup == 1 && item.point_id == movement_id)
+      // need to find waitBoard waitAlign alreadyAlign
+      this.passengerStore = this.allPassenger.filter((item) => {
+        var duplicate = this.allPassenger.filter((item2) => {
+          return item.passenger_id == item2.passenger_id && item2.pickup == 0 && item2.status == 1
+        })
+        if(duplicate.length > 0) {
+          return item.pickup == 0 &&
+          item.status == 1 &&
+          this.allPassenger.findIndex((item3)=>item.point_id == movement_id && item3.passenger_id == item.passenger_id) > -1
+        }
+        return item.pickup == 1 && item.point_id == movement_id
+      })
       passengerWaitAlign = this.allPassenger
-        .filter((item) => item.movement_order == (movement_order - 1) && item.pickup == 0)
+        .filter((item) => item.movement_order == (movement_order - 1) && item.pickup == 0 && item.status == 0)
       passengerFailed = this.allPassenger
         .filter((item2) => item2.pickup == 1 && item2.status == -1)
       passengerWaitAlign = passengerWaitAlign.map((item) => {
@@ -615,7 +741,8 @@ export class PassengerListPage {
     clearTimeout(this.timerSearch)
     this.timerSearch = setTimeout(() => {
       var loader = this.loading.create({
-        content: ''
+        content: '',
+        duration: 10000
       })
       loader.present()
       this.passengers = []
@@ -674,11 +801,11 @@ export class PassengerListPage {
 
 
   generateStatusColor(status, pickup) {
-    if (status == 0 && pickup == 1) return 'txt_center passenger-list-primary'
-    else if (status == 1 && pickup == 1) return 'txt_center passenger-list-third'
-    else if (status == 0 && pickup == 0) return 'txt_center passenger-list-secondary'
-    else if (status == 1 && pickup == 0) return 'txt_center passenger-list-fourth'
-    else return 'txt_center passenger-list-error'
+    if (status == 0 && pickup == 1) return 'passenger-circle-status passenger-list-primary'
+    else if (status == 1 && pickup == 1) return 'passenger-circle-status passenger-list-third'
+    else if (status == 0 && pickup == 0) return 'passenger-circle-status passenger-list-secondary'
+    else if (status == 1 && pickup == 0) return 'passenger-circle-status passenger-list-fourth'
+    else return 'passenger-circle-status passenger-list-error'
   }
 
   generateCircleColor(status, pickup) {
@@ -759,7 +886,8 @@ export class PassengerListPage {
 
   processForceLogin(passenger: any, action: number, pickUp: number, status: number) {
     var loader = this.loading.create({
-      content: 'Force login...'
+      content: 'Force login...',
+      duration: 10000
     })
     this.request.updatePassengerStatus({
       passenger_id: passenger.passenger_id,
@@ -783,6 +911,7 @@ export class PassengerListPage {
             }
             return item
           })
+          this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
           var swapPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.passenger_id == passenger.passenger_id)[0]
           for (let parent of swapPassenger.parents) {
             var dataPayload: NotiPayload = {}
@@ -819,6 +948,44 @@ export class PassengerListPage {
           quote_id: this.navParams.get('quote_id')
         }).subscribe(() => {
           console.log(err)
+          this.modal.close('warning-popup')
+          var movement_id = this.navParams.get('movement_id')
+          this.allPassenger = this.allPassenger.map((item) => {
+            if (item.passenger_id == passenger.passenger_id && item.job_passengers_id == passenger.job_passengers_id && item.pickup == pickUp) {
+              item.status = status
+              item.action_point_id = action
+            }
+            return item
+          })
+          this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
+          var swapPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.passenger_id == passenger.passenger_id)[0]
+          for (let parent of swapPassenger.parents) {
+            var dataPayload: NotiPayload = {}
+            if (!this.navParams.get('current_place').includes(swapPassenger.correctPickUp)) {
+              this.wrong_point = '1'
+              dataPayload.note = 'This is not passengers registered stop'
+            } else {
+              this.wrong_point = '0'
+              dataPayload.note = ''
+            }
+            dataPayload.message = "Passenger update"
+            dataPayload.title = "Passenger Update"
+            dataPayload.route = swapPassenger.jobPattern[0].job_name || ""
+            dataPayload.place = this.navParams.get('current_place')
+            dataPayload.sentfrom = ""
+            dataPayload.name = swapPassenger.first_name + ' ' + swapPassenger.surname
+            dataPayload.time = moment().format('HH:mm')
+            dataPayload.wrong_point = this.wrong_point
+            dataPayload.status = 'Boarded'
+            // this.sendNotification(parent.email, dataPayload)
+            this.request.saveRequestToStore({
+              title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+              url: Util.getNotificationUrl(),
+              type: 'POST',
+              params: dataPayload
+            })
+          }
+          this.initPassengers()
         })
       })
   }
@@ -843,6 +1010,7 @@ export class PassengerListPage {
     console.log(passenger)
     console.log(passenger.movement_order , this.navParams.get('movement_order'))
     if ((passenger.pickup == 0) && passenger.movement_order != movement_order) {
+      alert('wrong')
       // _passenger = this.allPassenger.filter((item)=>item.passenger_id == passenger.passenger_id && item.pickup == 0 && item.j_id == passenger.j_id)[0]
       // console.log(_passenger)
       var isFirst = this.navParams.get('is_first')
@@ -854,6 +1022,7 @@ export class PassengerListPage {
       this.openFailedModal(options.title, options.icon, options.shouldBeAddress, this.processForceLogout.bind(this, passenger, action, pickUpUpdate, newStatus))
       // this.processForceLogout(passenger,action)
     } else {
+      alert('correct')
       action = passenger.point_id
       this.processForceLogout(passenger, action, pickUpUpdate, newStatus)
     }
@@ -862,7 +1031,8 @@ export class PassengerListPage {
 
   processForceLogout(passenger: any, action: number, pickUp: number, status: number) {
     var loader = this.loading.create({
-      content: 'Force logout...'
+      content: 'Force logout...',
+      duration: 10000
     })
     this.request.updatePassengerStatus({
       passenger_id: passenger.passenger_id,
@@ -886,6 +1056,7 @@ export class PassengerListPage {
             }
             return item
           })
+          this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
           // this.modal.close('warning-popup')
           for (let parent of passenger.parents) {
             var dataPayload: NotiPayload = {}
@@ -923,101 +1094,276 @@ export class PassengerListPage {
           quote_id: this.navParams.get('quote_id')
         }).subscribe(() => {
           console.log(err)
+          var movement_id = action
+          this.allPassenger = this.allPassenger.map((item) => {
+            if (item.passenger_id == passenger.passenger_id && item.pickup == 0) {
+              item.status = 1
+              item.action_point_id = action
+            }
+            return item
+          })
+          this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
+          // this.modal.close('warning-popup')
+          for (let parent of passenger.parents) {
+            var dataPayload: NotiPayload = {}
+            var swapPassenger = this.allPassenger.filter((item) => item.pickup == 0 && item.passenger_id == passenger.passenger_id)[0]
+            if (!this.navParams.get('current_place').includes(swapPassenger.correctDestination)) {
+              this.wrong_point = '1'
+              dataPayload.note = 'This is not passengers registered stop'
+            } else {
+              this.wrong_point = '0'
+              dataPayload.note = ''
+            }
+            dataPayload.message = "Passenger update"
+            dataPayload.title = "Passenger Update"
+            dataPayload.route = passenger.jobPattern[0].job_name || ""
+            dataPayload.place = this.navParams.get('current_place')
+            dataPayload.sentfrom = ""
+            dataPayload.name = passenger.first_name + ' ' + passenger.surname
+            dataPayload.time = moment().format('HH:mm')
+            dataPayload.wrong_point = this.wrong_point
+            dataPayload.status = 'Alighted'
+            // this.sendNotification(parent.email, dataPayload)
+            this.request.saveRequestToStore({
+              title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+              url: Util.getNotificationUrl(),
+              type: 'POST',
+              params: dataPayload
+            })
+          }
+          this.initPassengers()
         })
       })
   }
 
-  enroute() {
-    var loader = this.loading.create({
-      content: ''
-    })
-    loader.present()
-    let headers = new Headers()
-    headers.append('x-access-key', Global.getGlobal('api_key'));
-    headers.append('x-access-token', Global.getGlobal('api_token'));
-    let options = new RequestOptions({ headers: headers });
-    this.http.post(Util.getSystemURL() + '/api/ecmdriver/jobs/enroute',
-      { movement_id: this.navParams.get('movement_id'), movement_order: this.navParams.get('movement_order'), quote_id: this.navParams.get('quote_id') }
-      , options)
-      .map((body) => body.json())
-      .subscribe(
-      (res) => {
-        loader.dismiss()
-        if (res.results.update) {
-          if (res.results['force_passenger_fail_to_board'] > 0) {
-            this.allPassenger = this.allPassenger.map((item) => {
-              if (res.results['failedBoardPassenger'].findIndex((item2) => item2.job_passengers_id == item.job_passengers_id) > -1) {
-                item.status = -1
-              }
-              return item
-            })
-            var dataPayload: NotiPayload = {}
-            var failedBoardPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.movement_order == this.navParams.get('movement_order') && item.status == -1)
-            for (let i = 0; i < failedBoardPassenger.length; i++) {
-              this.wrong_point = '1'
-              dataPayload.note = 'Did not board'
-              dataPayload.message = "Passenger update"
-              dataPayload.title = "Passenger Update"
-              dataPayload.route = failedBoardPassenger[i].jobPattern[0].job_name || ""
-              dataPayload.place = this.navParams.get('current_place')
-              dataPayload.sentfrom = ""
-              dataPayload.name = failedBoardPassenger[i].first_name + ' ' + failedBoardPassenger[i].surname
-              dataPayload.time = moment().format('HH:mm')
-              dataPayload.wrong_point = this.wrong_point
-              dataPayload.status = 'Failed Board'
-              for (let parent of failedBoardPassenger[i].parents) {
-                this.sendNotification(parent.email, dataPayload)
-              }
+  enrouteDialog () {
+    var notBoard = this.passengerStore.filter((item2) => item2.pickup == 1 && item2.status == 0)
+    var notAlign = this.passengerStore.filter((item2) => item2.pickup == 0 && item2.status == 0)
+    if (notBoard.length > 0 || notAlign.length > 0) {
+      var alertItem2 = this.alertCtrl.create({
+        title: this.global.translate('Warning'),
+        message: `${this.navParams.get('current_place')} ${this.global.translate('still has some passengers to board/alight')} ${this.global.translate('Do you want to leave from this stop?')}` ,
+        buttons: [
+          {
+            text: this.global.translate('Cancel'),
+            handler: data => {
+              console.log('Cancel clicked');
             }
-            var failedAlignPassenger = this.allPassenger
-              .filter((item) => {
-                console.log('has failed board ? ', this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1))
-                return item.pickup == 0
-                  && item.status == 0
-                  && item.movement_order == (this.navParams.get('movement_order') - 1)
-                  && this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1) < 0
-              })
-            for (let i = 0; i < failedAlignPassenger.length; i++) {
-              this.wrong_point = '1'
-              dataPayload.note = 'Did not alight'
-              dataPayload.message = "Passenger update"
-              dataPayload.title = "Passenger Update"
-              dataPayload.route = failedAlignPassenger[i].jobPattern[0].job_name || ""
-              dataPayload.place = this.navParams.get('current_place')
-              dataPayload.sentfrom = ""
-              dataPayload.name = failedAlignPassenger[i].first_name + ' ' + failedAlignPassenger[i].surname
-              dataPayload.time = moment().format('HH:mm')
-              dataPayload.wrong_point = this.wrong_point
-              dataPayload.status = 'Failed alight'
-              for (let parent of failedAlignPassenger[i].parents) {
-                this.sendNotification(parent.email, dataPayload)
-              }
+          },
+          {
+            text: this.global.translate('Ok'),
+            handler: data => {
+              this.enroute()
             }
           }
-          // for(let parent of passenger.parents){
-          // }
-          this.callback({
-            movement_id: this.navParams.get('movement_id'),
-            movement_order: this.navParams.get('movement_order'),
-            quote_id: this.navParams.get('quote_id')
-          })
-            .then(() => {
-              this.navCtrl.pop()
-            })
-        } else {
-          alert('Cannot en-route. please try again')
-        }
+        ]
+      })
+      alertItem2.present()
+    } else {
+      this.enroute()
+    }
+  }
 
-      },
-      (err) => {
-        alert('Cannot enter this route')
+  async enroute() {
+    var loader = this.loading.create({
+      content: '',
+      duration: 10000
+    })
+    loader.present()
+
+    try {
+      var position = await this.tracking.getCurrentPosition()
+      var save = await this.request.saveDriverAction({
+        movement_id: this.navParams.get('movement_id'),
+        action: '8',
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        date_time: moment().format('YYYY-MM-DD HH:mm'),
+        type: 'M',
+        quote_id: this.navParams.get('quote_id')
+      }).toPromise()
+      console.log('save driver onroute ', save)
+    }catch (err) {
+      loader.dismiss()
+      console.log('save request to store until internet back')
+      this.request.saveRequestToStore({
+        title: 'driver_action_onroute_'+ this.navParams.get('movement_id'),
+        url: Util.getSystemURL() + '/api/ecmdriver/mobileSettings/driveraction',
+        type: 'POST',
+        params: {
+          movement_id: this.navParams.get('movement_id'),
+          action: '8',
+          lat: null,
+          lng: null,
+          date_time: moment().format('YYYY-MM-DD HH:mm'),
+          type: 'M',
+          quote_id: this.navParams.get('quote_id')
+        }
+      })
+    }
+    try{
+      var enRouteResult = await this.request.enroute({
+        movement_id: this.navParams.get('movement_id'),
+        movement_order: this.navParams.get('movement_order'),
+        quote_id: this.navParams.get('quote_id'),
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        date_time: moment().format('YYYY-MM-DD HH:mm')
+      }).toPromise()
+      if (enRouteResult.results.update) {
+        if (enRouteResult.results['force_passenger_fail_to_board'] > 0) {
+          this.allPassenger = this.allPassenger.map((item) => {
+            if (enRouteResult.results['failedBoardPassenger'].findIndex((item2) => item2.job_passengers_id == item.job_passengers_id) > -1) {
+              item.status = -1
+            }
+            return item
+          })
+          this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
+          let dataPayload: NotiPayload = {}
+          let failedBoardPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.movement_order == this.navParams.get('movement_order') && item.status == -1)
+          for (let i = 0; i < failedBoardPassenger.length; i++) {
+            this.wrong_point = '1'
+            dataPayload.note = 'Did not board'
+            dataPayload.message = "Passenger update"
+            dataPayload.title = "Passenger Update"
+            dataPayload.route = failedBoardPassenger[i].jobPattern[0].job_name || ""
+            dataPayload.place = this.navParams.get('current_place')
+            dataPayload.sentfrom = ""
+            dataPayload.name = failedBoardPassenger[i].first_name + ' ' + failedBoardPassenger[i].surname
+            dataPayload.time = moment().format('HH:mm')
+            dataPayload.wrong_point = this.wrong_point
+            dataPayload.status = 'Failed Board'
+            for (let parent of failedBoardPassenger[i].parents) {
+              this.sendNotification(parent.email, dataPayload)
+            }
+          }
+          let failedAlignPassenger = this.allPassenger
+            .filter((item) => {
+              console.log('has failed board ? ', this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1))
+              return item.pickup == 0
+                && item.status == 0
+                && item.movement_order == (this.navParams.get('movement_order') - 1)
+                && this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1) < 0
+            })
+          for (let i = 0; i < failedAlignPassenger.length; i++) {
+            this.wrong_point = '1'
+            dataPayload.note = 'Did not alight'
+            dataPayload.message = "Passenger update"
+            dataPayload.title = "Passenger Update"
+            dataPayload.route = failedAlignPassenger[i].jobPattern[0].job_name || ""
+            dataPayload.place = this.navParams.get('current_place')
+            dataPayload.sentfrom = ""
+            dataPayload.name = failedAlignPassenger[i].first_name + ' ' + failedAlignPassenger[i].surname
+            dataPayload.time = moment().format('HH:mm')
+            dataPayload.wrong_point = this.wrong_point
+            dataPayload.status = 'Failed alight'
+            for (let parent of failedAlignPassenger[i].parents) {
+              this.sendNotification(parent.email, dataPayload)
+            }
+          }
+        }
+        // for(let parent of passenger.parents){
+        // }
+        this.callback({
+          movement_id: this.navParams.get('movement_id'),
+          movement_order: this.navParams.get('movement_order'),
+          quote_id: this.navParams.get('quote_id')
+        })
+          .then(() => {
+            this.navCtrl.pop()
+          })
+      } else {
+        // alert('Cannot en-route. please try again')
       }
-      )
+      loader.dismiss()
+    }catch(err) {
+      console.log('save request to store until internet back')
+      this.request.saveRequestToStore({
+        title: 'enrouote_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id'),
+        url: Util.getSystemURL() + '/api/ecmdriver/jobs/enroute',
+        type: 'POST',
+        params: {
+          movement_id: this.navParams.get('movement_id'),
+          movement_order: this.navParams.get('movement_order'),
+          quote_id: this.navParams.get('quote_id')
+        }
+      })
+      this.allPassenger = this.allPassenger.map((item) => {
+        if (enRouteResult.results['failedBoardPassenger'].findIndex((item2) => item2.job_passengers_id == item.job_passengers_id) > -1) {
+          item.status = -1
+        }
+        return item
+      })
+      this.dataStorage.addLogData('passengers_'+this.navParams.get('quote_id')+'_'+Global.getGlobal('driver_id'), this.allPassenger)
+      let dataPayload: NotiPayload = {}
+      let failedBoardPassenger = this.allPassenger.filter((item) => item.pickup == 1 && item.movement_order == this.navParams.get('movement_order') && item.status == -1)
+      for (let i = 0; i < failedBoardPassenger.length; i++) {
+        this.wrong_point = '1'
+        dataPayload.note = 'Did not board'
+        dataPayload.message = "Passenger update"
+        dataPayload.title = "Passenger Update"
+        dataPayload.route = failedBoardPassenger[i].jobPattern[0].job_name || ""
+        dataPayload.place = this.navParams.get('current_place')
+        dataPayload.sentfrom = ""
+        dataPayload.name = failedBoardPassenger[i].first_name + ' ' + failedBoardPassenger[i].surname
+        dataPayload.time = moment().format('HH:mm')
+        dataPayload.wrong_point = this.wrong_point
+        dataPayload.status = 'Failed Board'
+        for (let parent of failedBoardPassenger[i].parents) {
+          // this.sendNotification(parent.email, dataPayload)
+          this.request.saveRequestToStore({
+            title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+            url: Util.getNotificationUrl(),
+            type: 'POST',
+            params: dataPayload
+          })
+        }
+      }
+      let failedAlignPassenger = this.allPassenger
+        .filter((item) => {
+          console.log('has failed board ? ', this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1))
+          return item.pickup == 0
+            && item.status == 0
+            && item.movement_order == (this.navParams.get('movement_order') - 1)
+            && this.allPassenger.findIndex((item2) => item.passenger_id == item2.passenger_id && item2.pickup == 1 && item2.status == -1) < 0
+        })
+      for (let i = 0; i < failedAlignPassenger.length; i++) {
+        this.wrong_point = '1'
+        dataPayload.note = 'Did not alight'
+        dataPayload.message = "Passenger update"
+        dataPayload.title = "Passenger Update"
+        dataPayload.route = failedAlignPassenger[i].jobPattern[0].job_name || ""
+        dataPayload.place = this.navParams.get('current_place')
+        dataPayload.sentfrom = ""
+        dataPayload.name = failedAlignPassenger[i].first_name + ' ' + failedAlignPassenger[i].surname
+        dataPayload.time = moment().format('HH:mm')
+        dataPayload.wrong_point = this.wrong_point
+        dataPayload.status = 'Failed alight'
+        for (let parent of failedAlignPassenger[i].parents) {
+          // this.sendNotification(parent.email, dataPayload)
+          this.request.saveRequestToStore({
+            title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent.email,
+            url: Util.getNotificationUrl(),
+            type: 'POST',
+            params: dataPayload
+          })
+        }
+      }
+      loader.dismiss()
+      this.callback({
+        movement_id: this.navParams.get('movement_id'),
+        movement_order: this.navParams.get('movement_order'),
+        quote_id: this.navParams.get('quote_id')
+      })
+        .then(() => {
+          this.navCtrl.pop()
+        })
+    }
   }
 
   endroute() {
     var alertItem = this.alertCtrl.create({
-      title: 'End Job',
+      title: this.global.translate('End Job ?'),
       message: this.global.translate('Are you sure you want to End job?'),
       buttons: [
         {
@@ -1064,28 +1410,79 @@ export class PassengerListPage {
     alertItem.present()
   }
 
-  processEndRoute() {
+  async processEndRoute() {
     var loader = this.loading.create({
-      content: ''
+      content: '',
+      duration: 10000
     })
     loader.present()
-    this.request.updateToEndRoute(this.navParams.get('movement_order') - 99, this.navParams.get('quote_id'), this.navParams.get('movement_id'))
-      .subscribe(
-      (res) => {
-        loader.dismiss()
-        this.callback({
+
+    try {
+      var position = await this.tracking.getCurrentPosition()
+      var save = await this.request.saveDriverAction({
+        movement_id: this.navParams.get('movement_id'),
+        action: '10',
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        date_time: moment().format('YYYY-MM-DD HH:mm'),
+        type: 'M',
+        quote_id: this.navParams.get('quote_id')
+      }).toPromise()
+      console.log('save driver end ', save)
+    }catch (err) {
+      console.log('save request to store until internet back')
+      this.request.saveRequestToStore({
+        title: 'driver_action_onroute_'+ this.navParams.get('movement_id'),
+        url: Util.getSystemURL() + '/api/ecmdriver/mobileSettings/driveraction',
+        type: 'POST',
+        params: {
           movement_id: this.navParams.get('movement_id'),
-          movement_order: this.navParams.get('movement_order'),
+          action: '10',
+          lat: null,
+          lng: null,
+          date_time: moment().format('YYYY-MM-DD HH:mm'),
+          type: 'M',
           quote_id: this.navParams.get('quote_id')
-        })
-          .then(() => {
-            this.navCtrl.pop()
-          })
-      },
-      (err) => {
-        alert('Cannot end this route')
-      }
-      )
+        }
+      })
+    }
+    try{
+      var endRouteResult = await this.request.updateToEndRoute(
+        this.navParams.get('movement_order') - 99,
+        this.navParams.get('quote_id'),
+        this.navParams.get('movement_id'))
+      .toPromise()
+      loader.dismiss()
+      this.callback({
+        movement_id: this.navParams.get('movement_id'),
+        movement_order: this.navParams.get('movement_order'),
+        quote_id: this.navParams.get('quote_id')
+      })
+      .then(() => {
+        this.navCtrl.pop()
+      })
+    }catch(err) {
+      console.log('save request to store until internet back')
+      this.request.saveRequestToStore({
+        title: 'enrouote_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id'),
+        url: Util.getSystemURL() + '/api/ecmdriver/jobs/endroute',
+        type: 'POST',
+        params: {
+          movement_id: this.navParams.get('movement_id'),
+          movement_order: this.navParams.get('movement_order') - 99,
+          quote_id: this.navParams.get('quote_id')
+        }
+      })
+      loader.dismiss()
+      this.callback({
+        movement_id: this.navParams.get('movement_id'),
+        movement_order: this.navParams.get('movement_order'),
+        quote_id: this.navParams.get('quote_id')
+      })
+      .then(() => {
+        this.navCtrl.pop()
+      })
+    }
   }
 
   openFailedModal(content: string, failedType: string, shouldBeAddress?: string, callback?: Function) {
@@ -1112,10 +1509,18 @@ export class PassengerListPage {
     this.navCtrl.push(PassengerAddNotePage, { passenger })
   }
 
-  sendNotification(parent_email: string, data: object) {
-    this.request.sendNotificationToParent(parent_email, data)
-      .subscribe((res) => {
-        console.log(res)
+  async sendNotification(parent_email: string, data: object) {
+    try {
+      var notiResult = await this.request.sendNotificationToParent(parent_email, data).toPromise()
+      console.log('send notificaiton to ' + parent_email , notiResult)
+    }catch (err) {
+      console.log('save request to store until network back')
+      this.request.saveRequestToStore({
+        title: 'notification_'+ this.navParams.get('movement_id') + '_' + Global.getGlobal('driver_id') + '_' + parent_email,
+        url: Util.getNotificationUrl(),
+        type: 'POST',
+        params: data
       })
+    }
   }
 }

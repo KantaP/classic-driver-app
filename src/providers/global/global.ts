@@ -1,8 +1,9 @@
+import { Platform } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { Subscriber } from 'rxjs/Subscriber';
-
+import { Network } from '@ionic-native/network';
 /*
   Generated class for the GlobalProvider provider.
 
@@ -26,7 +27,7 @@ export class GlobalProvider {
   private lang: Subject<string>
   private langPack: Subject<LangPack>
   private langPackData: LangPack
-  constructor() {
+  constructor(private network: Network, private platform : Platform) {
     this.lang = new Subject()
     this.langPack = new Subject()
     this.langPackData = {
@@ -50,6 +51,15 @@ export class GlobalProvider {
   setLangPack(langPack: LangPack){
     this.langPackData = langPack
     this.langPack.next(langPack)
+  }
+
+  checkNetWork() {
+    if(this.platform.is('cordova')) {
+      if(this.network.type == 'none') return false
+      else return true
+    }else {
+      return true
+    }
   }
 
   translate(word:string){

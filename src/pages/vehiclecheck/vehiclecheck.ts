@@ -9,7 +9,7 @@ import { GlobalProvider } from '../../providers/global/global';
 @Component({
   selector: 'page-vehiclecheck',
   templateUrl: 'vehiclecheck.html',
-  providers: [VehicleCheckService]
+  // providers: [VehicleCheckService]
 })
 export class VehicleCheckPage {
 
