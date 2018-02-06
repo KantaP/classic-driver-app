@@ -25,6 +25,7 @@ import { FileTransfer } from '@ionic-native/file-transfer'
 import { File } from '@ionic-native/file'
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular'
 import { HttpModule} from '@angular/http'
+import { HttpClientModule } from '@angular/common/http';
 import { Camera } from '@ionic-native/camera'
 import { Diagnostic } from '@ionic-native/diagnostic'
 
@@ -111,6 +112,7 @@ import { VehicleHistoryService } from '../pages/vehiclecheckhistory/history/veh_
   imports: [
     BrowserModule,
     HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot({
       name: '__classic_driver_app',
