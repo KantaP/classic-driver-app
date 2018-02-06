@@ -95,7 +95,7 @@ export class HomePage implements OnDestroy {
 
     this.p2Talk.enabledLog(true);
 
-    var enabled = this.hs.getMobileSettingsValue('enable_broadcast232');
+    var enabled = this.hs.getMobileSettingsValue('enable_broadcast');
     var driverId = Global.getGlobal("driver_id");
     var webSite = Global.getGlobal("web_site");
     var ecm_siteId = Global.getGlobal("site_id");
@@ -200,7 +200,7 @@ export class HomePage implements OnDestroy {
       .then(
       (res) => {
         Global.setGlobal('mobile_settings', res.result)
-        // this.initPushToTalkService();
+        this.initPushToTalkService();
       }
       )
   }
